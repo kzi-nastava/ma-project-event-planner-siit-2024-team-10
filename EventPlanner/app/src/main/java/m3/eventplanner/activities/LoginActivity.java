@@ -1,5 +1,6 @@
 package m3.eventplanner.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -10,6 +11,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         initializeRegisterMessage();
+
+        Button loginButton = findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(v -> {
+            Intent intent=new Intent(LoginActivity.this,RegisterPersonalActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initializeRegisterMessage() {

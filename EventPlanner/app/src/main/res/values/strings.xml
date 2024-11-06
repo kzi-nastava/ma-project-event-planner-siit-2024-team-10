@@ -5,4 +5,17 @@
     <string name="login">Login</string>
     <string name="not_registered_message">Don\'t have account yet? </string>
     <string name="register_message">Register now!</string>
+    <string name="register">Register</string>
+    <string name="password_again">Password again</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="street">Street</string>
+    <string name="house_number">House number</string>
+    <string name="phone">Phone</string>
+    <string name="submit">Submit</string>
+    <string name="event_organizer">Event organizer</string>
+    <string name="product_service_provider">Product/service provider</string>
 </resources>

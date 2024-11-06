@@ -68,7 +68,7 @@
             android:text="@string/not_registered_message" />
 
         <Button
-            android:id="@+id/filledButton"
+            android:id="@+id/loginButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
