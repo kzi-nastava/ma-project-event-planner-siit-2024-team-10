@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EventPlanner</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="not_registered_message">Don\'t have account yet? </string>
+    <string name="register_message">Register now!</string>
 </resources>
