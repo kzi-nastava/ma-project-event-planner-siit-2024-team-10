@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="highlightRed" format="color" />
+    <attr name="highlightGreen" format="color" />
+    <attr name="highlightBlue" format="color" />
+</resources>
