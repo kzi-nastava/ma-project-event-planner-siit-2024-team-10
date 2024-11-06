@@ -1,17 +1,14 @@
-package m3.eventplanner;
+package m3.eventplanner.activities;
 
 import android.os.Bundle;
 import android.widget.ListView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
+import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventCardAdapter;
 
 public class HomeActivity extends AppCompatActivity {
