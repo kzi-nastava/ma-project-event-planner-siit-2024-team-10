@@ -18,4 +18,8 @@
     <string name="submit">Submit</string>
     <string name="event_organizer">Event organizer</string>
     <string name="product_service_provider">Product/service provider</string>
+    <string name="enter_company_info">Enter company info</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="photos">Photos</string>
 </resources>
