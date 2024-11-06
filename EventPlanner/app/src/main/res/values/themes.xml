@@ -1,8 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.EventPlanner" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/brand_green</item>
+        <item name="colorSecondary">@color/brand_green_light</item>
+        <item name="android:colorBackground">@color/creme</item>
+        <item name="colorOnBackground">@color/charcoal_blue</item>
+        <item name="colorOnSecondary">@color/charcoal_blue</item>
+        <item name="highlightGreen">@color/brand_highlight_green</item>
+        <item name="highlightBlue">@color/brand_highlight_blue</item>
+        <item name="highlightRed">@color/brand_highlight_red</item>
+        <item name="fontFamily">@font/font_family</item>
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />
