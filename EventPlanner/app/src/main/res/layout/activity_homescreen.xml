@@ -1,33 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/homepage_slogan"
-        android:id="@+id/homepageSlogan"/>
-
-    <TextView
-        android:id="@+id/top_events_text"
-        android:layout_width="wrap_content"
-        android:layout_margin="10dp"
-        android:textStyle="bold"
-        android:layout_height="wrap_content"
-        android:text="@string/top_events_text"
-        app:layout_constraintTop_toBottomOf="@id/homepageSlogan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <include
-        android:id="@+id/eventList"
-        layout="@layout/fragment_event_list"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/top_events_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/slogan_screen"
+            layout="@layout/homepage_slogan"/>
+
+        <TextView
+            android:id="@+id/top_events_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:text="@string/top_events_text"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- This ListView should be scrollable independently -->
+        <include
+            android:id="@+id/eventList"
+            layout="@layout/fragment_event_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Include Event Search layout -->
+        <include
+            android:id="@+id/eventSearch"
+            layout="@layout/all_events_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Include All Event List layout -->
+        <include
+            android:id="@+id/allEventList"
+            layout="@layout/fragment_all_event_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
