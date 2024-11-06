@@ -7,4 +7,6 @@
     Date and Time: 15.6.2024, 4:00pm</string>
     <string name="event_card_organizer">Robert L.</string>
     <string name="event_card_button">See More</string>
+    <string name="top_events_text">Top Events In Your Area</string>
+    <string name="title_activity_main2">MainActivity2</string>
 </resources>
