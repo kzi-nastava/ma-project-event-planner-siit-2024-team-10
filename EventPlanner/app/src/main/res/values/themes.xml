@@ -9,6 +9,7 @@
         <item name="highlightGreen">@color/brand_highlight_green</item>
         <item name="highlightBlue">@color/brand_highlight_blue</item>
         <item name="highlightRed">@color/brand_highlight_red</item>
+        <item name="fontFamily">@font/font_family</item>
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />
