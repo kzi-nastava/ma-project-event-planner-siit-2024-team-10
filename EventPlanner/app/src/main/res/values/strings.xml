@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">EventPlanner</string>
+    <string name="slogan">Plan Your Events With Us!</string>
+    <string name="event_card_title">Mary And Josh\'s Wedding</string>
+    <string name="event_card_description">Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n\n
+    Location: Rose Garden Banquet Hall, Springfield\n
+    Date and Time: 15.6.2024, 4:00pm</string>
+    <string name="event_card_organizer">Robert L.</string>
+    <string name="event_card_button">See More</string>
+    <string name="top_events_text">Top Events In Your Area</string>
+    <string name="title_activity_main2">MainActivity2</string>
 </resources>
