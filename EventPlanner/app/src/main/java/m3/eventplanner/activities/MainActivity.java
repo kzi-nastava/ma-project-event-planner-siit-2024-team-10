@@ -1,4 +1,4 @@
-package m3.eventplanner;
+package m3.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.net.InetSocketAddress;
+import m3.eventplanner.R;
 
 public class MainActivity extends AppCompatActivity {
 
