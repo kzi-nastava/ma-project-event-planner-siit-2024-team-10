@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
-            Intent intent=new Intent(LoginActivity.this,RegisterPersonalActivity.class);
+            Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
             startActivity(intent);
         });
     }
@@ -70,8 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         registerSpannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                // Handle the click action here, for example, open registration activity
-                Toast.makeText(widget.getContext(), "Register clicked!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this,RegisterPersonalActivity.class);
+                startActivity(intent);
             }
         }, 0, registerText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
