@@ -30,5 +30,11 @@
     <string name="event_card_organizer">Robert L.</string>
     <string name="event_card_button">See More</string>
     <string name="top_events_text">Top Events In Your Area</string>
-    <string name="title_activity_main2">MainActivity2</string>
+    <string name="all_events">All Events In Your Area</string>
+    <string name="event_name_search">Event Name</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="restart_filter">Restart Filter</string>
+
+
 </resources>

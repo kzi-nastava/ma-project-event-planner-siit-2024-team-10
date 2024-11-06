@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/slogan"
         android:textColor="@color/brand_green"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:fontFamily="@font/fira_sans_extra_condensed_bold"
         app:layout_constraintTop_toTopOf="@id/backdrop"
