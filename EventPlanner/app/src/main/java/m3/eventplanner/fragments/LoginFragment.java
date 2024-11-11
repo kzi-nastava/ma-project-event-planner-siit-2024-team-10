@@ -45,8 +45,6 @@ public class LoginFragment extends Fragment {
         Button loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
             //TODO
-            NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.registerPersonalFragment);
 //            Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
 //            startActivity(intent);
         });
@@ -78,11 +76,8 @@ public class LoginFragment extends Fragment {
         registerSpannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-//                Intent intent = new Intent(LoginActivity.this,RegisterPersonalActivity.class);
-//                startActivity(intent);
                 NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
-                navController.navigate(R.id.action_loginFragment_to_registerPersonalFragment);
-
+                navController.navigate(R.id.registerPersonalFragment);
             }
         }, 0, registerText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 

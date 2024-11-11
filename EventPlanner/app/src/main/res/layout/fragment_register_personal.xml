@@ -176,6 +176,7 @@
                 android:enabled="true"
                 android:text="@string/event_organizer"/>
             <RadioButton
+                android:id="@+id/product_service_provider"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:enabled="true"

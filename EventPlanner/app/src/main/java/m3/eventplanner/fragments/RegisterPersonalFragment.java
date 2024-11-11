@@ -5,11 +5,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 
 import m3.eventplanner.R;
 
@@ -41,7 +44,13 @@ public class RegisterPersonalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Button submitButton = view.findViewById(R.id.submit);
         submitButton.setOnClickListener(v -> {
-            //TODO
+            RadioButton provider_role=view.findViewById(R.id.product_service_provider);
+            NavController navController = NavHostFragment.findNavController(RegisterPersonalFragment.this);
+            if(provider_role.isChecked()){
+                navController.navigate(R.id.registerCompanyFragment);
+            }else{
+                //TODO navigate to home
+            }
         });
     }
 }

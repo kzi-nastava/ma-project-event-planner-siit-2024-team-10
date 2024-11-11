@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionBar actionBar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Set<Integer> topLevelDestinations = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +62,20 @@ public class MainActivity extends AppCompatActivity {
         actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(actionBarDrawerToggle);
-        // syncState() se koristi kako bi se uskladile ikone (npr. "hamburger" ikona)
-        // i stanja između ActionBar-a (ili Toolbar-a) i drawer-a. Ova metoda osigurava
-        // da se ikona na ActionBar-u (ili Toolbar-u) pravilno menja u zavisnosti
-        // od stanja drawer-a (otvoreno ili zatvoreno).
         actionBarDrawerToggle.syncState();
 
+        topLevelDestinations.add(R.id.registerPersonalFragment);
+        topLevelDestinations.add(R.id.loginFragment);
+
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+
+        navController.addOnDestinationChangedListener((navController, navDestination, bundle) -> {
+            if (topLevelDestinations.contains(navDestination.getId())) {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            }
+        });
 
         mAppBarConfiguration = new AppBarConfiguration
                 .Builder(R.id.loginFragment, R.id.registerPersonalFragment)
@@ -78,22 +86,22 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.nav_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
-        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.nav_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+//        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+//        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
+//    }
 }
