@@ -1,54 +1,31 @@
 package m3.eventplanner.activities;
-
+import m3.eventplanner.R;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
-
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import m3.eventplanner.databinding.ActivityCreateServiceBinding;
-
-import m3.eventplanner.R;
-
 public class CreateServiceActivity extends AppCompatActivity {
-
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityCreateServiceBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create_service); // Adjust this if your layout file has a different name
 
-        binding = ActivityCreateServiceBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        // Find the AutoCompleteTextView by its ID
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.menu);
 
-        setSupportActionBar(binding.toolbar);
+        // Array of values to display in the dropdown
+        String[] dropdownValues = new String[]{"12", "3"};
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_create_service);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        // Creating an ArrayAdapter with the string values
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                dropdownValues
+        );
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_create_service);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+        // Setting the adapter to the AutoCompleteTextView
+        autoCompleteTextView.setAdapter(adapter);
     }
 }
