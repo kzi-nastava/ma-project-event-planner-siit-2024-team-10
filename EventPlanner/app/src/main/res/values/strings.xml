@@ -35,6 +35,12 @@
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="restart_filter">Restart Filter</string>
-
+    <string name="top_offerings_text">Top Services/Products In Your Area</string>
+    <string name="all_offerings">All Services/Products In Your Area</string>
+    <string name="offering_name_search">Service/Product Name</string>
+    <string name="service_card_title">Wedding Makeup</string>
+    <string name="service_card_description">Bridal makeup services include a personalized consultation and a \n trial session to determine the perfect look tailored to the bride\'s \nstyle and skin type.</string>
+    <string name="product_card_title">Wedding Flowers</string>
+    <string name="product_card_description">Bridal makeup services include a personalized consultation and a \n trial session to determine the perfect look tailored to the bride\'s \nstyle and skin type.</string>
 
 </resources>
