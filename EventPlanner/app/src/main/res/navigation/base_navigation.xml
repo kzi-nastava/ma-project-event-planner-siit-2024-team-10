@@ -3,7 +3,7 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/homeScreenFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -28,4 +28,9 @@
         android:name="m3.eventplanner.fragments.RegisterCompanyFragment"
         android:label="fragment_register_company"
         tools:layout="@layout/fragment_register_company" />
+    <fragment
+        android:id="@+id/homeScreenFragment"
+        android:name="m3.eventplanner.fragments.HomeScreenFragment"
+        android:label="fragment_homescreen"
+        tools:layout="@layout/fragment_homescreen" />
 </navigation>

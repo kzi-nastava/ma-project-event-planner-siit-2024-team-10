@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.topAppBar);
@@ -66,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         topLevelDestinations.add(R.id.registerPersonalFragment);
         topLevelDestinations.add(R.id.loginFragment);
+        topLevelDestinations.add(R.id.homeScreenFragment);
 
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
 
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAppBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.loginFragment, R.id.registerPersonalFragment)
+                .Builder(R.id.loginFragment, R.id.registerPersonalFragment,R.id.homeScreenFragment)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -86,22 +86,22 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.nav_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
-//        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
-//        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
-//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.nav_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+        return NavigationUI.onNavDestinationSelected(item, navController) || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
+    }
 }

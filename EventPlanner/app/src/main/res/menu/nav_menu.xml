@@ -5,9 +5,13 @@
         android:title="@string/app_name">
         <menu>
             <item
+                android:id="@+id/homeScreenFragment"
+                android:title="@string/home"
+                android:checkable="true"/>
+            <item
                 android:id="@+id/registerPersonalFragment"
                 android:title="@string/register"
-                android:checkable="true"/>
+                android:checkable="true" />
             <item
                 android:id="@+id/loginFragment"
                 android:title="@string/login"
