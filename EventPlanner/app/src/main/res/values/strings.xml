@@ -91,4 +91,5 @@
     <string name="service">SERVICE</string>
     <string name="category">CATEGORY</string>
     <string name="your_services">Your Services</string>
+    <string name="add_now">Add now!</string>
 </resources>

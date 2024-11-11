@@ -49,14 +49,15 @@
                 android:layout_marginTop="8dp"
                 android:text="You need a new category?"
                 android:textSize="16sp" />
-            <TextView
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_now"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Add now!"
-                android:textColor="@color/brand_green"
-                android:textSize="16sp" />
+                android:layout_marginEnd="8dp"
+                android:text="@string/add_now"
+                style="?attr/borderlessButtonStyle"
+                />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/description"

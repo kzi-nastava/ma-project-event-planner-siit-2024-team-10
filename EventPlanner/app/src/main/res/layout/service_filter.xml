@@ -7,14 +7,14 @@
     android:background="@color/brand_green_light">
 
     <TextView
-        android:id="@+id/all_events"
+        android:id="@+id/services"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="8dp"
         android:text="@string/your_services"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="26sp"
         android:textColor="@color/charcoal_blue"/>
 
     <LinearLayout

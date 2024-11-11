@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ManageServicesActivity">
+    tools:context=".activities.HomeActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/services"
+            layout="@layout/service_filter"/>
+
+        <!-- This ListView should be scrollable independently -->
+        <include
+            android:id="@+id/eventList"
+            layout="@layout/fragment_service_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Include Event Search layout -->
+        <include
+            android:id="@+id/eventSearch"
+            layout="@layout/all_events_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Include All Event List layout -->
+        <include
+            android:id="@+id/allEventList"
+            layout="@layout/fragment_all_event_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
