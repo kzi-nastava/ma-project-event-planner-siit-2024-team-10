@@ -6,6 +6,8 @@ import android.widget.AutoCompleteTextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +18,7 @@ import android.content.DialogInterface;
 import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class CreateServiceActivity extends AppCompatActivity {
     private Button addNowButton;
@@ -66,7 +69,62 @@ public class CreateServiceActivity extends AppCompatActivity {
         });
 
         // dialog - set time
+        setTimeButton = findViewById(R.id.set_time);
+        setTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSetTimeInputDialog();
+            }
+        });
+
     }
+
+    private void showSetTimeInputDialog() {
+        android.view.LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.set_time_dialog, null);
+
+        RadioGroup radioGroup = dialogView.findViewById(R.id.radio_group);
+        Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        Button btnOk = dialogView.findViewById(R.id.btn_ok);
+
+        String[] values = {"1", "2", "3", "4"};
+
+        for (String value : values) {
+            RadioButton radioButton = new RadioButton(this);
+            radioButton.setText(value);
+            radioButton.setId(View.generateViewId());  // Ensure each RadioButton has a unique ID
+            radioGroup.addView(radioButton);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                RadioButton selectedRadioButton = dialogView.findViewById(selectedId);
+
+                if (selectedRadioButton != null) {
+                    String selectedValue = selectedRadioButton.getText().toString();
+                    Toast.makeText(CreateServiceActivity.this, "Selected: " + selectedValue, Toast.LENGTH_SHORT).show();
+                }
+
+                dialog.dismiss();
+            }
+        });
+    }
+
     private void showTextInputDialog() {
         android.view.LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.text_dialog, null);
