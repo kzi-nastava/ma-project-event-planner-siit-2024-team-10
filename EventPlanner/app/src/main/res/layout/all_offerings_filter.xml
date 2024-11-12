@@ -18,6 +18,7 @@
 
     <androidx.appcompat.widget.SearchView
         app:queryHint="Search"
+        android:hint="@string/search_offering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
