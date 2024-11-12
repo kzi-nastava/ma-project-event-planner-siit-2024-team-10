@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button loginButton = findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
-            Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
+            Intent intent=new Intent(LoginActivity.this,CreateServiceActivity.class);
             startActivity(intent);
         });
     }
