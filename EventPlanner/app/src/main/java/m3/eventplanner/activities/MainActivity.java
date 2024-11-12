@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.topAppBar);
 
+
         setSupportActionBar(toolbar);
 
         actionBar = getSupportActionBar();
@@ -57,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
             actionBar.setHomeButtonEnabled(false);
         }
-
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
 
         topLevelDestinations.add(R.id.registerPersonalFragment);
         topLevelDestinations.add(R.id.loginFragment);
@@ -72,8 +68,10 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((navController, navDestination, bundle) -> {
             if (topLevelDestinations.contains(navDestination.getId())) {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                actionBar.setDisplayHomeAsUpEnabled(false);  // Show hamburger icon for top-level
             } else {
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                actionBar.setDisplayHomeAsUpEnabled(true);  // Show up arrow for other destinations
             }
         });
 
