@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAppBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.loginFragment, R.id.registerPersonalFragment,R.id.homeScreenFragment)
+                .Builder(R.id.loginFragment,R.id.homeScreenFragment)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -84,11 +84,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.nav_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
