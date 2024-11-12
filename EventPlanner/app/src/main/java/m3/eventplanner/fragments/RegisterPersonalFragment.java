@@ -16,11 +16,6 @@ import android.widget.RadioButton;
 
 import m3.eventplanner.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RegisterPersonalFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class RegisterPersonalFragment extends Fragment {
 
     public RegisterPersonalFragment() {
@@ -49,7 +44,7 @@ public class RegisterPersonalFragment extends Fragment {
             if(provider_role.isChecked()){
                 navController.navigate(R.id.registerCompanyFragment);
             }else{
-                //TODO navigate to home
+                navController.navigate(R.id.homeScreenFragment);
             }
         });
     }

@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((navController, navDestination, bundle) -> {
             if (topLevelDestinations.contains(navDestination.getId())) {
+                navigationView.setCheckedItem(navDestination.getId());
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 actionBar.setDisplayHomeAsUpEnabled(false);  // Show hamburger icon for top-level
             } else {

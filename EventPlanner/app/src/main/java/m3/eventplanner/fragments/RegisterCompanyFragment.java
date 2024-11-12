@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +34,8 @@ public class RegisterCompanyFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Button submitButton = view.findViewById(R.id.submit);
         submitButton.setOnClickListener(v -> {
-            //TODO
+            NavController navController = NavHostFragment.findNavController(RegisterCompanyFragment.this);;
+            navController.navigate(R.id.homeScreenFragment);
         });
     }
 }

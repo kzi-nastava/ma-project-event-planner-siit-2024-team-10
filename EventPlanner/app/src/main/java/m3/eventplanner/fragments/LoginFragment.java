@@ -44,9 +44,8 @@ public class LoginFragment extends Fragment {
 
         Button loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
-            //TODO
-//            Intent intent=new Intent(LoginActivity.this,HomeActivity.class);
-//            startActivity(intent);
+            NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
+            navController.navigate(R.id.homeScreenFragment);
         });
     }
 
