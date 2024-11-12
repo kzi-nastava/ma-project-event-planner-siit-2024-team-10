@@ -9,10 +9,6 @@
                 android:title="@string/home"
                 android:checkable="true"/>
             <item
-                android:id="@+id/registerPersonalFragment"
-                android:title="@string/register"
-                android:checkable="true" />
-            <item
                 android:id="@+id/loginFragment"
                 android:title="@string/login"
                 android:checkable="true"/>

@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(false);
         }
 
-        topLevelDestinations.add(R.id.registerPersonalFragment);
         topLevelDestinations.add(R.id.loginFragment);
         topLevelDestinations.add(R.id.homeScreenFragment);
 

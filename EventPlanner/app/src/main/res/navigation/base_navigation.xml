@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="m3.eventplanner.fragments.LoginFragment"
-        android:label="LoginFragment" >
+        android:label="@string/login" >
         <action
             android:id="@+id/action_loginFragment_to_registerPersonalFragment"
             app:destination="@id/registerPersonalFragment"
@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/registerPersonalFragment"
         android:name="m3.eventplanner.fragments.RegisterPersonalFragment"
-        android:label="RegisterPersonalFragment" >
+        android:label="@string/register" >
         <action
             android:id="@+id/action_registerPersonalFragment_to_registerCompanyFragment"
             app:destination="@id/registerCompanyFragment"
@@ -26,11 +26,11 @@
     <fragment
         android:id="@+id/registerCompanyFragment"
         android:name="m3.eventplanner.fragments.RegisterCompanyFragment"
-        android:label="fragment_register_company"
+        android:label="@string/register"
         tools:layout="@layout/fragment_register_company" />
     <fragment
         android:id="@+id/homeScreenFragment"
         android:name="m3.eventplanner.fragments.HomeScreenFragment"
-        android:label="fragment_homescreen"
+        android:label="@string/home"
         tools:layout="@layout/fragment_homescreen" />
 </navigation>
