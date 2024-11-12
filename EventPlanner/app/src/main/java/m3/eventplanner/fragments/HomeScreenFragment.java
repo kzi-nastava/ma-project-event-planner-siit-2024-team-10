@@ -31,9 +31,11 @@ public class HomeScreenFragment extends Fragment {
             @Override
             public Fragment createFragment(int position) {
                 if (position == 0) {
-                    return new HomeScreenEvents();
+                    return null;
+                    //return new HomeScreenEvents();
                 } else {
-                    return new HomeScreenOfferings();
+                    return null;
+                    //return new HomeScreenOfferings();
                 }
             }
 
