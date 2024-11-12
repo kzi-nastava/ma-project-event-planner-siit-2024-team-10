@@ -92,4 +92,14 @@
     <string name="category">CATEGORY</string>
     <string name="your_services">Your Services</string>
     <string name="add_now">Add now!</string>
+    <string name="enter_category">Enter your new category</string>
+    <string name="enter_length">Choose length of your service</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_max">Enter MAX value</string>
+    <string name="enter_min">Enter MIN value</string>
+    <string name="available">Available</string>
+
+
+
 </resources>
