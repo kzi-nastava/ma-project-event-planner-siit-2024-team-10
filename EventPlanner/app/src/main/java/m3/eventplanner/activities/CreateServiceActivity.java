@@ -81,7 +81,7 @@ public class CreateServiceActivity extends AppCompatActivity {
 
     private void showSetTimeInputDialog() {
         android.view.LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.set_time_dialog, null);
+        View dialogView = inflater.inflate(R.layout.fragment_set_time, null);
 
         RadioGroup radioGroup = dialogView.findViewById(R.id.radio_group);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
