@@ -59,23 +59,26 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1" />
 
-                            <com.google.android.material.button.MaterialButton
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:id="@+id/button1"
+                            <TextView
+                                android:id="@+id/label1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="48dp"
+                                android:layout_height="wrap_content"
                                 android:layout_marginEnd="5dp"
-                                android:layout_marginTop="-5dp"
-                                android:text="SERVICE" />
+                                android:layout_marginTop="2dp"
+                                android:text="@string/category"
+                                android:background="@drawable/rounded_border"
+                                android:gravity="center"/>
 
-
-                            <com.google.android.material.button.MaterialButton
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:id="@+id/button3"
+                            <TextView
+                                android:id="@+id/label2"
                                 android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:layout_marginTop="-5dp"
-                                android:text="CATEGORY" />
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/service"
+                                android:background="@drawable/rounded_border"
+                                android:gravity="center"/>
+
                         </LinearLayout>
                     </LinearLayout>
 
