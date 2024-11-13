@@ -33,4 +33,9 @@
         android:name="m3.eventplanner.fragments.HomeScreenFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_homescreen" />
+    <fragment
+        android:id="@+id/manageOfferingsFragment"
+        android:name="m3.eventplanner.fragments.ManageOfferingsFragment"
+        android:label="@string/your_products_and_services"
+        tools:layout="@layout/fragment_manage_offerings" />
 </navigation>
