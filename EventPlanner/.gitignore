@@ -2,6 +2,7 @@
 .gradle
 /local.properties
 .idea/
+EventPlanner/.idea/misc.xml
 .idea/ma-project-event-planner-siit-2024-team-10.iml
 /.idea/caches
 /.idea/libraries
