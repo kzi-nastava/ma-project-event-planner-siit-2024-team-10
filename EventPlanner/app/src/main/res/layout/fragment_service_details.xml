@@ -1,14 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ServiceDetailsFragment">
+    android:background="@color/creme">
 
-    <!-- TODO: Update blank fragment layout -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit"
+        android:contentDescription="@string/submit"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Background Image -->
+    <ImageView
+        android:id="@+id/backdrop"
+        android:layout_width="414dp"
+        android:layout_height="414dp"
+        app:srcCompat="@drawable/band"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Title -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Wedding Band Services"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/backdrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</FrameLayout>
+    <!-- Description -->
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Professional musicians offer a tailored live music experience, creating a memorable atmosphere for the bride, groom, and their guests on the special day."
+        android:textSize="16sp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Service Category -->
+    <TextView
+        android:id="@+id/servicecategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Service Category: Entertainment"
+        android:textStyle="bold"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Specifications -->
+    <TextView
+        android:id="@+id/specification"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Specifications:\nWedding band services include an initial consultation and a custom playlist selection session to match the couple’s music preferences, ensuring every moment is unforgettable. On the wedding day, skilled musicians perform live music, ranging from romantic ballads to energetic dance hits, using high-quality sound equipment. The service extends to special song requests and coordination with event planners for seamless integration. An optional DJ service can be provided during breaks to keep the party going."
+        android:padding="8dp"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/servicecategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Price -->
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Price: 2,000€"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/specification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Discount -->
+    <TextView
+        android:id="@+id/discount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Discount: 15%"
+        android:textStyle="bold"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Reservation Deadline -->
+    <TextView
+        android:id="@+id/reservation_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Reservation Deadline: 6 months"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/discount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Cancellation Deadline -->
+    <TextView
+        android:id="@+id/cancellation_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancellation Deadline: 4 months"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/reservation_deadline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Duration -->
+    <TextView
+        android:id="@+id/duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Duration: 5 hours"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/cancellation_deadline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <Button
+        android:id="@+id/book_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Book now!"
+        app:layout_constraintTop_toBottomOf="@id/duration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/provider" />
+
+    <Button
+        android:id="@+id/provider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Provider"
+        app:layout_constraintTop_toBottomOf="@id/book_now"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/favourite" />
+
+    <Button
+        android:id="@+id/favourite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Add to favourite"
+        app:layout_constraintTop_toBottomOf="@id/provider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+         />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
