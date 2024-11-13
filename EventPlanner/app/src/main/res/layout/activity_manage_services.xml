@@ -16,24 +16,11 @@
 
         <!-- This ListView should be scrollable independently -->
         <include
-            android:id="@+id/eventList"
+            android:id="@+id/serviceList"
             layout="@layout/fragment_service_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Include Event Search layout -->
-        <include
-            android:id="@+id/eventSearch"
-            layout="@layout/all_events_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Include All Event List layout -->
-        <include
-            android:id="@+id/allEventList"
-            layout="@layout/fragment_all_event_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </ScrollView>
