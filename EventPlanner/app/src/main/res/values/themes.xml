@@ -9,7 +9,13 @@
         <item name="highlightGreen">@color/brand_highlight_green</item>
         <item name="highlightBlue">@color/brand_highlight_blue</item>
         <item name="highlightRed">@color/brand_highlight_red</item>
+        <item name="colorSurface">@color/creme</item>
+        <item name="colorOnSurface">@color/charcoal_blue</item>
+        <item name="colorControlHighlight">@color/brand_green</item>
+        <item name="backgroundColor">@color/creme</item>
         <item name="fontFamily">@font/font_family</item>
+        <item name="colorSecondaryContainer">@color/brand_green_light</item>
+
     </style>
 
     <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />
