@@ -37,5 +37,15 @@
         android:id="@+id/manageOfferingsFragment"
         android:name="m3.eventplanner.fragments.ManageOfferingsFragment"
         android:label="@string/your_products_and_services"
-        tools:layout="@layout/fragment_manage_offerings" />
+        tools:layout="@layout/fragment_manage_offerings">
+        <action
+            android:id="@+id/action_manageOfferingsFragment_to_serviceDetailsFragment"
+            app:destination="@id/serviceDetailsFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/serviceDetailsFragment"
+        android:name="m3.eventplanner.fragments.ServiceDetailsFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_service_details" />
 </navigation>
