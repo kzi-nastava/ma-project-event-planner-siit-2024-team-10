@@ -35,6 +35,12 @@
     <string name="search">Search</string>
     <string name="filter">Filter</string>
     <string name="restart_filter">Restart Filter</string>
+    <string name="home">Home</string>
+    <string name="navigation_drawer_open">Navigation drawer open</string>
+    <string name="navigation_drawer_close">Navigation drawer close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="your_offerings">Your offerings</string>
 
 
 </resources>
