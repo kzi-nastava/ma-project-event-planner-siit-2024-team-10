@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         topLevelDestinations.add(R.id.loginFragment);
         topLevelDestinations.add(R.id.homeScreenFragment);
+        topLevelDestinations.add(R.id.manageOfferingsFragment);
 
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAppBarConfiguration = new AppBarConfiguration
-                .Builder(R.id.loginFragment,R.id.homeScreenFragment)
+                .Builder(R.id.loginFragment,R.id.homeScreenFragment,R.id.manageOfferingsFragment)
                 .setOpenableLayout(drawer)
                 .build();
 
