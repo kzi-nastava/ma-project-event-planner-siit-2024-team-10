@@ -37,7 +37,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     @NonNull
     @Override
     public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate your event card layout
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.event_card, parent, false);
         return new EventViewHolder(view);
@@ -47,14 +46,11 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventItemList.get(position);
 
-        // Bind data to your views
         holder.titleTextView.setText(event.getTitle());
         holder.organizerTextView.setText("Organizer: " + event.getOrganizer());
         holder.descriptionTextView.setText(event.getDescription());
 
-        // Optionally, set a click listener on the event card
         holder.eventCard.setOnClickListener(v -> {
-            // Handle card click event
         });
     }
 

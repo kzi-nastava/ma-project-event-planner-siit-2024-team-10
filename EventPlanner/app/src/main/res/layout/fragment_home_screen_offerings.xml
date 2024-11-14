@@ -19,11 +19,11 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <include
-        android:id="@+id/topOfferings"
-        layout="@layout/placeholder_offerings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerTopOfferings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"/>
 
     <include
         android:id="@+id/offeringSearch"
@@ -37,14 +37,11 @@
         android:orientation="vertical"
         android:background="@drawable/backdrop">
 
-        <include
-            layout="@layout/placeholder_offerings"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerAllOfferings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <include
-            layout="@layout/placeholder_offerings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:padding="8dp"/>
 
     </LinearLayout>
 </LinearLayout>
