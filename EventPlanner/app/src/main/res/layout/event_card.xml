@@ -38,13 +38,14 @@
 
                     <!-- Title, secondary, and supporting text -->
                     <TextView
+                        android:id="@+id/event_card_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
                         android:text="@string/event_card_title"
                         android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                     <TextView
+                        android:id="@+id/event_card_organizer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -54,6 +55,7 @@
 
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/event_card_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
