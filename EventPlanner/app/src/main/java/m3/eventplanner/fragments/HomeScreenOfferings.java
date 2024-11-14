@@ -78,4 +78,12 @@ public class HomeScreenOfferings extends Fragment {
         allOfferingList.add(new Service(9L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 4", 2500));
         allOfferingList.add(new Service(10L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
     }
+
+    public int getContentHeight() {
+        if (getView() != null) {
+            getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            return getView().getMeasuredHeight();
+        }
+        return 0;
+    }
 }

@@ -22,7 +22,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerTopOfferings"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp"/>
 
     <include
@@ -40,10 +40,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerAllOfferings"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp"/>
 
+        <include
+            layout="@layout/pagination_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
+
 </LinearLayout>
 
 </ScrollView>

@@ -54,5 +54,6 @@
     <string name="your_offerings">Your Services/Products</string>
     <string name="product_card_price">90€</string>
     <string name="service_card_price">2500€</string>
+    <string name="pagination">Page 1 of 10</string>
 
 </resources>
