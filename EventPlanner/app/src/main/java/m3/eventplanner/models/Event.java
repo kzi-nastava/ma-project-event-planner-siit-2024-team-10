@@ -8,13 +8,13 @@ import androidx.annotation.NonNull;
 public class Event implements Parcelable {
     private Long id;
     private String title;
-    private String description;
+    private double rating;
     private String organizer;
 
-    public Event(Long id, String title, String description, String organizer) {
+    public Event(Long id, String title, double rating, String organizer) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.rating = rating;
         this.organizer = organizer;
     }
 
@@ -23,7 +23,7 @@ public class Event implements Parcelable {
     protected Event(Parcel in) {
         id = in.readLong();
         title = in.readString();
-        description = in.readString();
+        rating = in.readDouble();
         organizer = in.readString();
     }
 
@@ -43,12 +43,12 @@ public class Event implements Parcelable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public double getRating() {
+        return rating;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public String getOrganizer() {
@@ -63,7 +63,7 @@ public class Event implements Parcelable {
     public String toString() {
         return "Event{" +
                 "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                ", rating='" + rating + '\'' +
                 ", organizer='" + organizer + '\'' +
                 '}';
     }
@@ -75,7 +75,7 @@ public class Event implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(title);
-        dest.writeString(description);
+        dest.writeDouble(rating);
         dest.writeString(organizer);
     }
     public static final Creator<Event> CREATOR = new Creator<Event>() {

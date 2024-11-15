@@ -3,40 +3,24 @@ package m3.eventplanner.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import m3.eventplanner.R;
 import m3.eventplanner.models.Offering;
 import m3.eventplanner.models.Product;
 import m3.eventplanner.models.Service;
 
-import java.util.List;
-
-public class OfferingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapter.OfferingViewHolder> {
 
     private List<Offering> offeringList;
 
-    private static final int TYPE_PRODUCT = 1;
-    private static final int TYPE_SERVICE = 2;
-
     public OfferingListAdapter(List<Offering> offeringList) {
         this.offeringList = offeringList;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        Offering offering = offeringList.get(position);
-        if (offering instanceof Product) {
-            return TYPE_PRODUCT;
-        } else if (offering instanceof Service) {
-            return TYPE_SERVICE;
-        } else {
-            return super.getItemViewType(position);
-        }
     }
 
     @Override
@@ -45,65 +29,47 @@ public class OfferingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-        if (viewType == TYPE_PRODUCT) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_card, parent, false);
-            return new ProductViewHolder(view);
-        } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.service_card, parent, false);
-            return new ServiceViewHolder(view);
-        }
+    public OfferingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offering_card, parent, false);
+        return new OfferingViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(OfferingViewHolder holder, int position) {
         Offering offering = offeringList.get(position);
-
-        if (holder instanceof ProductViewHolder) {
-            Product product = (Product) offering;
-            ((ProductViewHolder) holder).bind(product);
-        } else if (holder instanceof ServiceViewHolder) {
-            Service service = (Service) offering;
-            ((ServiceViewHolder) holder).bind(service);
-        }
+        holder.bind(offering);
     }
 
-    public static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, price, provider;
+    public static class OfferingViewHolder extends RecyclerView.ViewHolder {
 
-        public ProductViewHolder(View itemView) {
+        TextView title, rating, price, provider, type, category;
+        ImageView picture;
+
+        public OfferingViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.product_card_title);
-            description = itemView.findViewById(R.id.product_card_description);
-            price = itemView.findViewById(R.id.product_card_price);
-            provider = itemView.findViewById(R.id.product_card_provider);
+            title = itemView.findViewById(R.id.offering_card_title);
+            rating = itemView.findViewById(R.id.offering_card_rating);
+            price = itemView.findViewById(R.id.offering_card_price);
+            provider = itemView.findViewById(R.id.offering_card_provider);
+            type = itemView.findViewById(R.id.offering_card_type);
+            category = itemView.findViewById(R.id.offering_card_category);
+            picture = itemView.findViewById(R.id.offering_card_image);
         }
 
-        public void bind(Product product) {
-            title.setText(product.getTitle());
-            description.setText(product.getDescription());
-            price.setText(product.getPrice()+"€");
-            provider.setText(product.getOrganizer());
-        }
-    }
+        public void bind(Offering offering) {
+            title.setText(offering.getTitle());
+            rating.setText(offering.getRating()+"★");
+            price.setText(offering.getPrice() + "€");
+            provider.setText(offering.getOrganizer());
 
-    public static class ServiceViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description, price, provider;
+            if (offering instanceof Product) {
+                type.setText("PRODUCT");
+                picture.setImageResource(R.drawable.flowers);
+            } else if (offering instanceof Service) {
+                type.setText("SERVICE");
+                picture.setImageResource(R.drawable.makeup);
+            }
 
-        public ServiceViewHolder(View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.service_card_title);
-            description = itemView.findViewById(R.id.service_card_description);
-            price = itemView.findViewById(R.id.service_card_price);
-            provider = itemView.findViewById(R.id.service_card_provider);
-        }
-
-        public void bind(Service service) {
-            title.setText(service.getTitle());
-            description.setText(service.getDescription());
-            price.setText(service.getPrice()+"€");
-            provider.setText(service.getOrganizer());
         }
     }
 }

@@ -58,32 +58,24 @@ public class HomeScreenOfferings extends Fragment {
 
     private void prepareTopOfferingList(ArrayList<Offering> topOfferingList){
         topOfferingList.clear();
-        topOfferingList.add(new Product(1L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 1", 90));
-        topOfferingList.add(new Service(2L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
-        topOfferingList.add(new Product(3L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 3", 90));
-        topOfferingList.add(new Service(4L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 4", 2500));
-        topOfferingList.add(new Service(5L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
+        topOfferingList.add(new Product(1L, "Wedding Flowers", 2.5, "Provider 1", 90));
+        topOfferingList.add(new Service(2L, "Wedding Makeup", 4, "Provider 2", 2500));
+        topOfferingList.add(new Product(3L, "Wedding Flowers", 5, "Provider 3", 90));
+        topOfferingList.add(new Service(4L, "Wedding Makeup", 3.5, "Provider 4", 2500));
+        topOfferingList.add(new Service(5L, "Wedding Makeup", 1.2, "Provider 2", 2500));
     }
 
     private void prepareAllOfferingList(ArrayList<Offering> allOfferingList){
         allOfferingList.clear();
-        allOfferingList.add(new Product(1L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 1", 90));
-        allOfferingList.add(new Service(2L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
-        allOfferingList.add(new Product(3L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 3", 90));
-        allOfferingList.add(new Service(4L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 4", 2500));
-        allOfferingList.add(new Service(5L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
-        allOfferingList.add(new Product(6L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 1", 90));
-        allOfferingList.add(new Service(7L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
-        allOfferingList.add(new Product(8L, "Wedding Flowers", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 3", 90));
-        allOfferingList.add(new Service(9L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 4", 2500));
-        allOfferingList.add(new Service(10L, "Wedding Makeup", "Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type.", "Provider 2", 2500));
-    }
-
-    public int getContentHeight() {
-        if (getView() != null) {
-            getView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-            return getView().getMeasuredHeight();
-        }
-        return 0;
+        allOfferingList.add(new Product(1L, "Wedding Flowers", 2.5, "Provider 1", 90));
+        allOfferingList.add(new Service(2L, "Wedding Makeup", 4, "Provider 2", 2500));
+        allOfferingList.add(new Product(3L, "Wedding Flowers", 5, "Provider 3", 90));
+        allOfferingList.add(new Service(4L, "Wedding Makeup", 3.5, "Provider 4", 2500));
+        allOfferingList.add(new Service(5L, "Wedding Makeup", 1.2, "Provider 2", 2500));
+        allOfferingList.add(new Product(6L, "Wedding Flowers", 2.5, "Provider 1", 90));
+        allOfferingList.add(new Service(7L, "Wedding Makeup", 4, "Provider 2", 2500));
+        allOfferingList.add(new Product(8L, "Wedding Flowers", 5, "Provider 3", 90));
+        allOfferingList.add(new Service(9L, "Wedding Makeup", 3.5, "Provider 4", 2500));
+        allOfferingList.add(new Service(10L, "Wedding Makeup", 1.2, "Provider 2", 2500));
     }
 }
