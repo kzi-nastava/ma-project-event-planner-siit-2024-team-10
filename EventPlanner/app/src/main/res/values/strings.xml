@@ -51,6 +51,9 @@
     <string name="navigation_drawer_close">Navigation drawer close</string>
     <string name="search_event">Search Event By Name</string>
     <string name="search_offering">Search Service/Product By Name</string>
-
+    <string name="your_offerings">Your Services/Products</string>
+    <string name="product_card_price">90€</string>
+    <string name="service_card_price">2500€</string>
+    <string name="pagination">Page 1 of 10</string>
 
 </resources>
