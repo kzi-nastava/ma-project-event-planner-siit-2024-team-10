@@ -62,6 +62,8 @@
     <string name="event_type_capital">WEDDING</string>
     <string name="offering_category_capital">DECORATION</string>
     <string name="bad_rating">2.5 ★</string>
+    <string name="chat">chat</string>
+    <string name="your_chatrooms">Your Chatrooms</string>
 
 
 </resources>
