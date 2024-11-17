@@ -1,6 +1,9 @@
 package m3.eventplanner.fragments;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -31,23 +34,32 @@ public class ManageOfferingsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_manage_offerings, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_manage_offerings, container, false);
+    }
 
-        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
+                navController.navigate(R.id.createOfferingFragment);
             }
         });
 
-        Button button = rootView.findViewById(R.id.offering_see_more);
+        // Example button for 'See More' - you can replace this logic with another appropriate one
+        Button button = view.findViewById(R.id.offering_see_more);
         button.setOnClickListener(v -> {
-            NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);;
+            NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
             navController.navigate(R.id.serviceDetailsFragment);
         });
-        return rootView;
+
     }
+
 }

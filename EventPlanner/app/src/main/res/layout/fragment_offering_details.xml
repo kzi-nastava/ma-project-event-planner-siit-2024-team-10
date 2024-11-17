@@ -37,7 +37,7 @@
         android:id="@+id/service_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/expert_makeup_and_hair_artists_provide_personalized_beauty_services_to_ensure_the_bride_and_bridal_party_look_stunning_on_the_big_day"
+        android:text="@string/expert_makeup"
         android:textSize="16sp"
         android:lineSpacingExtra="4dp"
         android:textColor="@android:color/darker_gray"

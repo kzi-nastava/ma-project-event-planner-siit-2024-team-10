@@ -12,14 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
-        <activity
-            android:name=".fragments.ManageServicesFragment"
-            android:exported="false"
-            android:theme="@style/Theme.EventPlanner" />
-        <activity
-            android:name=".activities.CreateServiceActivity"
-            android:exported="false"
-            android:theme="@style/Theme.EventPlanner" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -34,15 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.RegisterCompanyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.RegisterPersonalActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

@@ -1,13 +1,11 @@
 package m3.eventplanner.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -19,18 +17,10 @@ import m3.eventplanner.models.Service;
 
 public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapter.OfferingViewHolder> {
 
-    private static final String TAG = "OfferingListAdapter";
     private List<Offering> offeringList;
-    private OnOfferingClickListener listener;
 
-    public interface OnOfferingClickListener {
-        void onOfferingClick(Offering offering);
-    }
-
-    public OfferingListAdapter(List<Offering> offeringList, OnOfferingClickListener listener) {
+    public OfferingListAdapter(List<Offering> offeringList) {
         this.offeringList = offeringList;
-        this.listener = listener;
-        Log.d(TAG, "Adapter created with listener: " + (listener != null));
     }
 
     @Override
@@ -38,17 +28,16 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
         return offeringList.size();
     }
 
-    @NonNull
     @Override
-    public OfferingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public OfferingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offering_card, parent, false);
         return new OfferingViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OfferingViewHolder holder, int position) {
+    public void onBindViewHolder(OfferingViewHolder holder, int position) {
         Offering offering = offeringList.get(position);
-        holder.bind(offering, listener);
+        holder.bind(offering);
     }
 
     public static class OfferingViewHolder extends RecyclerView.ViewHolder {
@@ -67,9 +56,9 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             picture = itemView.findViewById(R.id.offering_card_image);
         }
 
-        public void bind(final Offering offering, final OnOfferingClickListener listener) {
+        public void bind(Offering offering) {
             title.setText(offering.getTitle());
-            rating.setText(offering.getRating() + "★");
+            rating.setText(offering.getRating()+"★");
             price.setText(offering.getPrice() + "€");
             provider.setText(offering.getOrganizer());
 
@@ -81,18 +70,6 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
                 picture.setImageResource(R.drawable.makeup);
             }
 
-            // Set click listener for the entire item
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        Log.d(TAG, "Item clicked: " + offering.getTitle());
-                        listener.onOfferingClick(offering);
-                    } else {
-                        Log.e(TAG, "Listener is null!");
-                    }
-                }
-            });
         }
     }
 }
