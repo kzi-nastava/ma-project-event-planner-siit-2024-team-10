@@ -1,9 +1,7 @@
 package m3.eventplanner.fragments;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -11,7 +9,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -113,7 +110,7 @@ public class CreateServiceFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.text_dialog, null);
 
-        EditText editTextInput = dialogView.findViewById(R.id.edit_text_input);
+        // EditText editTextInput = dialogView.findViewById(R.id.edit_text_input);
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         Button btnOk = dialogView.findViewById(R.id.btn_ok);
 
@@ -126,7 +123,7 @@ public class CreateServiceFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnOk.setOnClickListener(v -> {
-            String inputText = editTextInput.getText().toString();
+            // String inputText = editTextInput.getText().toString();
             dialog.dismiss();
         });
     }
@@ -135,8 +132,8 @@ public class CreateServiceFragment extends Fragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.min_max_dialog, null);
 
-        EditText min = dialogView.findViewById(R.id.edit_text_min);
-        EditText max = dialogView.findViewById(R.id.edit_text_max);
+        // EditText min = dialogView.findViewById(R.id.edit_text_min);
+        // EditText max = dialogView.findViewById(R.id.edit_text_max);
 
         Button btnCancel = dialogView.findViewById(R.id.btn_cancel);
         Button btnOk = dialogView.findViewById(R.id.btn_ok);
