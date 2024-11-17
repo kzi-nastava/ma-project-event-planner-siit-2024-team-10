@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/serviceDetailsFragment"
-        android:name="m3.eventplanner.fragments.ServiceDetailsFragment"
+        android:name="m3.eventplanner.fragments.OfferingDetailsFragment"
         android:label="@string/details"
-        tools:layout="@layout/fragment_service_details" />
+        tools:layout="@layout/fragment_offering_details" />
 </navigation>
