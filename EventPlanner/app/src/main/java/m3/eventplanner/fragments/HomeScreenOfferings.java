@@ -1,15 +1,12 @@
 package m3.eventplanner.fragments;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
 import m3.eventplanner.R;
@@ -19,7 +16,7 @@ import m3.eventplanner.models.Offering;
 import m3.eventplanner.models.Product;
 import m3.eventplanner.models.Service;
 
-public class HomeScreenOfferings extends Fragment {
+public class HomeScreenOfferings extends Fragment implements OfferingListAdapter.OnOfferingClickListener {
 
     private RecyclerView topOfferingRecyclerView;
     private OfferingListAdapter topOfferingListAdapter;
@@ -33,30 +30,26 @@ public class HomeScreenOfferings extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home_screen_offerings, container, false);
 
+        // Setup top offerings recycler view
         topOfferingRecyclerView = rootView.findViewById(R.id.recyclerTopOfferings);
-
         topOfferingList = new ArrayList<>();
-
         prepareTopOfferingList(topOfferingList);
-
-        topOfferingListAdapter = new OfferingListAdapter(topOfferingList);
+        topOfferingListAdapter = new OfferingListAdapter(topOfferingList, this);
         topOfferingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         topOfferingRecyclerView.setAdapter(topOfferingListAdapter);
 
+        // Setup all offerings recycler view
         allOfferingRecyclerView = rootView.findViewById(R.id.recyclerAllOfferings);
-
         allOfferingList = new ArrayList<>();
-
         prepareAllOfferingList(allOfferingList);
-
-        allOfferingListAdapter = new OfferingListAdapter(allOfferingList);
+        allOfferingListAdapter = new OfferingListAdapter(allOfferingList, this);
         allOfferingRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         allOfferingRecyclerView.setAdapter(allOfferingListAdapter);
 
         return rootView;
     }
 
-    private void prepareTopOfferingList(ArrayList<Offering> topOfferingList){
+    private void prepareTopOfferingList(ArrayList<Offering> topOfferingList) {
         topOfferingList.clear();
         topOfferingList.add(new Product(1L, "Wedding Flowers", 2.5, "Provider 1", 90));
         topOfferingList.add(new Service(2L, "Wedding Makeup", 4, "Provider 2", 2500));
@@ -65,7 +58,7 @@ public class HomeScreenOfferings extends Fragment {
         topOfferingList.add(new Service(5L, "Wedding Makeup", 1.2, "Provider 2", 2500));
     }
 
-    private void prepareAllOfferingList(ArrayList<Offering> allOfferingList){
+    public static void prepareAllOfferingList(ArrayList<Offering> allOfferingList) {
         allOfferingList.clear();
         allOfferingList.add(new Product(1L, "Wedding Flowers", 2.5, "Provider 1", 90));
         allOfferingList.add(new Service(2L, "Wedding Makeup", 4, "Provider 2", 2500));
@@ -77,5 +70,23 @@ public class HomeScreenOfferings extends Fragment {
         allOfferingList.add(new Product(8L, "Wedding Flowers", 5, "Provider 3", 90));
         allOfferingList.add(new Service(9L, "Wedding Makeup", 3.5, "Provider 4", 2500));
         allOfferingList.add(new Service(10L, "Wedding Makeup", 1.2, "Provider 2", 2500));
+    }
+
+    @Override
+    public void onOfferingClick(Offering offering) {
+        // Create new instance of details fragment
+        OfferingDetailsFragment detailsFragment = new OfferingDetailsFragment();
+
+        // Pass the offering data to details fragment
+        Bundle args = new Bundle();
+        args.putParcelable("offering", offering);
+        detailsFragment.setArguments(args);
+
+        // Replace current fragment with details fragment
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.offering_container, detailsFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
