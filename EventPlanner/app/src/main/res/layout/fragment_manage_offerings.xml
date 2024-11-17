@@ -55,6 +55,11 @@
         </LinearLayout>
     </ScrollView>
 
+    <include
+        layout="@layout/pagination_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
