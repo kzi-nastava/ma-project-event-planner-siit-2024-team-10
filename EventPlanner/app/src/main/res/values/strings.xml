@@ -51,6 +51,19 @@
     <string name="navigation_drawer_close">Navigation drawer close</string>
     <string name="search_event">Search Event By Name</string>
     <string name="search_offering">Search Service/Product By Name</string>
+    <string name="your_offerings">Your Services/Products</string>
+    <string name="product_card_price">90€</string>
+    <string name="service_card_price">2500€</string>
+    <string name="pagination">Page 1 of 10</string>
+    <string name="rating">4.5 ★</string>
+    <string name="event_capital">EVENT</string>
+    <string name="service_capital">SERVICE</string>
+    <string name="product_capital">PRODUCT</string>
+    <string name="event_type_capital">WEDDING</string>
+    <string name="offering_category_capital">DECORATION</string>
+    <string name="bad_rating">2.5 ★</string>
+    <string name="chat">chat</string>
+    <string name="your_chatrooms">Your Chatrooms</string>
 
 
     <string name="create_service">Create Service</string>
