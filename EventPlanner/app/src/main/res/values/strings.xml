@@ -66,4 +66,38 @@
     <string name="your_chatrooms">Your Chatrooms</string>
 
 
+    <string name="create_service">Create Service</string>
+    <string name="service_category">Category</string>
+    <string name="specification">Specification</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="add_photo">+ Add photo</string>
+    <string name="automatic">Automatic</string>
+    <string name="manual">Manual</string>
+    <string name="reservation_deadline">Reservation deadline</string>
+    <string name="cancellation_deadline">Cancellation deadline</string>
+    <string name="service">SERVICE</string>
+    <string name="category">CATEGORY</string>
+    <string name="your_services">Your Services</string>
+    <string name="add_now">Add now!</string>
+    <string name="enter_category">Enter your new category</string>
+    <string name="enter_length">Choose length of your service</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_max">Enter MAX value</string>
+    <string name="enter_min">Enter MIN value</string>
+    <string name="available">Available</string>
+    <string name="filters">Filters</string>
+    <string name="event_type">Event type</string>
+    <string name="type">Type</string>
+    <string name="your_products_and_services">Your products and services</string>
+    <string name="details">Details</string>
+    <string name="sort">Sort</string>
+    <string name="bridal_hair_and_makeup">Bridal Hair and Makeup</string>
+    <string name="expert_makeup">Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day.</string>
+    <string name="category_beauty">Category: Beauty</string>
+    <string name="edit_service">Edit Service</string>
+    <string name="bridal_specification">Bridal makeup services include a personalized consultation... </string>
+
+
 </resources>

@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
         tools:targetApi="31">
+
         <activity
             android:name=".activities.MainActivity"
             android:exported="false" />
@@ -25,15 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.RegisterCompanyActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.RegisterPersonalActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
