@@ -1,0 +1,7 @@
+<resources>
+    <!-- Other string resources -->
+    <string-array name="sort_options">
+        <item>Ascending (ASC)</item>
+        <item>Descending (DESC)</item>
+    </string-array>
+</resources>

@@ -71,6 +71,7 @@
                 android:tooltipText="@string/sort"
                 android:contentDescription="@string/sort"
                 />
+
             <!--            android:background="?android:attr/colorPrimary"-->
         </LinearLayout>
 

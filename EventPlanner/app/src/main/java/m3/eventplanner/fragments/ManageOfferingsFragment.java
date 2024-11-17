@@ -1,7 +1,9 @@
 package m3.eventplanner.fragments;
 
 import android.os.Bundle;
-
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,22 +47,41 @@ public class ManageOfferingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Spinner setup
+        Spinner sortSpinner = view.findViewById(R.id.btnSort);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
+                R.array.sort_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(adapter);
+
+        // FloatingActionButton setup
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
-                navController.navigate(R.id.createOfferingFragment);
-            }
+        fab.setOnClickListener(view1 -> {
+            NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
+            navController.navigate(R.id.createOfferingFragment);
         });
 
-        // Example button for 'See More' - you can replace this logic with another appropriate one
+        // Button for opening filters
+        Button btnFilters = view.findViewById(R.id.btnFilters);
+        btnFilters.setOnClickListener(v -> {
+            showFilterBottomSheet();
+        });
+
+        // Example button for 'See More'
         Button button = view.findViewById(R.id.offering_see_more);
         button.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
             navController.navigate(R.id.serviceDetailsFragment);
         });
-
     }
+
+    // Method to display the BottomSheetDialog
+    private void showFilterBottomSheet() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_offerings, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
 
 }
