@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <!-- Previous Page Button with Icon -->
+    <Button
+        style="?attr/materialIconButtonFilledStyle"
+        android:id="@+id/paginationForwardButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_backarrow"
+        />
+
+    <Button
+        android:id="@+id/paginationCurrentPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pagination"
+        />
+
+    <!-- Next Page Button with Icon -->
+    <Button
+        style="?attr/materialIconButtonFilledStyle"
+        android:id="@+id/paginationBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_forwardawrrow"
+        />
+</LinearLayout>

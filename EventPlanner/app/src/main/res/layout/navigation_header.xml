@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--    Background Image-->
+    <ImageView
+        android:id="@+id/backdrop"
+        android:layout_width="414dp"
+        android:layout_height="214dp"
+        app:srcCompat="@drawable/backdrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!--    Slogan-->
+    <TextView
+        android:id="@+id/overlayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/fira_sans_extra_condensed_bold"
+        android:text="@string/app_name"
+        android:textColor="@color/brand_green"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/backdrop"
+        app:layout_constraintEnd_toEndOf="@id/backdrop"
+        app:layout_constraintStart_toStartOf="@id/backdrop"
+        app:layout_constraintTop_toTopOf="@id/backdrop" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

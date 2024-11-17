@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/base_navigation"
+    app:startDestination="@id/homeScreenFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="m3.eventplanner.fragments.LoginFragment"
+        android:label="@string/login" >
+        <action
+            android:id="@+id/action_loginFragment_to_registerPersonalFragment"
+            app:destination="@id/registerPersonalFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerPersonalFragment"
+        android:name="m3.eventplanner.fragments.RegisterPersonalFragment"
+        android:label="@string/register" >
+        <action
+            android:id="@+id/action_registerPersonalFragment_to_registerCompanyFragment"
+            app:destination="@id/registerCompanyFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerCompanyFragment"
+        android:name="m3.eventplanner.fragments.RegisterCompanyFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_register_company" />
+    <fragment
+        android:id="@+id/homeScreenFragment"
+        android:name="m3.eventplanner.fragments.HomeScreenFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_homescreen" />
+    <fragment
+        android:id="@+id/manageOfferingsFragment"
+        android:name="m3.eventplanner.fragments.ManageOfferingsFragment"
+        android:label="@string/your_products_and_services"
+        tools:layout="@layout/fragment_manage_offerings">
+        <action
+            android:id="@+id/action_manageOfferingsFragment_to_createOfferingFragment"
+            app:destination="@id/createOfferingFragment"
+            app:launchSingleTop="true"/>
+        <action
+            android:id="@+id/action_manageOfferingsFragment_to_serviceDetailsFragment"
+            app:destination="@id/serviceDetailsFragment"
+            app:launchSingleTop="true" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/serviceDetailsFragment"
+        android:name="m3.eventplanner.fragments.OfferingDetailsFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_offering_details" >
+        <action
+            android:id="@+id/action_manageOfferingsFragment_to_editOfferingFragment"
+            app:destination="@id/editOfferingFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/createOfferingFragment"
+        android:name="m3.eventplanner.fragments.CreateServiceFragment"
+        android:label="Create Offering" />
+    <fragment
+        android:id="@+id/editOfferingFragment"
+        android:name="m3.eventplanner.fragments.EditOfferingFragment"
+        android:label="Edit Offering" />
+
+</navigation>

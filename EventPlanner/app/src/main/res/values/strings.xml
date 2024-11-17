@@ -1,0 +1,103 @@
+<resources>
+    <string name="app_name">EventPlanner</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="not_registered_message">Don\'t have account yet? </string>
+    <string name="register_message">Register now!</string>
+    <string name="register">Register</string>
+    <string name="password_again">Password again</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="street">Street</string>
+    <string name="house_number">House number</string>
+    <string name="phone">Phone</string>
+    <string name="submit">Submit</string>
+    <string name="event_organizer">Event organizer</string>
+    <string name="product_service_provider">Product/service provider</string>
+    <string name="enter_company_info">Enter company info</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="photos">Photos</string>
+    <string name="slogan">Plan Your Events With Us!</string>
+    <string name="event_card_title">Mary And Josh\'s Wedding</string>
+    <string name="event_card_description">Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n\n
+    Location: Rose Garden Banquet Hall, Springfield\n
+    Date and Time: 15.6.2024, 4:00pm</string>
+    <string name="event_card_organizer">Robert L.</string>
+    <string name="event_card_button">See More</string>
+    <string name="top_events_text">Top Events In Your Area</string>
+    <string name="all_events">All Events In Your Area</string>
+    <string name="event_name_search">Event Name</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="restart_filter">Restart Filter</string>
+    <string name="top_offerings_text">Top Services/Products In Your Area</string>
+    <string name="all_offerings">All Services/Products In Your Area</string>
+    <string name="offering_name_search">Service/Product Name</string>
+    <string name="service_card_title">Wedding Makeup</string>
+    <string name="service_card_description">Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride\'s style and skin type.</string>
+    <string name="product_card_title">Wedding Flowers</string>
+    <string name="product_card_description">Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride\'s style and skin type.</string>
+    <string name="events">Events</string>
+    <string name="offerings">Offerings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="navigation_drawer_open">Navigation drawer open</string>
+    <string name="navigation_drawer_close">Navigation drawer close</string>
+    <string name="search_event">Search Event By Name</string>
+    <string name="search_offering">Search Service/Product By Name</string>
+    <string name="your_offerings">Your Services/Products</string>
+    <string name="product_card_price">90€</string>
+    <string name="service_card_price">2500€</string>
+    <string name="pagination">Page 1 of 10</string>
+    <string name="rating">4.5 ★</string>
+    <string name="event_capital">EVENT</string>
+    <string name="service_capital">SERVICE</string>
+    <string name="product_capital">PRODUCT</string>
+    <string name="event_type_capital">WEDDING</string>
+    <string name="offering_category_capital">DECORATION</string>
+    <string name="bad_rating">2.5 ★</string>
+    <string name="chat">chat</string>
+    <string name="your_chatrooms">Your Chatrooms</string>
+
+
+    <string name="create_service">Create Service</string>
+    <string name="service_category">Category</string>
+    <string name="specification">Specification</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="add_photo">+ Add photo</string>
+    <string name="automatic">Automatic</string>
+    <string name="manual">Manual</string>
+    <string name="reservation_deadline">Reservation deadline</string>
+    <string name="cancellation_deadline">Cancellation deadline</string>
+    <string name="service">SERVICE</string>
+    <string name="category">CATEGORY</string>
+    <string name="your_services">Your Services</string>
+    <string name="add_now">Add now!</string>
+    <string name="enter_category">Enter your new category</string>
+    <string name="enter_length">Choose length of your service</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_max">Enter MAX value</string>
+    <string name="enter_min">Enter MIN value</string>
+    <string name="available">Available</string>
+    <string name="filters">Filters</string>
+    <string name="event_type">Event type</string>
+    <string name="type">Type</string>
+    <string name="your_products_and_services">Your products and services</string>
+    <string name="details">Details</string>
+    <string name="sort">Sort</string>
+    <string name="bridal_hair_and_makeup">Bridal Hair and Makeup</string>
+    <string name="expert_makeup">Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day.</string>
+    <string name="category_beauty">Category: Beauty</string>
+    <string name="edit_service">Edit Service</string>
+    <string name="bridal_specification">Bridal makeup services include a personalized consultation... </string>
+
+
+</resources>
