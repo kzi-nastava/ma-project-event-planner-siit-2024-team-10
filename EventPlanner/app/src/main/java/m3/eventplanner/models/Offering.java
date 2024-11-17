@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 public class Offering implements Parcelable {
     private Long id;
     private String title;
-    private String description;
+    private double rating;
     private String provider;
 
     private double price;
 
-    public Offering(Long id, String title, String description, String provider, double price) {
+    public Offering(Long id, String title, double rating, String provider, double price) {
         this.id = id;
         this.title = title;
-        this.description = description;
+        this.rating = rating;
         this.provider = provider;
         this.price = price;
     }
@@ -26,7 +26,7 @@ public class Offering implements Parcelable {
     protected Offering(Parcel in) {
         id = in.readLong();
         title = in.readString();
-        description = in.readString();
+        rating = in.readDouble();
         provider = in.readString();
         price = in.readDouble();
     }
@@ -47,12 +47,12 @@ public class Offering implements Parcelable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public double getRating() {
+        return rating;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 
     public String getOrganizer() {
@@ -75,7 +75,7 @@ public class Offering implements Parcelable {
     public String toString() {
         return "Offering{" +
                 "title='" + title + '\'' +
-                ", description='" + description + '\'' +
+                ", rating='" + rating + '\'' +
                 ", provider='" + provider + '\'' +
                 ", price='" + price + '\'' +
                 '}';
@@ -88,7 +88,7 @@ public class Offering implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(title);
-        dest.writeString(description);
+        dest.writeDouble(rating);
         dest.writeString(provider);
         dest.writeDouble(price);
     }

@@ -47,54 +47,24 @@ public class HomeScreenEvents extends Fragment {
 
     private void prepareTopEventList(ArrayList<Event> eventItemList){
         eventItemList.clear();
-        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
+        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
+        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1"));
+        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
+        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1"));
+        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1"));
     }
 
     private void prepareAllEventList(ArrayList<Event> eventItemList){
         eventItemList.clear();
-        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(6L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(7L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(8L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(9L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
-        eventItemList.add(new Event(10L, "Mary And Josh's Wedding", "Celebrate the union of Sarah and Jake with an evening filled with love and laughter.\n" +
-                "    \n\nLocation: Rose Garden Banquet Hall, Springfield" +
-                "    \nDate and Time: 15.6.2024, 4:00pm", "Organizer 1"));
+        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
+        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1"));
+        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
+        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1"));
+        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1"));
+        eventItemList.add(new Event(6L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
+        eventItemList.add(new Event(7L, "Mary And Josh's Wedding", 5, "Organizer 1"));
+        eventItemList.add(new Event(8L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
+        eventItemList.add(new Event(9L, "Mary And Josh's Wedding", 4, "Organizer 1"));
+        eventItemList.add(new Event(10L, "Mary And Josh's Wedding", 2, "Organizer 1"));
     }
 }
