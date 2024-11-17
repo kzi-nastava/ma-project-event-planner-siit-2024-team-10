@@ -1,42 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".fragments.OfferingDetailsFragment">
 
-    <FrameLayout
-        android:id="@+id/offering_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!-- Image of the service -->
+    <ImageView
+        android:id="@+id/service_image"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/makeup"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/service_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Service Name -->
     <TextView
-        android:id="@+id/offering_title"
-        android:layout_width="wrap_content"
+        android:id="@+id/service_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="@string/bridal_hair_and_makeup"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/service_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Service Description -->
     <TextView
-        android:id="@+id/offering_provider"
+        android:id="@+id/service_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/expert_makeup_and_hair_artists_provide_personalized_beauty_services_to_ensure_the_bride_and_bridal_party_look_stunning_on_the_big_day"
+        android:textSize="16sp"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/service_category"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Service Category -->
+    <TextView
+        android:id="@+id/service_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/offering_title" />
+        android:text="@string/category_beauty"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/service_specifications"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Service Specifications -->
     <TextView
-        android:id="@+id/offering_price"
-        android:layout_width="wrap_content"
+        android:id="@+id/service_specifications"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:text="Specification: Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type. On the wedding day, professional makeup artists apply high-quality products to ensure a flawless, long-lasting finish, with options for additional elements like airbrush and false lashes. Services can also extend to the bridal party, and a touch-up kit is provided to maintain the bride’s look throughout the day."
+        android:textSize="14sp"
+        android:textColor="@android:color/black"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/service_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Price -->
+    <TextView
+        android:id="@+id/service_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Price: 500€"
         android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/offering_provider" />
+        android:textColor="@android:color/holo_green_dark"
+        app:layout_constraintBottom_toTopOf="@+id/service_discount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    </FrameLayout>
+    <!-- Discount -->
+    <TextView
+        android:id="@+id/service_discount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Discount: 10%"
+        android:textSize="16sp"
+        android:textColor="@android:color/holo_red_light"
+        app:layout_constraintBottom_toTopOf="@+id/service_reservation_deadline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Reservation Deadline -->
+    <TextView
+        android:id="@+id/service_reservation_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Reservation Deadline: 3 months"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/service_cancellation_deadline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Cancellation Deadline -->
+    <TextView
+        android:id="@+id/service_cancellation_deadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Cancellation Deadline: 3 months"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/service_duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Duration -->
+    <TextView
+        android:id="@+id/service_duration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="This service lasts 3 hours."
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!-- Comments Section -->
+    <LinearLayout
+        android:id="@+id/comments_section"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User 1: Amazing service, my wedding day was perfect! ⭐⭐⭐⭐⭐"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User 2: Highly recommend, the makeup was flawless! ⭐⭐⭐⭐"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:paddingBottom="4dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User 3: Beautiful hair and makeup, thank you! ⭐⭐⭐⭐⭐"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:paddingBottom="4dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
