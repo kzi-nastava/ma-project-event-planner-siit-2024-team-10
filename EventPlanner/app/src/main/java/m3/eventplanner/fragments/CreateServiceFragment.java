@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -25,7 +24,7 @@ public class CreateServiceFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.activity_create_service, container, false); // Initialize rootView
+        rootView = inflater.inflate(R.layout.fragment_create_service, container, false); // Initialize rootView
         return rootView;
     }
 
