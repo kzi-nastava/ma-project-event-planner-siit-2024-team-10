@@ -52,8 +52,7 @@
     <string name="search_event">Search Event By Name</string>
     <string name="search_offering">Search Service/Product By Name</string>
     <string name="your_offerings">Your Services/Products</string>
-    <string name="product_card_price">90€</string>
-    <string name="service_card_price">2500€</string>
+    <string name="card_price">500€</string>
     <string name="pagination">Page 1 of 10</string>
     <string name="rating">4.5 ★</string>
     <string name="event_capital">EVENT</string>
@@ -64,7 +63,7 @@
     <string name="bad_rating">2.5 ★</string>
     <string name="chat">chat</string>
     <string name="your_chatrooms">Your Chatrooms</string>
-
+    <string name="location_and_time">Novi Sad, Serbia at 12:00</string>
 
     <string name="create_service">Create Service</string>
     <string name="service_category">Category</string>

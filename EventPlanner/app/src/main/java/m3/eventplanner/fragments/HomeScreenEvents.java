@@ -47,24 +47,24 @@ public class HomeScreenEvents extends Fragment {
 
     private void prepareTopEventList(ArrayList<Event> eventItemList){
         eventItemList.clear();
-        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
-        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1"));
-        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
-        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1"));
-        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1"));
+        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1","Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
     }
 
     private void prepareAllEventList(ArrayList<Event> eventItemList){
         eventItemList.clear();
-        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
-        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1"));
-        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
-        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1"));
-        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1"));
-        eventItemList.add(new Event(6L, "Mary And Josh's Wedding", 2.5, "Organizer 1"));
-        eventItemList.add(new Event(7L, "Mary And Josh's Wedding", 5, "Organizer 1"));
-        eventItemList.add(new Event(8L, "Mary And Josh's Wedding", 1.5, "Organizer 1"));
-        eventItemList.add(new Event(9L, "Mary And Josh's Wedding", 4, "Organizer 1"));
-        eventItemList.add(new Event(10L, "Mary And Josh's Wedding", 2, "Organizer 1"));
+        eventItemList.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(4L, "Mary And Josh's Wedding", 4, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(5L, "Mary And Josh's Wedding", 2, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(6L, "Mary And Josh's Wedding", 2.5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(7L, "Mary And Josh's Wedding", 5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(8L, "Mary And Josh's Wedding", 1.5, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(9L, "Mary And Josh's Wedding", 4, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
+        eventItemList.add(new Event(10L, "Mary And Josh's Wedding", 2, "Organizer 1", "Novi Sad, Serbia","12.12.2024. 12:03"));
     }
 }
