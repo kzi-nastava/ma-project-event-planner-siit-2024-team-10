@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -68,8 +69,8 @@ public class ManageOfferingsFragment extends Fragment {
         });
 
         // Example button for 'See More'
-        Button button = view.findViewById(R.id.offering_see_more);
-        button.setOnClickListener(v -> {
+        MaterialCardView offeringCard = view.findViewById(R.id.offering_card);
+        offeringCard.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
             navController.navigate(R.id.serviceDetailsFragment);
         });
