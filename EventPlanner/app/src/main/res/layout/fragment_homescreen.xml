@@ -50,9 +50,34 @@
                 android:text="@string/all_offerings_tab" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
     </HorizontalScrollView>
+
+    <!-- Include event search bar layout -->
+    <include
+        android:id="@+id/eventSearchBar"
+        layout="@layout/fragment_event_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <!-- Include offering search bar layout -->
+    <include
+        android:id="@+id/offeringSearchBar"
+        layout="@layout/fragment_offering_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <FrameLayout
         android:id="@+id/homeScreenViewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
+
+    <!-- Include pagination bar -->
+    <include
+        layout="@layout/pagination_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
 </LinearLayout>

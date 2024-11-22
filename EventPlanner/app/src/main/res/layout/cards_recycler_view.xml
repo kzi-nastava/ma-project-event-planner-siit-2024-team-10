@@ -4,22 +4,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- TextView for "No events found" message -->
     <TextView
-        android:id="@+id/top_offerings_text"
+        android:id="@+id/noCardsFoundTextView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/top_offerings_text"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:padding="16dp"
+        android:text="@string/no_events"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
-    <!-- RecyclerView for displaying offerings -->
+    <!-- RecyclerView for displaying event/offering cards -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/topOfferingsRecyclerView"
+        android:id="@+id/cardsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp" />
 
 </LinearLayout>
