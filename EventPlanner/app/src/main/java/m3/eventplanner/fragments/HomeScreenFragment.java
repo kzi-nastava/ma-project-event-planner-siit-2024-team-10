@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -19,10 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
@@ -83,12 +89,33 @@ public class HomeScreenFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        // Spinner setup
-//        Spinner sortSpinner = view.findViewById(R.id.btnSort);
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
-//                R.array.sort_options, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        sortSpinner.setAdapter(adapter);
+        Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
+        List<String> eventSortCriteria = new ArrayList<>();
+        eventSortCriteria.add("Any");
+        eventSortCriteria.add("Name");
+        eventSortCriteria.add("Rating");
+        eventSortCriteria.add("Type Name");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                eventSortCriteria
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventSortBySpinner.setAdapter(spinnerAdapter);
+
+        Spinner eventSortDirectionSpinner = view.findViewById(R.id.btn_sort_events_direction);
+        List<String> eventSortDirection = new ArrayList<>();
+        eventSortDirection.add("Ascending");
+        eventSortDirection.add("Descending");
+
+        ArrayAdapter<String> spinnerDirectionAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                eventSortDirection
+        );
+        spinnerDirectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventSortDirectionSpinner.setAdapter(spinnerDirectionAdapter);
 
 
         // Button for opening filters
@@ -96,13 +123,6 @@ public class HomeScreenFragment extends Fragment {
         btnFilters.setOnClickListener(v -> {
             showEventFilterBottomSheet();
         });
-
-        // Example button for 'See More'
-//        MaterialCardView offeringCard = view.findViewById(R.id.offering_card);
-//        offeringCard.setOnClickListener(v -> {
-//            NavController navController = NavHostFragment.findNavController(HomeScreenFragment.this);
-//            navController.navigate(R.id.serviceDetailsFragment);
-//        });
     }
 
 
@@ -185,6 +205,7 @@ public class HomeScreenFragment extends Fragment {
             contentRecyclerView.setAdapter(offeringAdapter);
         }
     }
+
     // Example data fetching methods (replace with actual implementation)
     private List<Event> getTopEvents() {
         List<Event> list = new ArrayList<>();
@@ -248,6 +269,54 @@ public class HomeScreenFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
         bottomSheetDialog.setContentView(bottomSheetView);
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("Select Date Range");
+        final MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
+
+        // Find and set up the date range button
+        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
+        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+
+        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
+
+        // Handle the date range picker result
+        picker.addOnPositiveButtonClickListener(selection -> {
+            // Extract the date range
+            Pair<Long, Long> dateRange = picker.getSelection();
+            if (dateRange != null) {
+                Long startDate = dateRange.first; // Start date in milliseconds
+                Long endDate = dateRange.second; // End date in milliseconds
+
+                String formattedStartDate = formatDate(startDate);
+                String formattedEndDate = formatDate(endDate);
+
+                String selectedDatesText = getString(R.string.selected_date_range, formattedStartDate, formattedEndDate);
+                selectedDatesTextView.setText(selectedDatesText);
+            }
+        });
+
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+        List<String> eventTypes = new ArrayList<>();
+        eventTypes.add("Any");
+        eventTypes.add("Wedding");
+        eventTypes.add("Concert");
+        eventTypes.add("Convention");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                eventTypes
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventTypeSpinner.setAdapter(spinnerAdapter);
+
         bottomSheetDialog.show();
+    }
+
+    // Helper method to format date
+    private String formatDate(Long dateInMillis) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        return formatter.format(new Date(dateInMillis));
     }
 }

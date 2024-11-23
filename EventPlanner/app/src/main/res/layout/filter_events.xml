@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,118 +8,101 @@
     android:background="@color/white"
     android:padding="5dp"
     >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/filters"
+            android:textAlignment="viewStart"
+            android:textSize="24sp"
+            android:textStyle="italic" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/black"
+        android:layout_margin="2dp"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RelativeLayout
+        android:orientation="vertical"
+        android:layout_margin="2dp">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp">
+            android:text="@string/event_type"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="@string/filters"
-                android:textAlignment="viewStart"
-                android:textSize="24sp"
-                android:textStyle="italic" />
-        </RelativeLayout>
-        <View
+        <Spinner
+            android:id="@+id/event_type_spinner"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/black"
-            android:layout_margin="2dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/event_type_spinner"
+            android:tooltipText="@string/event_type_spinner"
+            android:contentDescription="@string/event_type_spinner"
             />
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/locationTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="2dp">
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:hint="@string/location">
 
-            <TextView
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/event_type"/>
-
-            <Spinner
-                android:id="@+id/eventTypeSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:text="@string/event_type_spinner"
-                android:tooltipText="@string/event_type_spinner"
-                android:contentDescription="@string/event_type_spinner"
                 />
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/locationTextField"
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/max_participants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/max_participants">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:hint="@string/location">
+                android:layout_margin="12dp"
+                android:inputType="number"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/min_rating"/>
+        <com.google.android.material.slider.Slider
+            android:id="@+id/minPriceSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="1"
+            android:valueTo="5"
+            android:stepSize="0.5" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/selected_dates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/select_start_end_date"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/max_participants"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/max_participants">
+        <Button
+            android:id="@+id/date_range_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/select_date_range"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:inputType="number"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/min_rating"/>
-            <com.google.android.material.slider.Slider
-                android:id="@+id/minPriceSlider"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:valueFrom="1"
-                android:valueTo="5"
-                android:stepSize="0.5" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/select_start_date"/>
-
-            <DatePicker
-                android:id="@+id/simpleStartDatePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:datePickerMode="calendar"
-                android:calendarTextColor="@color/charcoal_blue"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="@string/select_end_date"/>
-
-            <DatePicker
-                android:id="@+id/simpleEndDatePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:datePickerMode="calendar"
-                android:calendarTextColor="@color/charcoal_blue"/>
-
-        </LinearLayout>
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
