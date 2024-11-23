@@ -4,12 +4,22 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +78,33 @@ public class HomeScreenFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+//        // Spinner setup
+//        Spinner sortSpinner = view.findViewById(R.id.btnSort);
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(),
+//                R.array.sort_options, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        sortSpinner.setAdapter(adapter);
+
+
+        // Button for opening filters
+        Button btnFilters = view.findViewById(R.id.filter_events_button);
+        btnFilters.setOnClickListener(v -> {
+            showEventFilterBottomSheet();
+        });
+
+        // Example button for 'See More'
+//        MaterialCardView offeringCard = view.findViewById(R.id.offering_card);
+//        offeringCard.setOnClickListener(v -> {
+//            NavController navController = NavHostFragment.findNavController(HomeScreenFragment.this);
+//            navController.navigate(R.id.serviceDetailsFragment);
+//        });
+    }
+
 
     private void showTopEvents() {
         // Hide unnecessary elements
@@ -205,5 +242,12 @@ public class HomeScreenFragment extends Fragment {
         list.add(new Service(10L, "Wedding Video Editing", 4.5, "Provider 10", 1200));
 
         return list;
+    }
+
+    private void showEventFilterBottomSheet() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
     }
 }

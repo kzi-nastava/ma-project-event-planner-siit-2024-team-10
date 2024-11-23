@@ -98,8 +98,14 @@
     <string name="expert_makeup">Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day.</string>
     <string name="category_beauty">Category: Beauty</string>
     <string name="edit_service">Edit Service</string>
-    <string name="bridal_specification">Bridal makeup services include a personalized consultation... </string>
+    <string name="bridal_specification">Bridal makeup services include a personalized consultation… </string>
     <string name="no_events">No events found.</string>
     <string name="no_offerings">No services/products found.</string>
+    <string name="event_type_spinner">Choose Event Type</string>
+    <string name="location">Location</string>
+    <string name="max_participants">Maximum Participants</string>
+    <string name="min_rating">Minimum Rating</string>
+    <string name="select_start_date">Select Start Date</string>
+    <string name="select_end_date">Select End Date</string>
 
 </resources>
