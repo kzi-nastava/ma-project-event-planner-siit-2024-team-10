@@ -1,6 +1,7 @@
 package m3.eventplanner.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,6 +92,9 @@ public class HomeScreenFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
+
+
         Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
         List<String> eventSortCriteria = new ArrayList<>();
         eventSortCriteria.add("Any");
@@ -118,11 +124,54 @@ public class HomeScreenFragment extends Fragment {
         eventSortDirectionSpinner.setAdapter(spinnerDirectionAdapter);
 
 
+        Spinner offeringsSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
+        List<String> offeringSortCriteria = new ArrayList<>();
+        offeringSortCriteria.add("Any");
+        offeringSortCriteria.add("Name");
+        offeringSortCriteria.add("Rating");
+        offeringSortCriteria.add("Category");
+        offeringSortCriteria.add("Price");
+
+        ArrayAdapter<String> spinnerOfferingAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                offeringSortCriteria
+        );
+        spinnerOfferingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        offeringsSortBySpinner.setAdapter(spinnerOfferingAdapter);
+
+        Spinner offeringSortDirectionSpinner = view.findViewById(R.id.btn_sort_offering_direction);
+        List<String> offeringSortDirection = new ArrayList<>();
+        offeringSortDirection.add("Ascending");
+        offeringSortDirection.add("Descending");
+
+        ArrayAdapter<String> spinnerOfferingDirectionAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                offeringSortDirection
+        );
+        spinnerOfferingDirectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        offeringSortDirectionSpinner.setAdapter(spinnerOfferingDirectionAdapter);
+
         // Button for opening filters
         Button btnFilters = view.findViewById(R.id.filter_events_button);
         btnFilters.setOnClickListener(v -> {
             showEventFilterBottomSheet();
         });
+        // Button for opening filters
+        Button btnOfferingFilters = view.findViewById(R.id.filter_offerings_button);
+        btnOfferingFilters.setOnClickListener(v -> {
+            int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
+            if (selectedId == -1) {
+                Log.e("HomeScreenFragment", "No radio button selected.");
+            } else {
+                RadioButton selectedRadioButton = view.findViewById(selectedId);
+                String selectedText = selectedRadioButton.getText().toString();
+                showOfferingFilterBottomSheet(selectedText);
+            }
+        });
+
+
     }
 
 
@@ -310,6 +359,83 @@ public class HomeScreenFragment extends Fragment {
         );
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eventTypeSpinner.setAdapter(spinnerAdapter);
+
+        bottomSheetDialog.show();
+    }
+
+    private void showOfferingFilterBottomSheet(String selected) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_services, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        View serviceDuration = bottomSheetDialog.findViewById(R.id.service_duration);
+        View dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_button);
+        View selectedDates = bottomSheetDialog.findViewById(R.id.selected_dates);
+
+        if (selected.equals("SERVICE")) { // Services selected
+            serviceDuration.setVisibility(View.VISIBLE);
+            dateRangeButton.setVisibility(View.VISIBLE);
+            selectedDates.setVisibility(View.VISIBLE);
+        } else if (selected.equals("PRODUCT")) { // Products selected
+            serviceDuration.setVisibility(View.GONE);
+            dateRangeButton.setVisibility(View.GONE);
+            selectedDates.setVisibility(View.GONE);
+        }
+
+
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("Select Date Range");
+        final MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
+
+        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+
+        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
+
+        // Handle the date range picker result
+        picker.addOnPositiveButtonClickListener(selection -> {
+            // Extract the date range
+            Pair<Long, Long> dateRange = picker.getSelection();
+            if (dateRange != null) {
+                Long startDate = dateRange.first; // Start date in milliseconds
+                Long endDate = dateRange.second; // End date in milliseconds
+
+                String formattedStartDate = formatDate(startDate);
+                String formattedEndDate = formatDate(endDate);
+
+                String selectedDatesText = getString(R.string.selected_date_range, formattedStartDate, formattedEndDate);
+                selectedDatesTextView.setText(selectedDatesText);
+            }
+        });
+
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+        List<String> eventTypes = new ArrayList<>();
+        eventTypes.add("Any");
+        eventTypes.add("Wedding");
+        eventTypes.add("Concert");
+        eventTypes.add("Convention");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                eventTypes
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventTypeSpinner.setAdapter(spinnerAdapter);
+
+        Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
+        List<String> categoryTypes = new ArrayList<>();
+        categoryTypes.add("Any");
+        categoryTypes.add("Flowers");
+        categoryTypes.add("Decoration");
+        categoryTypes.add("Music");
+
+        ArrayAdapter<String> spinnerCategoryAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                categoryTypes
+        );
+        spinnerCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(spinnerCategoryAdapter);
 
         bottomSheetDialog.show();
     }

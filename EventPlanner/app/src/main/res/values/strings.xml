@@ -109,6 +109,8 @@
     <string name="select_start_end_date">Select a start and end date</string>
     <string name="selected_date_range">Selected: %1$s - %2$s</string>
     <string name="select_date_range">Select Date Range</string>
+    <string name="min_discount">Minimum Discount</string>
+    <string name="service_duration">Service Duration</string>
 
 
 </resources>
