@@ -1,7 +1,6 @@
 package m3.eventplanner.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import androidx.annotation.NonNull;
@@ -16,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -68,8 +67,8 @@ public class ManageOfferingsFragment extends Fragment {
         });
 
         // Example button for 'See More'
-        Button button = view.findViewById(R.id.offering_see_more);
-        button.setOnClickListener(v -> {
+        MaterialCardView offeringCard = view.findViewById(R.id.offering_card);
+        offeringCard.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(ManageOfferingsFragment.this);
             navController.navigate(R.id.serviceDetailsFragment);
         });
@@ -78,7 +77,7 @@ public class ManageOfferingsFragment extends Fragment {
     // Method to display the BottomSheetDialog
     private void showFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_offerings, null);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.fragment_offering_search_bar, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }

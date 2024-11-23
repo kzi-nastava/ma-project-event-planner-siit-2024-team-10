@@ -42,8 +42,10 @@
     <string name="service_card_description">Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride\'s style and skin type.</string>
     <string name="product_card_title">Wedding Flowers</string>
     <string name="product_card_description">Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride\'s style and skin type.</string>
-    <string name="events">Events</string>
-    <string name="offerings">Offerings</string>
+    <string name="all_events_tab">All Events</string>
+    <string name="all_offerings_tab">All Offerings</string>
+    <string name="top_events_tab">Top Events</string>
+    <string name="top_offerings_tab">Top Offerings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
@@ -52,8 +54,7 @@
     <string name="search_event">Search Event By Name</string>
     <string name="search_offering">Search Service/Product By Name</string>
     <string name="your_offerings">Your Services/Products</string>
-    <string name="product_card_price">90€</string>
-    <string name="service_card_price">2500€</string>
+    <string name="card_price">500€</string>
     <string name="pagination">Page 1 of 10</string>
     <string name="rating">4.5 ★</string>
     <string name="event_capital">EVENT</string>
@@ -64,7 +65,7 @@
     <string name="bad_rating">2.5 ★</string>
     <string name="chat">chat</string>
     <string name="your_chatrooms">Your Chatrooms</string>
-
+    <string name="location_and_time">Novi Sad, Serbia at 12:00</string>
 
     <string name="create_service">Create Service</string>
     <string name="service_category">Category</string>
@@ -98,6 +99,7 @@
     <string name="category_beauty">Category: Beauty</string>
     <string name="edit_service">Edit Service</string>
     <string name="bridal_specification">Bridal makeup services include a personalized consultation... </string>
-
+    <string name="no_events">No events found.</string>
+    <string name="no_offerings">No services/products found.</string>
 
 </resources>

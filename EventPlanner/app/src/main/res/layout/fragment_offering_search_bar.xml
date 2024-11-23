@@ -16,15 +16,11 @@
         android:textSize="20sp"
         android:textColor="@color/charcoal_blue"/>
 
-    <androidx.appcompat.widget.SearchView
-        app:queryHint="Search"
-        android:hint="@string/search_offering"
+    <com.google.android.material.search.SearchBar
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/offering_name_search"
-        android:background="@drawable/border_background" />
+        android:hint="@string/search_offering" />
 
     <LinearLayout
         android:layout_width="match_parent"

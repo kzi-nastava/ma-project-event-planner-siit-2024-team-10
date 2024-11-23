@@ -24,6 +24,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         public TextView titleTextView;
         public TextView organizerTextView;
         public TextView ratingTextView;
+        public TextView locationAndDateTextView;
 
         public EventViewHolder(View view) {
             super(view);
@@ -31,6 +32,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             titleTextView = view.findViewById(R.id.event_card_title);
             organizerTextView = view.findViewById(R.id.event_card_organizer);
             ratingTextView = view.findViewById(R.id.event_card_rating);
+            locationAndDateTextView = view.findViewById(R.id.event_card_location_date);
         }
     }
 
@@ -49,6 +51,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         holder.titleTextView.setText(event.getTitle());
         holder.organizerTextView.setText("Organizer: " + event.getOrganizer());
         holder.ratingTextView.setText(event.getRating()+"★");
+        holder.locationAndDateTextView.setText(event.getLocation()+" at "+event.getDate());
 
         holder.eventCard.setOnClickListener(v -> {
         });
