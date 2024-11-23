@@ -78,6 +78,7 @@
     <string name="reservation_deadline">Reservation deadline</string>
     <string name="cancellation_deadline">Cancellation deadline</string>
     <string name="service">SERVICE</string>
+    <string name="product">PRODUCT</string>
     <string name="category">CATEGORY</string>
     <string name="your_services">Your Services</string>
     <string name="add_now">Add now!</string>

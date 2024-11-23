@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/brand_green_light">
@@ -21,6 +21,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_offering" />
+
+    <RadioGroup
+        android:checkedButton="@+id/enabled_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+        <RadioButton
+            android:id="@+id/enabled_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:enabled="true"
+            android:checked="false"
+            android:text="@string/service"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:enabled="true"
+            android:text="@string/product"/>
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
