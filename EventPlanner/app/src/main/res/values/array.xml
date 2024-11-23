@@ -4,4 +4,30 @@
         <item>200.0</item>
         <item>700.0</item>
     </array>
+    <array name="categories">
+        <item>Makeup</item>
+        <item>Music</item>
+        <item>Catering</item>
+    </array>
+    <array name="event_types">
+        <item>Wedding</item>
+        <item>Graduation</item>
+        <item>Prom</item>
+        <item>Concert</item>
+    </array>
+    <array name="sort_directions">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </array>
+    <array name="offering_sort_criteria">
+        <item>Name</item>
+        <item>Rating</item>
+        <item>Price</item>
+        <item>Discount</item>
+    </array>
+    <array name="event_sort_criteria">
+        <item>Name</item>
+        <item>Rating</item>
+        <item>Number of attendees</item>
+    </array>
 </resources>

@@ -56,6 +56,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+    <TextView
+        android:id="@+id/top_events_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/top_events_text"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/charcoal_blue"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/top_offerings_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/top_offerings_text"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/charcoal_blue"
+        android:visibility="gone"/>
 
     <include
         android:id="@+id/offeringSearchBar"

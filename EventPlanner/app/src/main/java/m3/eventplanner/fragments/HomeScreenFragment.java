@@ -7,31 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
@@ -43,34 +33,43 @@ import m3.eventplanner.models.Service;
 public class HomeScreenFragment extends Fragment {
 
     private MaterialButtonToggleGroup toggleGroup;
-    private View eventSearchBar;
-    private View offeringSearchBar;
-    private View paginationBar;
+    private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
-    private TextView noCardsFoundTextView;
+    private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
+        initializeUIElements(rootView);
+        setUpRecyclerView();
+        setUpToggleGroup();
+        return rootView;
+    }
 
-        // Initialize UI elements
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setUpSortSpinners(view);
+        setUpFilterButtons(view);
+    }
+
+    private void initializeUIElements(View rootView) {
         toggleGroup = rootView.findViewById(R.id.toggleButton);
         eventSearchBar = rootView.findViewById(R.id.eventSearchBar);
         offeringSearchBar = rootView.findViewById(R.id.offeringSearchBar);
         paginationBar = rootView.findViewById(R.id.paginationBar);
         contentRecyclerView = rootView.findViewById(R.id.contentRecyclerView);
         noCardsFoundTextView = rootView.findViewById(R.id.noCardsFoundTextView);
+        topEventsTextView = rootView.findViewById(R.id.top_events_text);
+        topOfferingsTextView = rootView.findViewById(R.id.top_offerings_text);
+    }
 
-        // Set up RecyclerView
+    private void setUpRecyclerView() {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
 
-        // Set up default view (e.g., Top Events)
-        if (savedInstanceState == null) {
-            showTopEvents();
-        }
-
-        // Set up toggle button listener
+    private void setUpToggleGroup() {
+        showTopEvents();
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.tabTopEvents) {
@@ -84,178 +83,178 @@ public class HomeScreenFragment extends Fragment {
                 }
             }
         });
-
-        return rootView;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
+    private void setUpSortSpinners(View view) {
+        setUpEventSortSpinners(view);
+        setUpOfferingSortSpinners(view);
+    }
 
-
+    private void setUpEventSortSpinners(View view) {
         Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
-        List<String> eventSortCriteria = new ArrayList<>();
-        eventSortCriteria.add("Any");
-        eventSortCriteria.add("Name");
-        eventSortCriteria.add("Rating");
-        eventSortCriteria.add("Type Name");
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                eventSortCriteria
-        );
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventSortBySpinner.setAdapter(spinnerAdapter);
+        eventSortBySpinner.setAdapter(createSpinnerAdapter(R.array.event_sort_criteria));
 
         Spinner eventSortDirectionSpinner = view.findViewById(R.id.btn_sort_events_direction);
-        List<String> eventSortDirection = new ArrayList<>();
-        eventSortDirection.add("Ascending");
-        eventSortDirection.add("Descending");
+        eventSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
+    }
 
-        ArrayAdapter<String> spinnerDirectionAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                eventSortDirection
-        );
-        spinnerDirectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventSortDirectionSpinner.setAdapter(spinnerDirectionAdapter);
-
-
+    private void setUpOfferingSortSpinners(View view) {
         Spinner offeringsSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
-        List<String> offeringSortCriteria = new ArrayList<>();
-        offeringSortCriteria.add("Any");
-        offeringSortCriteria.add("Name");
-        offeringSortCriteria.add("Rating");
-        offeringSortCriteria.add("Category");
-        offeringSortCriteria.add("Price");
-
-        ArrayAdapter<String> spinnerOfferingAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                offeringSortCriteria
-        );
-        spinnerOfferingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        offeringsSortBySpinner.setAdapter(spinnerOfferingAdapter);
+        offeringsSortBySpinner.setAdapter(createSpinnerAdapter(R.array.offering_sort_criteria));
 
         Spinner offeringSortDirectionSpinner = view.findViewById(R.id.btn_sort_offering_direction);
-        List<String> offeringSortDirection = new ArrayList<>();
-        offeringSortDirection.add("Ascending");
-        offeringSortDirection.add("Descending");
+        offeringSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
+    }
 
-        ArrayAdapter<String> spinnerOfferingDirectionAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                offeringSortDirection
-        );
-        spinnerOfferingDirectionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        offeringSortDirectionSpinner.setAdapter(spinnerOfferingDirectionAdapter);
+    private ArrayAdapter<String> createSpinnerAdapter(int arrayResId) {
+        List<String> data = new ArrayList<>();
+        String[] array = getResources().getStringArray(arrayResId);
+        for (String item : array) {
+            data.add(item);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, data);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
 
-        // Button for opening filters
+    private void setUpFilterButtons(View view) {
         Button btnFilters = view.findViewById(R.id.filter_events_button);
-        btnFilters.setOnClickListener(v -> {
-            showEventFilterBottomSheet();
-        });
-        // Button for opening filters
+        btnFilters.setOnClickListener(v -> showEventFilterBottomSheet());
+
         Button btnOfferingFilters = view.findViewById(R.id.filter_offerings_button);
         btnOfferingFilters.setOnClickListener(v -> {
-            int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
-            if (selectedId == -1) {
-                Log.e("HomeScreenFragment", "No radio button selected.");
-            } else {
-                RadioButton selectedRadioButton = view.findViewById(selectedId);
-                String selectedText = selectedRadioButton.getText().toString();
+            String selectedText = getSelectedOfferingType(view);
+            if (selectedText != null) {
                 showOfferingFilterBottomSheet(selectedText);
             }
         });
-
-
     }
 
+    private String getSelectedOfferingType(View view) {
+        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
+        int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
+        if (selectedId != -1) {
+            return ((RadioButton) view.findViewById(selectedId)).getText().toString();
+        } else {
+            Log.e("HomeScreenFragment", "No radio button selected.");
+            return null;
+        }
+    }
 
     private void showTopEvents() {
-        // Hide unnecessary elements
-        eventSearchBar.setVisibility(View.GONE);
-        offeringSearchBar.setVisibility(View.GONE);
-        paginationBar.setVisibility(View.GONE);
-
-        // Load data and set adapter
+        toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
         List<Event> topEvents = getTopEvents();
-        if (topEvents == null || topEvents.isEmpty()) {
-            noCardsFoundTextView.setText(R.string.no_events);
-            noCardsFoundTextView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCardsFoundTextView.setVisibility(View.GONE);
-            contentRecyclerView.setVisibility(View.VISIBLE);
-            EventListAdapter eventAdapter = new EventListAdapter(topEvents);
-            contentRecyclerView.setAdapter(eventAdapter);
-        }
+        updateRecyclerView(topEvents, new EventListAdapter(topEvents));
     }
 
     private void showAllEvents() {
-        // Show event search bar and pagination
-        eventSearchBar.setVisibility(View.VISIBLE);
-        offeringSearchBar.setVisibility(View.GONE);
-        paginationBar.setVisibility(View.VISIBLE);
-
-        // Load data and set adapter
+        toggleVisibility( View.GONE, View.GONE,View.VISIBLE, View.GONE, View.VISIBLE);
         List<Event> allEvents = getAllEvents();
-        if (allEvents == null || allEvents.isEmpty()) {
-            noCardsFoundTextView.setText(R.string.no_events);
-            noCardsFoundTextView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCardsFoundTextView.setVisibility(View.GONE);
-            contentRecyclerView.setVisibility(View.VISIBLE);
-            EventListAdapter eventAdapter = new EventListAdapter(allEvents);
-            contentRecyclerView.setAdapter(eventAdapter);
-        }
+        updateRecyclerView(allEvents, new EventListAdapter(allEvents));
     }
 
     private void showTopOfferings() {
-        // Hide unnecessary elements
-        eventSearchBar.setVisibility(View.GONE);
-        offeringSearchBar.setVisibility(View.GONE);
-        paginationBar.setVisibility(View.GONE);
-
-        // Load data and set adapter
+        toggleVisibility( View.GONE,  View.VISIBLE,View.GONE, View.GONE, View.GONE);
         List<Offering> topOfferings = getTopOfferings();
-        if (topOfferings == null || topOfferings.isEmpty()) {
-            noCardsFoundTextView.setText(R.string.no_offerings);
-            noCardsFoundTextView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCardsFoundTextView.setVisibility(View.GONE);
-            contentRecyclerView.setVisibility(View.VISIBLE);
-            OfferingListAdapter offeringAdapter = new OfferingListAdapter(topOfferings);
-            contentRecyclerView.setAdapter(offeringAdapter);
-        }
+        updateRecyclerView(topOfferings, new OfferingListAdapter(topOfferings));
     }
 
     private void showAllOfferings() {
-        // Show offering search bar and pagination
-        eventSearchBar.setVisibility(View.GONE);
-        offeringSearchBar.setVisibility(View.VISIBLE);
-        paginationBar.setVisibility(View.VISIBLE);
-
-        // Load data and set adapter
+        toggleVisibility( View.GONE,  View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
         List<Offering> allOfferings = getAllOfferings();
-        if (allOfferings == null || allOfferings.isEmpty()) {
-            noCardsFoundTextView.setText(R.string.no_offerings);
+        updateRecyclerView(allOfferings, new OfferingListAdapter(allOfferings));
+    }
+
+    private void toggleVisibility(int topEventsVisibility, int topOfferingsVisibility, int eventSearchVisibility, int offeringSearchVisibility, int paginationVisibility) {
+        topEventsTextView.setVisibility(topEventsVisibility);
+        topOfferingsTextView.setVisibility(topOfferingsVisibility);
+        eventSearchBar.setVisibility(eventSearchVisibility);
+        offeringSearchBar.setVisibility(offeringSearchVisibility);
+        paginationBar.setVisibility(paginationVisibility);
+    }
+
+    private <T> void updateRecyclerView(List<T> data, RecyclerView.Adapter<?> adapter) {
+        if (data == null || data.isEmpty()) {
             noCardsFoundTextView.setVisibility(View.VISIBLE);
             contentRecyclerView.setVisibility(View.GONE);
         } else {
             noCardsFoundTextView.setVisibility(View.GONE);
             contentRecyclerView.setVisibility(View.VISIBLE);
-            OfferingListAdapter offeringAdapter = new OfferingListAdapter(allOfferings);
-            contentRecyclerView.setAdapter(offeringAdapter);
+            contentRecyclerView.setAdapter(adapter);
         }
     }
 
-    // Example data fetching methods (replace with actual implementation)
+    private void showEventFilterBottomSheet() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        setUpEventFilterDateRangePicker(bottomSheetView);
+        setUpEventTypeSpinner(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
+    private void showOfferingFilterBottomSheet(String selected) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        setUpOfferingFilterDateRangePicker(bottomSheetView);
+        setUpCategorySpinner(bottomSheetView);
+        setUpEventTypeSpinner(bottomSheetView);
+        setUpVisibilityForOfferingType(bottomSheetView, selected);
+        bottomSheetDialog.show();
+    }
+
+    private void setUpEventFilterDateRangePicker(View bottomSheetView) {
+        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
+        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
+        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
+        picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
+    }
+
+    private void setUpOfferingFilterDateRangePicker(View bottomSheetView) {
+        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
+        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
+        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
+        picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
+    }
+
+    private void setUpEventTypeSpinner(View bottomSheetView) {
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+        eventTypeSpinner.setAdapter(createSpinnerAdapter(R.array.event_types));
+    }
+
+    private void setUpCategorySpinner(View bottomSheetView) {
+        Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
+        categorySpinner.setAdapter(createSpinnerAdapter(R.array.categories));
+    }
+
+    private void setUpVisibilityForOfferingType(View bottomSheetView, String selected) {
+        View serviceDurationView = bottomSheetView.findViewById(R.id.service_duration);
+        Button dateRangePickerButton = bottomSheetView.findViewById(R.id.date_range_button);
+        TextView dateRangeTextView = bottomSheetView.findViewById(R.id.selected_dates);
+        if ("SERVICE".equals(selected)) {
+            serviceDurationView.setVisibility(View.VISIBLE);
+            dateRangePickerButton.setVisibility(View.VISIBLE);
+            dateRangeTextView.setVisibility(View.VISIBLE);
+        } else {
+            serviceDurationView.setVisibility(View.GONE);
+            dateRangePickerButton.setVisibility(View.GONE);
+            dateRangeTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateSelectedDateRange(Pair<Long, Long> selection, TextView selectedDatesTextView) {
+        String formattedDates = formatDate(selection.first) + " - " + formatDate(selection.second);
+        selectedDatesTextView.setText(formattedDates);
+    }
+
+    private String formatDate(Long dateInMillis) {
+        return java.text.DateFormat.getDateInstance().format(new java.util.Date(dateInMillis));
+    }
+    // Example data fetching methods
     private List<Event> getTopEvents() {
         List<Event> list = new ArrayList<>();
 
@@ -314,135 +313,4 @@ public class HomeScreenFragment extends Fragment {
         return list;
     }
 
-    private void showEventFilterBottomSheet() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select Date Range");
-        final MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
-
-        // Find and set up the date range button
-        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
-        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
-
-        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
-
-        // Handle the date range picker result
-        picker.addOnPositiveButtonClickListener(selection -> {
-            // Extract the date range
-            Pair<Long, Long> dateRange = picker.getSelection();
-            if (dateRange != null) {
-                Long startDate = dateRange.first; // Start date in milliseconds
-                Long endDate = dateRange.second; // End date in milliseconds
-
-                String formattedStartDate = formatDate(startDate);
-                String formattedEndDate = formatDate(endDate);
-
-                String selectedDatesText = getString(R.string.selected_date_range, formattedStartDate, formattedEndDate);
-                selectedDatesTextView.setText(selectedDatesText);
-            }
-        });
-
-        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
-        List<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Any");
-        eventTypes.add("Wedding");
-        eventTypes.add("Concert");
-        eventTypes.add("Convention");
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                eventTypes
-        );
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventTypeSpinner.setAdapter(spinnerAdapter);
-
-        bottomSheetDialog.show();
-    }
-
-    private void showOfferingFilterBottomSheet(String selected) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_services, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
-        View serviceDuration = bottomSheetDialog.findViewById(R.id.service_duration);
-        View dateRangeButton = bottomSheetDialog.findViewById(R.id.date_range_button);
-        View selectedDates = bottomSheetDialog.findViewById(R.id.selected_dates);
-
-        if (selected.equals("SERVICE")) { // Services selected
-            serviceDuration.setVisibility(View.VISIBLE);
-            dateRangeButton.setVisibility(View.VISIBLE);
-            selectedDates.setVisibility(View.VISIBLE);
-        } else if (selected.equals("PRODUCT")) { // Products selected
-            serviceDuration.setVisibility(View.GONE);
-            dateRangeButton.setVisibility(View.GONE);
-            selectedDates.setVisibility(View.GONE);
-        }
-
-
-        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select Date Range");
-        final MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
-
-        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
-
-        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
-
-        // Handle the date range picker result
-        picker.addOnPositiveButtonClickListener(selection -> {
-            // Extract the date range
-            Pair<Long, Long> dateRange = picker.getSelection();
-            if (dateRange != null) {
-                Long startDate = dateRange.first; // Start date in milliseconds
-                Long endDate = dateRange.second; // End date in milliseconds
-
-                String formattedStartDate = formatDate(startDate);
-                String formattedEndDate = formatDate(endDate);
-
-                String selectedDatesText = getString(R.string.selected_date_range, formattedStartDate, formattedEndDate);
-                selectedDatesTextView.setText(selectedDatesText);
-            }
-        });
-
-        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
-        List<String> eventTypes = new ArrayList<>();
-        eventTypes.add("Any");
-        eventTypes.add("Wedding");
-        eventTypes.add("Concert");
-        eventTypes.add("Convention");
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                eventTypes
-        );
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventTypeSpinner.setAdapter(spinnerAdapter);
-
-        Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
-        List<String> categoryTypes = new ArrayList<>();
-        categoryTypes.add("Any");
-        categoryTypes.add("Flowers");
-        categoryTypes.add("Decoration");
-        categoryTypes.add("Music");
-
-        ArrayAdapter<String> spinnerCategoryAdapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                categoryTypes
-        );
-        spinnerCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(spinnerCategoryAdapter);
-
-        bottomSheetDialog.show();
-    }
-
-    // Helper method to format date
-    private String formatDate(Long dateInMillis) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-        return formatter.format(new Date(dateInMillis));
-    }
 }
