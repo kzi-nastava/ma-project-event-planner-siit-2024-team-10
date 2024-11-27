@@ -77,7 +77,7 @@ public class ManageOfferingsFragment extends Fragment {
     // Method to display the BottomSheetDialog
     private void showFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.fragment_offering_search_bar, null);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }

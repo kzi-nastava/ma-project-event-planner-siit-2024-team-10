@@ -2,10 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="brand_green">#5FA3A2</color>
-    <color name="brand_green_light">#C9E5DE</color>
-    <color name="creme">#F3E8EE</color>
-    <color name="charcoal_blue">#475B63</color>
+    <color name="brand_purple">#ABA4C0</color>
+    <color name="brand_purple_light">#D0CFE1</color>
+    <color name="off_white">#F6F6F6</color>
+    <color name="chocolate_brown">#3A2D30</color>
     <color name="brand_highlight_red">#E8B6B6</color>
     <color name="brand_highlight_blue">#B6CFE8</color>
     <color name="brand_highlight_green">#AEEDDC</color>
