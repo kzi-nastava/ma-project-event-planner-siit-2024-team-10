@@ -11,14 +11,15 @@
         android:layout_height="wrap_content"
         android:scrollbars="none"
         android:layout_marginTop="2dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
+        android:background="@color/brand_purple_light">
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleSelection="true">
+            app:singleSelection="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
 
             <Button
                 style="?attr/materialButtonOutlinedStyle"
@@ -65,7 +66,7 @@
         android:text="@string/top_events_text"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="@color/charcoal_blue"
+        android:textColor="@color/chocolate_brown"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/top_offerings_text"
@@ -76,7 +77,7 @@
         android:text="@string/top_offerings_text"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:textColor="@color/charcoal_blue"
+        android:textColor="@color/chocolate_brown"
         android:visibility="gone"/>
 
     <include

@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/brand_green_light">
+    android:background="@color/brand_purple_light">
 
         <TextView
             android:id="@+id/all_events"
@@ -15,7 +15,7 @@
             android:text="@string/all_events"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:textColor="@color/charcoal_blue"/>
+            android:textColor="@color/chocolate_brown"/>
 
     <com.google.android.material.search.SearchBar
         android:id="@+id/search_bar"
