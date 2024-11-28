@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/brand_green_light">
+    android:background="@color/brand_purple_light">
 
         <TextView
             android:id="@+id/all_events"
@@ -15,7 +15,7 @@
             android:text="@string/all_events"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:textColor="@color/charcoal_blue"/>
+            android:textColor="@color/chocolate_brown"/>
 
     <com.google.android.material.search.SearchBar
         android:id="@+id/search_bar"
@@ -29,38 +29,37 @@
         android:orientation="horizontal"
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
-
         <Button
-            android:id="@+id/search_button2"
+            android:id="@+id/filter_events_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
+            android:layout_gravity="end"
             android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:text="@string/search"
-            android:minWidth="48dp"
-            android:minHeight="48dp"/>
-
+            android:text="@string/filter" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/filter_button"
+        <Spinner
+            android:id="@+id/btn_sort_events_by"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:text="@string/filter" />
+            android:text="@string/sort"
+            android:tooltipText="@string/sort"
+            android:contentDescription="@string/sort"
+            />
 
-        <Button
-            android:id="@+id/restart_filter_button"
+        <Spinner
+            android:id="@+id/btn_sort_events_direction"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
-            android:text="@string/restart_filter"
+            android:text="@string/sort"
+            android:tooltipText="@string/sort"
+            android:contentDescription="@string/sort"
             />
 
     </LinearLayout>

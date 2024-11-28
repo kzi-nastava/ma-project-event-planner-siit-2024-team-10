@@ -78,6 +78,7 @@
     <string name="reservation_deadline">Reservation deadline</string>
     <string name="cancellation_deadline">Cancellation deadline</string>
     <string name="service">SERVICE</string>
+    <string name="product">PRODUCT</string>
     <string name="category">CATEGORY</string>
     <string name="your_services">Your Services</string>
     <string name="add_now">Add now!</string>
@@ -98,8 +99,18 @@
     <string name="expert_makeup">Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day.</string>
     <string name="category_beauty">Category: Beauty</string>
     <string name="edit_service">Edit Service</string>
-    <string name="bridal_specification">Bridal makeup services include a personalized consultation... </string>
+    <string name="bridal_specification">Bridal makeup services include a personalized consultation… </string>
     <string name="no_events">No events found.</string>
     <string name="no_offerings">No services/products found.</string>
+    <string name="event_type_spinner">Choose Event Type</string>
+    <string name="location">Location</string>
+    <string name="max_participants">Maximum Participants</string>
+    <string name="min_rating">Minimum Rating</string>
+    <string name="select_start_end_date">Select a start and end date</string>
+    <string name="selected_date_range">Selected: %1$s - %2$s</string>
+    <string name="select_date_range">Select Date Range</string>
+    <string name="min_discount">Minimum Discount</string>
+    <string name="service_duration">Service Duration</string>
+
 
 </resources>

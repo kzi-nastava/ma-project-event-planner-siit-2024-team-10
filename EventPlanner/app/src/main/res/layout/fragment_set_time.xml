@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/creme"
+    android:background="@color/off_white"
     android:gravity="center">
 
     <TextView
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_length"
-        android:textColor="@color/brand_green"
+        android:textColor="@color/brand_purple"
         android:textSize="25sp"
         android:textStyle="bold"
         android:fontFamily="@font/fira_sans_extra_condensed_bold" />
@@ -37,14 +37,14 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:background="?android:attr/selectableItemBackground"
-            android:textColor="@color/brand_green"/>
+            android:textColor="@color/brand_purple"/>
 
         <Button
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ok"
-            android:textColor="@color/brand_green"
+            android:textColor="@color/brand_purple"
             android:background="?android:attr/selectableItemBackground"
             android:layout_marginStart="16dp" />
     </LinearLayout>
