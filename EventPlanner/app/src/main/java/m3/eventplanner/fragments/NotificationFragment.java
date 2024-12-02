@@ -37,7 +37,7 @@ import m3.eventplanner.models.Service;
 public class NotificationFragment extends Fragment {
 
     private RecyclerView contentRecyclerView;
-    // private TextView noCardsFoundTextView;
+    private TextView noCardsFoundTextView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class NotificationFragment extends Fragment {
 
     private void initializeUIElements(View rootView) {
         contentRecyclerView = rootView.findViewById(R.id.notification_list);
-        // noCardsFoundTextView = rootView.findViewById(R.id.noCardsFoundTextView);
+        noCardsFoundTextView = rootView.findViewById(R.id.noNotificationsFoundTextView);
     }
 
     private void setUpRecyclerView() {
@@ -70,10 +70,10 @@ public class NotificationFragment extends Fragment {
 
     private <T> void updateRecyclerView(List<T> data, RecyclerView.Adapter<?> adapter) {
         if (data == null || data.isEmpty()) {
-            // noCardsFoundTextView.setVisibility(View.VISIBLE);
+            noCardsFoundTextView.setVisibility(View.VISIBLE);
             contentRecyclerView.setVisibility(View.GONE);
         } else {
-            // noCardsFoundTextView.setVisibility(View.GONE);
+            noCardsFoundTextView.setVisibility(View.GONE);
             contentRecyclerView.setVisibility(View.VISIBLE);
             contentRecyclerView.setAdapter(adapter);
         }
@@ -90,6 +90,9 @@ public class NotificationFragment extends Fragment {
 
         notifications.add(new Notification(5, "Service Reminder", false, "Your booked service 'Digital Marketing Workshop' starts in 1 hour.", LocalDateTime.now().minusMinutes(45)));
         notifications.add(new Notification(6, "Service Reminder", true, "Your booked service 'Personal Trainer' starts in 1 hour.", LocalDateTime.now().minusMinutes(50)));
+
+        notifications.add(new Notification(7, "Service Reminder", false, "Your booked service 'Digital Marketing Workshop' starts in 1 hour.", LocalDateTime.now().minusMinutes(45)));
+        notifications.add(new Notification(8, "Service Reminder", true, "Your booked service 'Personal Trainer' starts in 1 hour.", LocalDateTime.now().minusMinutes(50)));
 
         return notifications;
     }

@@ -37,5 +37,17 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/noNotificationsFoundTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="200dp"
+        android:padding="16dp"
+        android:text="@string/no_notifications"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
 
 </LinearLayout>
