@@ -49,5 +49,13 @@
         android:textSize="20sp"
         android:visibility="gone" />
 
+    <include
+        android:id="@+id/notification_pagination"
+        layout="@layout/pagination_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
+
 
 </LinearLayout>

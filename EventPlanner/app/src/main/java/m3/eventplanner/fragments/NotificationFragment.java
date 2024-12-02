@@ -38,6 +38,7 @@ public class NotificationFragment extends Fragment {
 
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView;
+    private View paginationView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class NotificationFragment extends Fragment {
     private void initializeUIElements(View rootView) {
         contentRecyclerView = rootView.findViewById(R.id.notification_list);
         noCardsFoundTextView = rootView.findViewById(R.id.noNotificationsFoundTextView);
+        paginationView = rootView.findViewById(R.id.notification_pagination);
     }
 
     private void setUpRecyclerView() {
@@ -72,10 +74,12 @@ public class NotificationFragment extends Fragment {
         if (data == null || data.isEmpty()) {
             noCardsFoundTextView.setVisibility(View.VISIBLE);
             contentRecyclerView.setVisibility(View.GONE);
+            paginationView.setVisibility(View.GONE);
         } else {
             noCardsFoundTextView.setVisibility(View.GONE);
             contentRecyclerView.setVisibility(View.VISIBLE);
             contentRecyclerView.setAdapter(adapter);
+            paginationView.setVisibility(View.VISIBLE);
         }
     }
 
