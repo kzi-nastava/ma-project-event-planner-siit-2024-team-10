@@ -7,6 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.models.Notification;
@@ -48,7 +52,12 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
 
         holder.titleTextView.setText(notification.getTitle());
         holder.descriptionTextView.setText(notification.getContent());
-        holder.dateAndTimeTextView.setText(notification.getDate().toString());
+        String formattedDate = formatDateTime(notification.getDate());
+        holder.dateAndTimeTextView.setText(formattedDate);
+    }
+    private String formatDateTime(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+        return dateTime.format(formatter);
     }
 
     @Override
