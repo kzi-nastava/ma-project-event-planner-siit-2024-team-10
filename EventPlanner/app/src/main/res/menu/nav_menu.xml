@@ -20,7 +20,7 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_offering"/>
             <item
-                android:id="@+id/notificationsFragment"
+                android:id="@+id/notificationFragment"
                 android:title="@string/notifications"
                 android:checkable="true"
                 android:icon="@drawable/ic_bell"/>
