@@ -67,5 +67,9 @@
         android:id="@+id/editOfferingFragment"
         android:name="m3.eventplanner.fragments.EditOfferingFragment"
         android:label="Edit Offering" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="m3.eventplanner.fragments.NotificationFragment"
+        android:label="Notifications" />
 
 </navigation>

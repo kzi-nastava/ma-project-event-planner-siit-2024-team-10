@@ -20,6 +20,11 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_offering"/>
             <item
+                android:id="@+id/notificationFragment"
+                android:title="@string/notifications"
+                android:checkable="true"
+                android:icon="@drawable/ic_bell"/>
+            <item
                 android:id="@+id/chatFragment"
                 android:title="@string/your_chatrooms"
                 android:checkable="true"
