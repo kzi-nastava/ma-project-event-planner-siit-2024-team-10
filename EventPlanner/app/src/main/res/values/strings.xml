@@ -111,6 +111,8 @@
     <string name="select_date_range">Select Date Range</string>
     <string name="min_discount">Minimum Discount</string>
     <string name="service_duration">Service Duration</string>
+    <string name="notification_description">Peter J. commented on this event: "The music was amazing!"</string>
+    <string name="notification_date_time">12.12.2024. 12:00</string>
 
 
 </resources>
