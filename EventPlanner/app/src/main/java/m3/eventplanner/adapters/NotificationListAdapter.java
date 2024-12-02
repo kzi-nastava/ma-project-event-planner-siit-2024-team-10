@@ -1,5 +1,6 @@
 package m3.eventplanner.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,12 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
         holder.descriptionTextView.setText(notification.getContent());
         String formattedDate = formatDateTime(notification.getDate());
         holder.dateAndTimeTextView.setText(formattedDate);
+
+        if (!notification.isRead()) {
+            holder.notificationCard.setCardBackgroundColor(Color.WHITE);
+        } else {
+            holder.notificationCard.setCardBackgroundColor(Color.LTGRAY);
+        }
     }
     private String formatDateTime(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);

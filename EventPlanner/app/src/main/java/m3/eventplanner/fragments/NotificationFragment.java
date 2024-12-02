@@ -89,13 +89,13 @@ public class NotificationFragment extends Fragment {
         notifications.add(new Notification(1, "Rated Event", false, "John J. rated 'Mary and John's wedding' 4 stars.", LocalDateTime.now().minusDays(1)));
         notifications.add(new Notification(2, "Rated Event", false, "Kim L. rated 'Popular band concert' 2 stars.", LocalDateTime.now().minusHours(2)));
 
-        notifications.add(new Notification(3, "New Comment", true, "Mia O. commented 'Tech innovations convention': 'This convention was great!'", LocalDateTime.now().minusMinutes(30)));
+        notifications.add(new Notification(3, "New Comment", false, "Mia O. commented 'Tech innovations convention': 'This convention was great!'", LocalDateTime.now().minusMinutes(30)));
         notifications.add(new Notification(4, "New Comment", false, "Alexander P. commented 'Popular band concert':'The music was horrible.", LocalDateTime.now().minusDays(3)));
 
         notifications.add(new Notification(5, "Service Reminder", false, "Your booked service 'Digital Marketing Workshop' starts in 1 hour.", LocalDateTime.now().minusMinutes(45)));
         notifications.add(new Notification(6, "Service Reminder", true, "Your booked service 'Personal Trainer' starts in 1 hour.", LocalDateTime.now().minusMinutes(50)));
 
-        notifications.add(new Notification(7, "Service Reminder", false, "Your booked service 'Digital Marketing Workshop' starts in 1 hour.", LocalDateTime.now().minusMinutes(45)));
+        notifications.add(new Notification(7, "Service Reminder", true, "Your booked service 'Digital Marketing Workshop' starts in 1 hour.", LocalDateTime.now().minusMinutes(45)));
         notifications.add(new Notification(8, "Service Reminder", true, "Your booked service 'Personal Trainer' starts in 1 hour.", LocalDateTime.now().minusMinutes(50)));
 
         return notifications;
