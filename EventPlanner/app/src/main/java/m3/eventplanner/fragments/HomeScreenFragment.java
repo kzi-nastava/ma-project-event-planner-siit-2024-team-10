@@ -20,13 +20,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
+import m3.eventplanner.models.AgendaItem;
 import m3.eventplanner.models.Event;
+import m3.eventplanner.models.EventType;
+import m3.eventplanner.models.Location;
 import m3.eventplanner.models.Offering;
+import m3.eventplanner.models.Organizer;
 import m3.eventplanner.models.Product;
 import m3.eventplanner.models.Service;
 
@@ -256,32 +262,184 @@ public class HomeScreenFragment extends Fragment {
     }
     // Example data fetching methods
     private List<Event> getTopEvents() {
-        List<Event> list = new ArrayList<>();
 
-        list.add(new Event(11L, "Outdoor Adventure Expo", 3.6, "Outdoor Life", "Senta, Serbia", "25.08.2024. 09:00"));
-        list.add(new Event(12L, "Tech Startup Pitch", 4.1, "Tech Innovators", "Novi Sad, Serbia", "15.09.2024. 10:00"));
-        list.add(new Event(13L, "Art Gallery Opening", 4.3, "Art Lovers", "Belgrade, Serbia", "22.10.2024. 19:00"));
-        list.add(new Event(14L, "Science Fair", 4.4, "STEM Serbia", "Kragujevac, Serbia", "05.11.2024. 10:30"));
-        list.add(new Event(15L, "Winter Wonderland Festival", 4.9, "Winter Fest", "Niš, Serbia", "15.12.2024. 16:00"));
+        List<Event> events = new ArrayList<>();
 
-        return list;
+        events.add(new Event(1, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 2.5,
+                new Organizer(1, "John", "Doe", new Location(1, "Serbia", "Beograd", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", "https://media.istockphoto.com/id/1437816897/photo/business-woman-manager-or-human-resources-portrait-for-career-success-company-we-are-hiring.jpg?s=612x612&w=0&k=20&c=tyLvtzutRh22j9GqSGI33Z4HpIwv9vL_MZw_xOE19NQ="),
+                new Location(2, "Serbia", "Beograd", "Wedding Venue", "5"),
+                LocalDate.of(2024, 12, 12), "A beautiful winter wedding.", 150, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
+
+        events.add(new Event(2, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 5.0,
+                new Organizer(2, "John", "Doe", new Location(1, "Serbia", "Novi Sad", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", null),
+                new Location(3, "Serbia", "Novi Sad", "Wedding Venue", "10"),
+                LocalDate.of(2024, 12, 12), "A magical wedding reception.", 200, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
+
+        events.add(new Event(3, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 1.5,
+                new Organizer(3, "John", "Doe", new Location(1, "Serbia", "Arilje", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", null),
+                new Location(4, "Serbia", "Arilje", "Wedding Venue", "15"),
+                LocalDate.of(2024, 12, 12), "A serene countryside wedding.", 100, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
+
+        events.add(new Event(4, new EventType(2, "Conference"), "Tech Conference 2024", 4.0,
+                new Organizer(4, "Alice", "Smith", new Location(5, "Serbia", "Belgrade", "Tech Hub", "20"),
+                        "alice.smith@example.com", "987654321", null),
+                new Location(6, "Serbia", "Belgrade", "Conference Center", "30"),
+                LocalDate.of(2024, 1, 14), "A gathering for tech enthusiasts.", 300, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Keynote", "Opening keynote by the CEO.", "09:00", "10:00", "Main Stage"));
+                    add(new AgendaItem(2, "Panel Discussion", "Discussion on the future of tech.", "10:15", "11:00", "Room A"));
+                    add(new AgendaItem(3, "Networking", "Networking session for all attendees.", "11:15", "12:00", "Lounge"));
+                }}
+        ));
+
+        events.add(new Event(5, new EventType(3, "Festival"), "Food Festival", 3.7,
+                new Organizer(5, "Emily", "Brown", new Location(7, "Serbia", "Novi Sad", "Food Street", "5"),
+                        "emily.brown@example.com", "1122334455", null),
+                new Location(8, "Serbia", "Novi Sad", "Festival Grounds", "40"),
+                LocalDate.of(2024, 2, 16), "A delicious culinary journey.", 500, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Food Tasting", "Taste a variety of cuisines.", "11:00", "13:00", "Food Court"));
+                    add(new AgendaItem(2, "Cooking Demo", "Live cooking demonstrations.", "13:15", "14:30", "Cooking Stage"));
+                    add(new AgendaItem(3, "Chef Talk", "Meet renowned chefs and learn their secrets.", "14:45", "16:00", "Chef's Corner"));
+                }}
+        ));
+
+        return events;
     }
 
     private List<Event> getAllEvents() {
-        List<Event> list = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
 
-        list.add(new Event(1L, "Mary And Josh's Wedding", 2.5, "Organizer 1", "Beograd, Serbia", "12.12.2024. 12:03"));
-        list.add(new Event(2L, "Mary And Josh's Wedding", 5, "Organizer 1", "Novi Sad, Serbia", "12.12.2024. 12:03"));
-        list.add(new Event(3L, "Mary And Josh's Wedding", 1.5, "Organizer 1", "Arilje, Serbia", "12.12.2024. 12:03"));
-        list.add(new Event(4L, "Tech Conference 2024", 4, "Tech Corp", "Belgrade, Serbia", "14.01.2024. 09:00"));
-        list.add(new Event(5L, "Food Festival", 3.7, "Foodies Ltd.", "Novi Sad, Serbia", "16.02.2024. 11:00"));
-        list.add(new Event(6L, "Spring Music Festival", 4.5, "Spring Tunes", "Kragujevac, Serbia", "20.03.2024. 17:00"));
-        list.add(new Event(7L, "Fashion Week", 5, "Fashion Events", "Zrenjanin, Serbia", "01.04.2024. 10:00"));
-        list.add(new Event(8L, "Digital Marketing Summit", 3.9, "Marketing Hub", "Niš, Serbia", "05.05.2024. 14:30"));
-        list.add(new Event(9L, "Yoga Retreat", 4.2, "ZenLife", "Subotica, Serbia", "10.06.2024. 08:00"));
-        list.add(new Event(10L, "International Film Festival", 4.8, "Film Association", "Pancevo, Serbia", "12.07.2024. 18:00"));
+        events.add(new Event(1, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 2.5,
+                new Organizer(1, "John", "Doe", new Location(1, "Serbia", "Beograd", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", null),
+                new Location(2, "Serbia", "Beograd", "Wedding Venue", "5"),
+                LocalDate.of(2024, 12, 12), "A beautiful winter wedding.", 150, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
 
-        return list;
+        events.add(new Event(2, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 5.0,
+                new Organizer(2, "John", "Doe", new Location(1, "Serbia", "Novi Sad", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", null),
+                new Location(3, "Serbia", "Novi Sad", "Wedding Venue", "10"),
+                LocalDate.of(2024, 12, 12), "A magical wedding reception.", 200, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
+
+        events.add(new Event(3, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 1.5,
+                new Organizer(3, "John", "Doe", new Location(1, "Serbia", "Arilje", "Main Street", "10"),
+                        "john.doe@example.com", "123456789", null),
+                new Location(4, "Serbia", "Arilje", "Wedding Venue", "15"),
+                LocalDate.of(2024, 12, 12), "A serene countryside wedding.", 100, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
+                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
+                }}
+        ));
+
+        events.add(new Event(4, new EventType(2, "Conference"), "Tech Conference 2024", 4.0,
+                new Organizer(4, "Alice", "Smith", new Location(5, "Serbia", "Belgrade", "Tech Hub", "20"),
+                        "alice.smith@example.com", "987654321", null),
+                new Location(6, "Serbia", "Belgrade", "Conference Center", "30"),
+                LocalDate.of(2024, 1, 14), "A gathering for tech enthusiasts.", 300, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Keynote", "Opening keynote by the CEO.", "09:00", "10:00", "Main Stage"));
+                    add(new AgendaItem(2, "Panel Discussion", "Discussion on the future of tech.", "10:15", "11:00", "Room A"));
+                    add(new AgendaItem(3, "Networking", "Networking session for all attendees.", "11:15", "12:00", "Lounge"));
+                }}
+        ));
+
+        events.add(new Event(5, new EventType(3, "Festival"), "Food Festival", 3.7,
+                new Organizer(5, "Emily", "Brown", new Location(7, "Serbia", "Novi Sad", "Food Street", "5"),
+                        "emily.brown@example.com", "1122334455", null),
+                new Location(8, "Serbia", "Novi Sad", "Festival Grounds", "40"),
+                LocalDate.of(2024, 2, 16), "A delicious culinary journey.", 500, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Food Tasting", "Taste a variety of cuisines.", "11:00", "13:00", "Food Court"));
+                    add(new AgendaItem(2, "Cooking Demo", "Live cooking demonstrations.", "13:15", "14:30", "Cooking Stage"));
+                    add(new AgendaItem(3, "Chef Talk", "Meet renowned chefs and learn their secrets.", "14:45", "16:00", "Chef's Corner"));
+                }}
+        ));
+
+        events.add(new Event(6, new EventType(3, "Festival"), "Spring Music Festival", 4.5,
+                new Organizer(6, "Michael", "Johnson", new Location(9, "Serbia", "Kragujevac", "Music Avenue", "12"),
+                        "michael.johnson@example.com", "6677889900", null),
+                new Location(10, "Serbia", "Kragujevac", "Open Air Stage", "50"),
+                LocalDate.of(2024, 3, 20), "A celebration of spring and music.", 700, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Live Performance", "Live band performance.", "17:00", "18:30", "Main Stage"));
+                    add(new AgendaItem(2, "DJ Set", "Dance music set by DJ Mike.", "19:00", "20:30", "Side Stage"));
+                }}
+        ));
+
+        events.add(new Event(7, new EventType(4, "Fashion"), "Fashion Week", 5.0,
+                new Organizer(7, "Sarah", "Davis", new Location(11, "Serbia", "Zrenjanin", "Fashion Street", "18"),
+                        "sarah.davis@example.com", "4433221100", null),
+                new Location(12, "Serbia", "Zrenjanin", "Fashion Pavilion", "70"),
+                LocalDate.of(2024, 4, 1), "Showcasing the latest trends.", 400, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Runway Show", "Fashion show featuring top designers.", "10:00", "12:00", "Main Stage"));
+                    add(new AgendaItem(2, "Designer Meet and Greet", "Meet and talk to designers.", "12:30", "14:00", "VIP Room"));
+                }}
+        ));
+
+        events.add(new Event(8, new EventType(5, "Conference"), "Digital Marketing Summit", 3.9,
+                new Organizer(8, "Tom", "Lee", new Location(13, "Serbia", "Niš", "Marketing Hub", "22"),
+                        "tom.lee@example.com", "2233445566", null),
+                new Location(14, "Serbia", "Niš", "Summit Hall", "80"),
+                LocalDate.of(2024, 5, 5), "Exploring digital marketing trends.", 350, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Social Media Marketing", "Strategies for success in social media marketing.", "09:00", "10:30", "Room A"));
+                    add(new AgendaItem(2, "SEO and SEM", "Maximizing visibility through SEO and SEM.", "10:45", "12:00", "Room B"));
+                }}
+        ));
+
+        events.add(new Event(9, new EventType(6, "Retreat"), "Yoga Retreat", 4.2,
+                new Organizer(9, "Anna", "Green", new Location(15, "Serbia", "Subotica", "Zen Street", "7"),
+                        "anna.green@example.com", "5566778899", null),
+                new Location(16, "Serbia", "Subotica", "Yoga Center", "90"),
+                LocalDate.of(2024, 6, 10), "A rejuvenating yoga experience.", 100, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Morning Yoga", "Start your day with a peaceful yoga session.", "08:00", "09:30", "Yoga Hall"));
+                    add(new AgendaItem(2, "Meditation Session", "Relax and meditate for mental clarity.", "10:00", "11:00", "Meditation Room"));
+                }}
+        ));
+
+        events.add(new Event(10, new EventType(7, "Festival"), "International Film Festival", 4.8,
+                new Organizer(10, "David", "Moore", new Location(17, "Serbia", "Pancevo", "Cinema Street", "5"),
+                        "david.moore@example.com", "9988776655", null),
+                new Location(18, "Serbia", "Pancevo", "Festival Hall", "100"),
+                LocalDate.of(2024, 7, 12), "A week of the best international films.", 600, true,
+                new ArrayList<AgendaItem>() {{
+                    add(new AgendaItem(1, "Opening Film", "Premiere of the opening film.", "18:00", "20:00", "Main Screen"));
+                    add(new AgendaItem(2, "Short Films", "Screening of selected short films.", "20:15", "22:00", "Screen 2"));
+                }}
+        ));
+        return events;
     }
 
     private List<Offering> getTopOfferings() {

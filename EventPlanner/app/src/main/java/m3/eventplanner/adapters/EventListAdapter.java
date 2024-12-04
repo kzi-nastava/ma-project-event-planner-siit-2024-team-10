@@ -1,5 +1,6 @@
 package m3.eventplanner.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,9 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.models.Event;
+import androidx.navigation.Navigation;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
@@ -48,12 +52,15 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventItemList.get(position);
 
-        holder.titleTextView.setText(event.getTitle());
-        holder.organizerTextView.setText("Organizer: " + event.getOrganizer());
+        holder.titleTextView.setText(event.getName());
+        holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName()+" "+event.getOrganizer().getLastName());
         holder.ratingTextView.setText(event.getRating()+"★");
-        holder.locationAndDateTextView.setText(event.getLocation()+" at "+event.getDate());
+        holder.locationAndDateTextView.setText(event.getLocation().getCity()+", "+event.getLocation().getCountry()+" at "+event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
         holder.eventCard.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("selectedEvent", event);
+            Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_eventDetailsFragment, bundle);
         });
     }
 

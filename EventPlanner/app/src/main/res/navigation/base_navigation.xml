@@ -32,7 +32,11 @@
         android:id="@+id/homeScreenFragment"
         android:name="m3.eventplanner.fragments.HomeScreenFragment"
         android:label="@string/home"
-        tools:layout="@layout/fragment_homescreen" />
+        tools:layout="@layout/fragment_homescreen" >
+        <action
+            android:id="@+id/action_homeScreenFragment_to_eventDetailsFragment"
+            app:destination="@id/eventDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/manageOfferingsFragment"
         android:name="m3.eventplanner.fragments.ManageOfferingsFragment"
@@ -67,6 +71,10 @@
         android:id="@+id/editOfferingFragment"
         android:name="m3.eventplanner.fragments.EditOfferingFragment"
         android:label="Edit Offering" />
+    <fragment
+        android:id="@+id/eventDetailsFragment"
+        android:name="m3.eventplanner.fragments.EventDetailsFragment"
+        android:label="Event Details" />
     <fragment
         android:id="@+id/notificationFragment"
         android:name="m3.eventplanner.fragments.NotificationFragment"

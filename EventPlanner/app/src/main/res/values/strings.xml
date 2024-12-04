@@ -88,6 +88,13 @@
     <string name="select_date_range">Select Date Range</string>
     <string name="min_discount">Minimum Discount</string>
     <string name="service_duration">Service Duration</string>
+    <string name="date">Date</string>
+    <string name="agenda">Agenda</string>
+    <string name="add_your_review">Add Your Review</string>
+    <string name="write_your_review_here">Write your review here</string>
+    <string name="submit_review">SUBMIT REVIEW</string>
+    <string name="export_to_pdf">Export to PDF</string>
+
     <string name="notifications">Notifications</string>
     <string name="toggle_notifications">Toggle Push Notifications</string>
     <string name="no_notifications">No notifications</string>
