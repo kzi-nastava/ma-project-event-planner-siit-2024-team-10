@@ -1,5 +1,6 @@
 package m3.eventplanner.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.models.Event;
+import androidx.navigation.Navigation;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
@@ -54,6 +56,9 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         holder.locationAndDateTextView.setText(event.getLocation()+" at "+event.getDate());
 
         holder.eventCard.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("selectedEvent", event);
+            Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_eventDetailsFragment, bundle);
         });
     }
 
