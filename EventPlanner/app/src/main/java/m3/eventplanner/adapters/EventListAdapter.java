@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.models.Event;
@@ -53,7 +55,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         holder.titleTextView.setText(event.getName());
         holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName()+" "+event.getOrganizer().getLastName());
         holder.ratingTextView.setText(event.getRating()+"★");
-        holder.locationAndDateTextView.setText(event.getLocation().getCity()+", "+event.getLocation().getCountry()+" at "+event.getDate());
+        holder.locationAndDateTextView.setText(event.getLocation().getCity()+", "+event.getLocation().getCountry()+" at "+event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
         holder.eventCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
