@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="EventPlanner/.gradle/8.9/dependencies-accessors/19666b7ee7477488faba75fa6199859f9eeb0a35/sources"/>
+	<classpathentry kind="src" path="EventPlanner/.gradle/8.9/dependencies-accessors/477ad383afdb9a79f9820843f57766a3d11303d9/sources"/>
+	<classpathentry kind="src" path="EventPlanner/.gradle/8.9/dependencies-accessors/6ce4719cafc398f416ac9de6ed61ea735ed0207f/sources"/>
+	<classpathentry kind="src" path="EventPlanner/.gradle/8.9/dependencies-accessors/71633840a1ce8d4f20886723ecd1f9cdc834eee1/sources"/>
+	<classpathentry kind="src" path="EventPlanner/.gradle/8.9/dependencies-accessors/7c84cd9ef6d69cbb15e7ede5f9e11f766ecf8153/sources"/>
+	<classpathentry kind="src" path="EventPlanner/app/build/generated/data_binding_base_class_source_out/debug/out"/>
+	<classpathentry kind="src" path="EventPlanner/app/src/androidTest/java"/>
+	<classpathentry kind="src" path="EventPlanner/app/src/main/java"/>
+	<classpathentry kind="src" path="EventPlanner/app/src/test/java"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/processDebugResources/R.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/base.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/be4c414d85f51948bca109ab66598ec99eb79f55febf1109c155cd8703c765f0_0.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/be4c414d85f51948bca109ab66598ec99eb79f55febf1109c155cd8703c765f0_1.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/be4c414d85f51948bca109ab66598ec99eb79f55febf1109c155cd8703c765f0_2.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/app/build/intermediates/project_dex_archive/debug/dexBuilderDebug/out/be4c414d85f51948bca109ab66598ec99eb79f55febf1109c155cd8703c765f0_3.jar"/>
+	<classpathentry kind="lib" path="EventPlanner/gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="output" path="EventPlanner/.gradle/8.9/dependencies-accessors/19666b7ee7477488faba75fa6199859f9eeb0a35/classes"/>
+</classpath>
