@@ -26,7 +26,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/eventName"
-                    android:text="Sarah and Jake's Wedding"
                     android:textColor="#2d3748"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -61,7 +60,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Event type"
+                        android:text="@string/event_type"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -70,14 +69,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:id="@+id/eventType"
-                        android:text="Wedding"
                         android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Description"
+                        android:text="@string/description"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -86,14 +84,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:id="@+id/eventDescription"
-                        android:text="A food lover’s paradise with the best chefs, restaurants, and food brands showcasing their latest offerings."
                         android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Location"
+                        android:text="@string/location"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -102,14 +99,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:id="@+id/eventLocation"
-                        android:text="Expo Blvd 12, New York, USA"
                         android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Date"
+                        android:text="@string/date"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -118,7 +114,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
                         android:id="@+id/eventDate"
-                        android:text="12.12.2024."
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -143,7 +138,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Agenda"
+                        android:text="@string/agenda"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                     <LinearLayout
@@ -185,7 +180,7 @@
                         android:background="#d0cfe1"
                         android:clipToOutline="true"
                         android:id="@+id/eventOrganizerProfilePhoto"
-                        android:contentDescription="Organizer Image"
+                        android:contentDescription="@string/profile_photo"
                         android:scaleType="centerCrop"
                         android:src="@drawable/profile_photo" />
 
@@ -199,7 +194,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Organizer Name"
                             android:id="@+id/eventOrganizerName"
                             android:textColor="#2d3748"
                             android:textSize="16sp"
@@ -209,7 +203,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="Novi Sad, Serbia"
                             android:id="@+id/eventOrganizerLocation"
                             android:textColor="#4a5568"
                             android:textSize="14sp" />
@@ -218,7 +211,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="4dp"
-                            android:text="📧 organizemail.com"
                             android:id="@+id/eventOrganizerEmail"
                             android:textColor="#4a5568"
                             android:textSize="14sp" />
@@ -226,7 +218,6 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="📞 123456789"
                             android:id="@+id/eventOrganizerPhone"
                             android:textColor="#4a5568"
                             android:textSize="14sp" />
@@ -269,26 +260,47 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="Add Your Review"
+                        android:text="@string/add_your_review"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"/>
 
+                    <!-- Rating Input -->
                     <RatingBar
                         android:id="@+id/new_comment_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
                         android:numStars="5"
-                        android:stepSize="0.5" />
+                        android:stepSize="0.5"
+                        android:layout_marginBottom="16dp"/>
 
-                    <EditText
-                        android:id="@+id/new_comment_edit"
+                    <!-- Comment Input -->
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start|top"
-                        android:hint="Share your thoughts..."
-                        android:imeOptions="actionDone" />
+                        android:layout_marginBottom="16dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/new_comment_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/write_your_review_here"
+                            android:inputType="textMultiLine"
+                            android:minLines="3"
+                            android:maxLines="6"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Submit Button -->
+                    <Button
+                        android:id="@+id/submit_comment_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/submit_review"
+                        android:padding="12dp"
+                        android:backgroundTint="@android:color/holo_blue_dark"/>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -297,7 +309,7 @@
                     android:id="@+id/edit_offering_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Export to PDF"
+                    android:text="@string/export_to_pdf"
                     android:padding="8dp"
                     android:backgroundTint="@android:color/holo_blue_light"
                     android:textColor="@android:color/white"
