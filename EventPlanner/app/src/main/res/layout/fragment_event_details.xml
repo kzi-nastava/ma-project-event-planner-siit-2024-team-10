@@ -141,15 +141,18 @@
                         android:text="Agenda"
                         android:textSize="20sp"
                         android:textStyle="bold" />
-
-                    <include layout="@layout/agenda_item_card" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/agendaRecyclerView"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:visibility="gone" />
+                        android:orientation="vertical">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/agendaRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+
+
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
