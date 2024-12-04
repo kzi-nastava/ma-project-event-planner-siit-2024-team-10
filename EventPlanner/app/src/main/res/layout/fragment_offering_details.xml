@@ -9,7 +9,8 @@
     <!-- Main ScrollView Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:padding="16dp">
 
             <!-- CardView for Service Image -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginBottom="16dp"
@@ -33,65 +34,91 @@
                     android:src="@drawable/makeup"
                     android:contentDescription="Service Image" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Service Title and Rating -->
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bridal hair and makeup"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Rating Bar -->
-            <RatingBar
-                android:id="@+id/service_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:rating="4.5"
-                android:stepSize="0.5"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Price and Discount Section -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:padding="15dp"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Price: 500€"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    android:gravity="center_vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Discount: 10%"
-                        android:textColor="@android:color/holo_red_dark"
-                        android:textSize="18sp"
+                        android:layout_weight="1"
+                        android:text="Bridal hair and makeup"
+                        android:textColor="#2d3748"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageButton
+                        android:id="@+id/offering_card_heart"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Favorite"
+                        android:padding="4dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/heart_outline" />
+
+                    <ImageButton
+                        android:id="@+id/offering_card_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Offering Details"
+                        android:padding="4dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_offering" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Price: $299"
+                        android:textColor="#2d3748"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Discount: 10% off"
+                        android:textColor="#2d3748"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="16dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Available"
+                        android:textColor="#2d3748"
+                        android:textSize="16sp"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:background="@color/brand_purple_light"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Service Details Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
 
@@ -141,7 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Description"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
@@ -151,27 +178,147 @@
                         android:text="Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day."
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Provider Details Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:background="#d0cfe1"
+                        android:clipToOutline="true"
+                        android:id="@+id/provider_profile_photo"
+                        android:contentDescription="Provider Profile Photo"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/profile_photo" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="Beauty Elegance Studio"
+                            android:id="@+id/provider_name"
+                            android:textColor="#2d3748"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="123 Beauty Street, City, Country"
+                            android:id="@+id/provider_address"
+                            android:textColor="#4a5568"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="contact@beautyelegance.com"
+                            android:id="@+id/provider_email"
+                            android:textColor="#4a5568"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="+1 (555) 123-4567"
+                            android:id="@+id/provider_phone"
+                            android:textColor="#4a5568"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Add New Comment Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Specification"
+                        android:text="Add Your Review"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="8dp"/>
 
-                    <TextView
+                    <!-- Rating Input -->
+                    <RatingBar
+                        android:id="@+id/new_comment_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Comment Input -->
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type. On the wedding day, professional makeup artists apply high-quality products to ensure a flawless, long-lasting finish, with options for additional elements like airbrush and false lashes. Services can also extend to the bridal party, and a touch-up kit is provided to maintain the bride's look throughout the day."
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="16dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/new_comment_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Write your review here"
+                            android:inputType="textMultiLine"
+                            android:minLines="3"
+                            android:maxLines="6"/>
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Submit Button -->
+                    <Button
+                        android:id="@+id/submit_comment_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SUBMIT REVIEW"
+                        android:padding="12dp"
+                        android:backgroundTint="@color/brand_purple"
+                        android:textColor="@color/chocolate_brown"/>
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Comments Section -->
             <!-- Comment 1: Very positive review -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -225,10 +372,10 @@
                         android:textColor="@android:color/darker_gray"
                         android:text="2024-11-15"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Comment 2: Good but with some constructive feedback -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -282,10 +429,10 @@
                         android:textColor="@android:color/darker_gray"
                         android:text="2024-11-10"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Comment 3: Mixed experience -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -339,71 +486,9 @@
                         android:textColor="@android:color/darker_gray"
                         android:text="2024-11-01"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Add New Comment Section -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Add Your Review"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"/>
-
-                    <!-- Rating Input -->
-                    <RatingBar
-                        android:id="@+id/new_comment_rating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:numStars="5"
-                        android:stepSize="0.5"
-                        android:layout_marginBottom="16dp"/>
-
-                    <!-- Comment Input -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/new_comment_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Write your review here"
-                            android:inputType="textMultiLine"
-                            android:minLines="3"
-                            android:maxLines="6"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Submit Button -->
-                    <Button
-                        android:id="@+id/submit_comment_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="SUBMIT REVIEW"
-                        android:padding="12dp"
-                        android:backgroundTint="@android:color/holo_blue_dark"/>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
+            <!-- Edit and Delete Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -415,20 +500,20 @@
                     android:layout_height="wrap_content"
                     android:text="EDIT"
                     android:padding="8dp"
-                    android:backgroundTint="@android:color/holo_blue_light"
-                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/brand_purple"
+                    android:textColor="@color/chocolate_brown"
                     android:layout_margin="5dp"
                     android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/delete_offering_button"
                     android:layout_width="0dp"
-                    android:layout_margin="5dp"
                     android:layout_height="wrap_content"
                     android:text="DELETE"
                     android:padding="8dp"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/chocolate_brown"
+                    android:textColor="@color/brand_purple"
+                    android:layout_margin="5dp"
                     android:layout_weight="1" />
             </LinearLayout>
 
