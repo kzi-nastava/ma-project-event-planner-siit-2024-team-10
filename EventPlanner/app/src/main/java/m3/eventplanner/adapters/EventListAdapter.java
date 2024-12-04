@@ -50,10 +50,10 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
         Event event = eventItemList.get(position);
 
-        holder.titleTextView.setText(event.getTitle());
-        holder.organizerTextView.setText("Organizer: " + event.getOrganizer());
+        holder.titleTextView.setText(event.getName());
+        holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName()+" "+event.getOrganizer().getLastName());
         holder.ratingTextView.setText(event.getRating()+"★");
-        holder.locationAndDateTextView.setText(event.getLocation()+" at "+event.getDate());
+        holder.locationAndDateTextView.setText(event.getLocation().getCity()+", "+event.getLocation().getCountry()+" at "+event.getDate());
 
         holder.eventCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
