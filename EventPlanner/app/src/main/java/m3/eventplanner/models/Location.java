@@ -13,6 +13,11 @@ public class Location implements Parcelable {
     public Location() {
     }
 
+    @Override
+    public String toString() {
+        return street+" "+houseNumber+", "+city+", "+country;
+    }
+
     public Location(int id, String country, String city, String street, String houseNumber) {
         this.id = id;
         this.country = country;
