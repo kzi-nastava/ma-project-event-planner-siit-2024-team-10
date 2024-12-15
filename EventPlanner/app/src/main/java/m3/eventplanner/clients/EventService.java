@@ -1,0 +1,34 @@
+package m3.eventplanner.clients;
+
+import java.time.LocalDate;
+import java.util.Collection;
+
+import m3.eventplanner.models.GetEventDTO;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.Query;
+
+public interface EventService {
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("events/top")
+    Call<Collection<GetEventDTO>> getTopEvents();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @GET("events/all")
+    Call<Collection<GetEventDTO>> getEvents(
+            @Query("eventTypeId") Integer eventTypeId,
+            @Query("location") String location,
+            @Query("maxParticipants") Integer maxParticipants,
+            @Query("minRating") Double minRating,
+            @Query("startDate") LocalDate startDate,
+            @Query("endDate") LocalDate endDate,
+            @Query("name") String name
+    );
+}

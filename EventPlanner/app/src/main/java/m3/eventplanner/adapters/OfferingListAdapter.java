@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.Collection;
 
 import m3.eventplanner.R;
 import m3.eventplanner.models.Offering;
@@ -17,9 +17,9 @@ import m3.eventplanner.models.Service;
 
 public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapter.OfferingViewHolder> {
 
-    private List<Offering> offeringList;
+    private Collection<Offering> offeringList;
 
-    public OfferingListAdapter(List<Offering> offeringList) {
+    public OfferingListAdapter(Collection<Offering> offeringList) {
         this.offeringList = offeringList;
     }
 
@@ -36,7 +36,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
 
     @Override
     public void onBindViewHolder(OfferingViewHolder holder, int position) {
-        Offering offering = offeringList.get(position);
+        Offering offering = (Offering) offeringList.toArray()[position];
         holder.bind(offering);
     }
 
@@ -58,7 +58,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
 
         public void bind(Offering offering) {
             title.setText(offering.getTitle());
-            rating.setText(offering.getRating()+"★");
+            rating.setText(offering.getRating() + "★");
             price.setText(offering.getPrice() + "€");
             provider.setText(offering.getOrganizer());
 
@@ -69,7 +69,6 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
                 type.setText("SERVICE");
                 picture.setImageResource(R.drawable.makeup);
             }
-
         }
     }
 }

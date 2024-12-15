@@ -34,4 +34,6 @@ public class ClientUtils {
             .addConverterFactory(GsonConverterFactory.create())
             .client(test())
             .build();
+
+    public static EventService eventService = retrofit.create(EventService.class);
 }
