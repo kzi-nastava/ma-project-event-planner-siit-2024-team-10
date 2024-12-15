@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -31,4 +32,17 @@ public interface EventService {
             @Query("endDate") LocalDate endDate,
             @Query("name") String name
     );
+    @GET("events")
+    Call<PagedResponse<GetEventDTO>> getEvents(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("eventTypeId") Integer eventTypeId,
+            @Query("location") String location,
+            @Query("maxParticipants") Integer maxParticipants,
+            @Query("minRating") Double minRating,
+            @Query("startDate") LocalDate startDate,
+            @Query("endDate") LocalDate endDate,
+            @Query("name") String name
+    );
+
 }

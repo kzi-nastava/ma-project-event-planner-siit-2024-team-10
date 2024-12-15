@@ -36,6 +36,7 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.Location;
 import m3.eventplanner.models.Offering;
 import m3.eventplanner.models.Organizer;
+import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.Product;
 import m3.eventplanner.models.Service;
 import retrofit2.Call;
@@ -46,7 +47,11 @@ public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
-    private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView;
+    private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
+    private int currentPage = 0;
+    private final int pageSize = 3;
+    private int totalPages = 0;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class HomeScreenFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         setUpSortSpinners(view);
         setUpFilterButtons(view);
+        setUpPaginationButtons(view);
     }
 
     private void initializeUIElements(View rootView) {
@@ -73,6 +79,16 @@ public class HomeScreenFragment extends Fragment {
         noCardsFoundTextView = rootView.findViewById(R.id.noCardsFoundTextView);
         topEventsTextView = rootView.findViewById(R.id.top_events_text);
         topOfferingsTextView = rootView.findViewById(R.id.top_offerings_text);
+    }
+
+    private void setUpPaginationButtons(View rootView) {
+        Button paginationForwardButton = rootView.findViewById(R.id.paginationForwardButton);
+        Button paginationBackButton = rootView.findViewById(R.id.paginationBackButton);
+        pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
+        totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
+
+        paginationForwardButton.setOnClickListener(v -> loadNextPage());
+        paginationBackButton.setOnClickListener(v -> loadPreviousPage());
     }
 
     private void setUpRecyclerView() {
@@ -172,24 +188,30 @@ public class HomeScreenFragment extends Fragment {
             }
         });
     }
+    private void handleNoDataFound() {
+        noCardsFoundTextView.setVisibility(View.VISIBLE);
+        contentRecyclerView.setVisibility(View.GONE);
+    }
 
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        Call<Collection<GetEventDTO>> call = ClientUtils.eventService.getEvents(null,null,null,null,null,null,null);
-        call.enqueue(new Callback<Collection<GetEventDTO>>() {
+        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
+        call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
-            public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.code() == 200){
-                    Collection<GetEventDTO> topEvents = response.body();
-                    updateRecyclerView(topEvents, new EventListAdapter(topEvents));
-                } else{
-                    Log.d("REZ", "Message received: " + response.code());
+            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
+                    totalPages = response.body().getTotalPages();
+                    pageNumber.setText(currentPage+1+" of "+totalPages);
+                    totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
+                } else {
+                    handleNoDataFound();
                 }
             }
 
             @Override
-            public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
-                Log.d("REZ", t.getMessage() != null ? t.getMessage() : "error");
+            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
+                Log.e("Pagination", "Failed to fetch data: " + t.getMessage());
             }
         });
     }
@@ -205,6 +227,21 @@ public class HomeScreenFragment extends Fragment {
         Collection<Offering> allOfferings = getAllOfferings();
         updateRecyclerView(allOfferings, new OfferingListAdapter(allOfferings));
     }
+
+    private void loadNextPage() {
+        if (currentPage+1<totalPages) {
+            currentPage++;
+            showAllEvents();
+        }
+    }
+
+    private void loadPreviousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            showAllEvents();
+        }
+    }
+
 
     private void toggleVisibility(int topEventsVisibility, int topOfferingsVisibility, int eventSearchVisibility, int offeringSearchVisibility, int paginationVisibility) {
         topEventsTextView.setVisibility(topEventsVisibility);
