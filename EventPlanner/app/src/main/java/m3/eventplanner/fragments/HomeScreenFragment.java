@@ -52,9 +52,11 @@ public class HomeScreenFragment extends Fragment {
     private final int pageSize = 3;
     private int totalPages = 0;
 
+    private ClientUtils clientUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        clientUtils = new ClientUtils(requireContext());
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
@@ -170,7 +172,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopEvents() {
         toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetEventDTO>> call = ClientUtils.eventService.getTopEvents();
+        Call<Collection<GetEventDTO>> call = clientUtils.getEventService().getTopEvents();
         call.enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
@@ -195,7 +197,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
+        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
