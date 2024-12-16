@@ -48,9 +48,9 @@ public class HomeScreenFragment extends Fragment {
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
-    private int currentPage = 0;
-    private final int pageSize = 3;
-    private int totalPages = 0;
+    private int currentEventPage = 0;
+    private final int eventPageSize = 3;
+    private int totalEventPages = 0;
 
 
     @Override
@@ -195,14 +195,14 @@ public class HomeScreenFragment extends Fragment {
 
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
+        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
-                    totalPages = response.body().getTotalPages();
-                    pageNumber.setText(currentPage+1+" of "+totalPages);
+                    totalEventPages = response.body().getTotalPages();
+                    pageNumber.setText(currentEventPage+1+" of "+totalEventPages);
                     totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
                 } else {
                     handleNoDataFound();
@@ -229,15 +229,15 @@ public class HomeScreenFragment extends Fragment {
     }
 
     private void loadNextPage() {
-        if (currentPage+1<totalPages) {
-            currentPage++;
+        if (currentEventPage+1<totalEventPages) {
+            currentEventPage++;
             showAllEvents();
         }
     }
 
     private void loadPreviousPage() {
-        if (currentPage > 0) {
-            currentPage--;
+        if (currentEventPage > 0) {
+            currentEventPage--;
             showAllEvents();
         }
     }
