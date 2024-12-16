@@ -9,13 +9,16 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.util.Patterns;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
@@ -42,8 +46,10 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
     private TextInputEditText emailInput, passwordInput;
+    private TextInputLayout emailLayout,passwordLayout;
     private ClientUtils clientUtils;
-    NavigationView navigationView;
+    private NavigationView navigationView;
+    private TextView loginError;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -64,9 +70,45 @@ public class LoginFragment extends Fragment {
         emailInput=view.findViewById(R.id.email);
         passwordInput=view.findViewById(R.id.password);
         navigationView=requireActivity().findViewById(R.id.nav_view);
+        loginError=view.findViewById(R.id.loginError);
+        emailLayout=view.findViewById(R.id.email_layout);
+        passwordLayout=view.findViewById(R.id.password_layout);
         Button loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
             login();
+        });
+
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validateEmail(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        passwordInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                validatePassword(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
         });
     }
 
@@ -74,11 +116,8 @@ public class LoginFragment extends Fragment {
         String email=emailInput.getText().toString().trim();
         String password=passwordInput.getText().toString().trim();
 
-        if (email.isEmpty() || password.isEmpty()) {
-            //Toast.makeText("Please enter both username and password", Toast.LENGTH_SHORT).show();
+        if(!validatePassword(password)||!validateEmail(email))
             return;
-        }
-
 
         LoginRequestDTO loginRequest = new LoginRequestDTO(email, password);
         AuthService authService = clientUtils.getAuthService();
@@ -94,13 +133,13 @@ public class LoginFragment extends Fragment {
                     NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
                     navController.navigate(R.id.homeScreenFragment);
                 } else {
-                    //Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                    loginError.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponseDTO> call, Throwable t) {
-
+                loginError.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -164,5 +203,27 @@ public class LoginFragment extends Fragment {
                 break;
         }
         navigationView.findViewById(R.id.logout_button).setVisibility(View.VISIBLE);
+    }
+
+    private boolean validateEmail(String email) {
+        loginError.setVisibility(View.GONE);
+        if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailLayout.setError(null);// Clear error if valid
+            return true;
+        } else {
+            emailLayout.setError("Invalid email address"); // Set error message
+            return false;
+        }
+    }
+
+    private boolean validatePassword(String password){
+        loginError.setVisibility(View.GONE);
+        if (password.length() < 8) {
+            passwordLayout.setError("Password must be at least 8 characters long");
+            return false;
+        }else{
+            passwordLayout.setError(null);
+            return true;
+        }
     }
 }
