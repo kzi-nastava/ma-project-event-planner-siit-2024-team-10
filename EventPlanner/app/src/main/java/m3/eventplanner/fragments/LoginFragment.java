@@ -21,11 +21,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.AuthService;
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.LoginRequestDTO;
+import m3.eventplanner.models.LoginResponseDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
+    private TextInputEditText emailInput, passwordInput;
+    private ClientUtils clientUtils;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -33,6 +48,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        clientUtils=new ClientUtils(requireContext());
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -41,11 +57,45 @@ public class LoginFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initializeRegisterMessage(view);
-
+        emailInput=view.findViewById(R.id.email);
+        passwordInput=view.findViewById(R.id.password);
         Button loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
+            login();
             NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
             navController.navigate(R.id.homeScreenFragment);
+        });
+    }
+
+    private void login(){
+        String email=emailInput.getText().toString().trim();
+        String password=passwordInput.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            //Toast.makeText("Please enter both username and password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        LoginRequestDTO loginRequest = new LoginRequestDTO(email, password);
+        AuthService authService = clientUtils.getAuthService();
+
+        authService.login(loginRequest).enqueue(new Callback<LoginResponseDTO>() {
+            @Override
+            public void onResponse(Call<LoginResponseDTO> call, Response<LoginResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String token = response.body().getAccessToken();
+                    TokenManager tokenManager=new TokenManager(requireContext());
+                    tokenManager.saveToken(token);
+                } else {
+                    //Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponseDTO> call, Throwable t) {
+
+            }
         });
     }
 
