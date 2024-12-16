@@ -18,6 +18,8 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import m3.eventplanner.R;
@@ -40,6 +43,7 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
     private TextInputEditText emailInput, passwordInput;
     private ClientUtils clientUtils;
+    NavigationView navigationView;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -59,11 +63,10 @@ public class LoginFragment extends Fragment {
         initializeRegisterMessage(view);
         emailInput=view.findViewById(R.id.email);
         passwordInput=view.findViewById(R.id.password);
+        navigationView=requireActivity().findViewById(R.id.nav_view);
         Button loginButton = view.findViewById(R.id.loginButton);
         loginButton.setOnClickListener(v -> {
             login();
-            NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
-            navController.navigate(R.id.homeScreenFragment);
         });
     }
 
@@ -87,6 +90,9 @@ public class LoginFragment extends Fragment {
                     String token = response.body().getAccessToken();
                     TokenManager tokenManager=new TokenManager(requireContext());
                     tokenManager.saveToken(token);
+                    updateNavigation(tokenManager.getRole());
+                    NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
+                    navController.navigate(R.id.homeScreenFragment);
                 } else {
                     //Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
                 }
@@ -137,5 +143,26 @@ public class LoginFragment extends Fragment {
         // Set the final SpannableStringBuilder to the TextView and make it clickable
         textView.setText(spannableStringBuilder);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    private void updateNavigation(String role){
+        MenuInflater inflater = getActivity().getMenuInflater();
+        Menu newMenu = navigationView.getMenu();
+        newMenu.clear();
+        switch (role){
+            case "ADMIN":
+                inflater.inflate(R.menu.admin_nav_menu, newMenu);
+                break;
+            case "EVENT_ORGANIZER":
+                inflater.inflate(R.menu.organizer_nav_menu, newMenu);
+                break;
+            case "PROVIDER":
+                inflater.inflate(R.menu.provider_nav_menu, newMenu);
+                break;
+            case "AUTHENTICATED_USER":
+                inflater.inflate(R.menu.authenticated_user_nav_menu, newMenu);
+                break;
+        }
+        navigationView.findViewById(R.id.logout_button).setVisibility(View.VISIBLE);
     }
 }
