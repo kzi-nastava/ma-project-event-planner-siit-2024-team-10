@@ -182,7 +182,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopEvents() {
         toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetEventDTO>> call = ClientUtils.eventService.getTopEvents();
+        Call<Collection<GetEventDTO>> call = clientUtils.getEventService().getTopEvents();
         call.enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
@@ -207,14 +207,15 @@ public class HomeScreenFragment extends Fragment {
 
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
+        currentPaginationContext = PaginationContext.EVENTS;
+        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
-                    totalPages = response.body().getTotalPages();
-                    pageNumber.setText(currentPage+1+" of "+totalPages);
+                    totalEventPages = response.body().getTotalPages();
+                    pageNumber.setText("Page "+ (currentEventPage+1)+" of "+totalEventPages);
                     totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
                 } else {
                     handleNoDataFound();
@@ -230,7 +231,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopOfferings() {
         toggleVisibility(View.GONE, View.VISIBLE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetOfferingDTO>> call = ClientUtils.offeringService.getTopOfferings();
+        Call<Collection<GetOfferingDTO>> call = clientUtils.getOfferingService().getTopOfferings();
         call.enqueue(new Callback<Collection<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
@@ -253,7 +254,7 @@ public class HomeScreenFragment extends Fragment {
     private void showAllOfferings() {
         toggleVisibility(View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
         currentPaginationContext = PaginationContext.OFFERINGS;
-        Call<PagedResponse<GetOfferingDTO>> call = ClientUtils.offeringService.getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
+        Call<PagedResponse<GetOfferingDTO>> call = clientUtils.getOfferingService().getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
         call.enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {

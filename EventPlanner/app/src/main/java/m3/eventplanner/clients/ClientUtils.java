@@ -19,6 +19,7 @@ public class ClientUtils {
     private Retrofit retrofit;
     private EventService eventService;
     private AuthService authService;
+    private OfferingService offeringService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -41,6 +42,7 @@ public class ClientUtils {
 
         eventService = retrofit.create(EventService.class);
         authService = retrofit.create(AuthService.class);
+        offeringService = retrofit.create(OfferingService.class);
     }
 
     public EventService getEventService() {
@@ -49,5 +51,9 @@ public class ClientUtils {
 
     public AuthService getAuthService() {
         return authService;
+    }
+
+    public OfferingService getOfferingService(){
+        return offeringService;
     }
 }
