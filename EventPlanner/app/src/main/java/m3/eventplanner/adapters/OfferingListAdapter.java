@@ -11,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collection;
 
 import m3.eventplanner.R;
+import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.Offering;
 import m3.eventplanner.models.Product;
 import m3.eventplanner.models.Service;
 
 public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapter.OfferingViewHolder> {
 
-    private Collection<Offering> offeringList;
+    private Collection<GetOfferingDTO> offeringList;
 
-    public OfferingListAdapter(Collection<Offering> offeringList) {
+    public OfferingListAdapter(Collection<GetOfferingDTO> offeringList) {
         this.offeringList = offeringList;
     }
 
@@ -36,7 +37,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
 
     @Override
     public void onBindViewHolder(OfferingViewHolder holder, int position) {
-        Offering offering = (Offering) offeringList.toArray()[position];
+        GetOfferingDTO offering = (GetOfferingDTO) offeringList.toArray()[position];
         holder.bind(offering);
     }
 
@@ -56,16 +57,16 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             picture = itemView.findViewById(R.id.offering_card_image);
         }
 
-        public void bind(Offering offering) {
-            title.setText(offering.getTitle());
-            rating.setText(offering.getRating() + "★");
+        public void bind(GetOfferingDTO offering) {
+            title.setText(offering.getName());
+            rating.setText(offering.getAverageRating() + "★");
             price.setText(offering.getPrice() + "€");
-            provider.setText(offering.getOrganizer());
+            provider.setText(offering.getProvider().getCompany().getName());
 
-            if (offering instanceof Product) {
+            if (offering.isProduct()) {
                 type.setText("PRODUCT");
                 picture.setImageResource(R.drawable.flowers);
-            } else if (offering instanceof Service) {
+            } else {
                 type.setText("SERVICE");
                 picture.setImageResource(R.drawable.makeup);
             }

@@ -33,6 +33,7 @@ import m3.eventplanner.models.AgendaItem;
 import m3.eventplanner.models.Event;
 import m3.eventplanner.models.EventType;
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.Location;
 import m3.eventplanner.models.Offering;
 import m3.eventplanner.models.Organizer;
@@ -48,10 +49,19 @@ public class HomeScreenFragment extends Fragment {
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
-    private int currentPage = 0;
-    private final int pageSize = 3;
-    private int totalPages = 0;
+    private int currentEventPage = 0;
+    private final int eventPageSize = 3;
+    private int totalEventPages = 0;
 
+    private int currentOfferingPage = 0;
+    private final int offeringPageSize = 3;
+    private int totalOfferingPages = 0;
+
+    private enum PaginationContext {
+        EVENTS, OFFERINGS
+    }
+
+    private PaginationContext currentPaginationContext = PaginationContext.EVENTS;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -195,14 +205,15 @@ public class HomeScreenFragment extends Fragment {
 
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentPage, pageSize, null,null,null,null,null,null,null);
+        currentPaginationContext = PaginationContext.EVENTS;
+        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
-                    totalPages = response.body().getTotalPages();
-                    pageNumber.setText(currentPage+1+" of "+totalPages);
+                    totalEventPages = response.body().getTotalPages();
+                    pageNumber.setText("Page "+ (currentEventPage+1)+" of "+totalEventPages);
                     totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
                 } else {
                     handleNoDataFound();
@@ -218,29 +229,100 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopOfferings() {
         toggleVisibility(View.GONE, View.VISIBLE, View.GONE, View.GONE, View.GONE);
-        Collection<Offering> topOfferings = getTopOfferings();
-        updateRecyclerView(topOfferings, new OfferingListAdapter(topOfferings));
+        Call<Collection<GetOfferingDTO>> call = ClientUtils.offeringService.getTopOfferings();
+        call.enqueue(new Callback<Collection<GetOfferingDTO>>() {
+            @Override
+            public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Collection<GetOfferingDTO> topOfferings = response.body();
+                    updateRecyclerView(topOfferings, new OfferingListAdapter(topOfferings));
+                } else {
+                    handleNoDataFound();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection<GetOfferingDTO>> call, Throwable t) {
+                Log.d("Offerings", t.getMessage() != null ? t.getMessage() : "error");
+            }
+        });
     }
+
 
     private void showAllOfferings() {
         toggleVisibility(View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
-        Collection<Offering> allOfferings = getAllOfferings();
-        updateRecyclerView(allOfferings, new OfferingListAdapter(allOfferings));
+        currentPaginationContext = PaginationContext.OFFERINGS;
+        Call<PagedResponse<GetOfferingDTO>> call = ClientUtils.offeringService.getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
+        call.enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    updateRecyclerView(response.body().getContent(), new OfferingListAdapter(response.body().getContent()));
+                    totalOfferingPages = response.body().getTotalPages();
+                    pageNumber.setText("Page " + (currentOfferingPage + 1) + " of " + totalOfferingPages);
+                    totalNumberOfElements.setText("Number of results: " + response.body().getTotalElements());
+                } else {
+                    handleNoDataFound();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<GetOfferingDTO>> call, Throwable t) {
+                Log.e("OfferingsPagination", "Failed to fetch data: " + t.getMessage());
+            }
+        });
     }
 
+
     private void loadNextPage() {
-        if (currentPage+1<totalPages) {
-            currentPage++;
-            showAllEvents();
+        switch (currentPaginationContext){
+            case EVENTS:
+                if (currentEventPage+1<totalEventPages) {
+                    currentEventPage++;
+                    showAllEvents();
+                }
+                break;
+            case OFFERINGS:
+                if(currentOfferingPage+1 <totalOfferingPages){
+                    currentOfferingPage++;
+                    showAllOfferings();
+                }
+                break;
         }
     }
 
     private void loadPreviousPage() {
-        if (currentPage > 0) {
-            currentPage--;
-            showAllEvents();
+
+        switch (currentPaginationContext){
+            case EVENTS:
+                if (currentEventPage > 0) {
+                    currentEventPage--;
+                    showAllEvents();
+                }
+                break;
+            case OFFERINGS:
+                if (currentOfferingPage > 0) {
+                    currentOfferingPage--;
+                    showAllOfferings();
+                }
+                break;
         }
     }
+
+    private void loadNextOfferingPage() {
+        if (currentOfferingPage + 1 < totalOfferingPages) {
+            currentOfferingPage++;
+            showAllOfferings();
+        }
+    }
+
+    private void loadPreviousOfferingPage() {
+        if (currentOfferingPage > 0) {
+            currentOfferingPage--;
+            showAllOfferings();
+        }
+    }
+
 
 
     private void toggleVisibility(int topEventsVisibility, int topOfferingsVisibility, int eventSearchVisibility, int offeringSearchVisibility, int paginationVisibility) {
@@ -331,98 +413,4 @@ public class HomeScreenFragment extends Fragment {
     private String formatDate(Long dateInMillis) {
         return java.text.DateFormat.getDateInstance().format(new java.util.Date(dateInMillis));
     }
-// Example data fetching methods
-    private Collection<Event> getTopEvents() {
-
-        Collection<Event> events = new ArrayList<>();
-
-        events.add(new Event(1, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 2.5,
-                new Organizer(1, "John", "Doe", new Location(1, "Serbia", "Beograd", "Main Street", "10"),
-                        "john.doe@example.com", "123456789", "https://media.istockphoto.com/id/1437816897/photo/business-woman-manager-or-human-resources-portrait-for-career-success-company-we-are-hiring.jpg?s=612x612&w=0&k=20&c=tyLvtzutRh22j9GqSGI33Z4HpIwv9vL_MZw_xOE19NQ="),
-                new Location(2, "Serbia", "Beograd", "Wedding Venue", "5"),
-                LocalDate.of(2024, 12, 12), "A beautiful winter wedding.", 150, true,
-                new ArrayList<AgendaItem>() {{
-                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
-                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
-                }}
-        ));
-
-        events.add(new Event(2, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 5.0,
-                new Organizer(2, "John", "Doe", new Location(1, "Serbia", "Novi Sad", "Main Street", "10"),
-                        "john.doe@example.com", "123456789", null),
-                new Location(3, "Serbia", "Novi Sad", "Wedding Venue", "10"),
-                LocalDate.of(2024, 12, 12), "A magical wedding reception.", 200, true,
-                new ArrayList<AgendaItem>() {{
-                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
-                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
-                }}
-        ));
-
-        events.add(new Event(3, new EventType(1, "Wedding"), "Mary And Josh's Wedding", 1.5,
-                new Organizer(3, "John", "Doe", new Location(1, "Serbia", "Arilje", "Main Street", "10"),
-                        "john.doe@example.com", "123456789", null),
-                new Location(4, "Serbia", "Arilje", "Wedding Venue", "15"),
-                LocalDate.of(2024, 12, 12), "A serene countryside wedding.", 100, true,
-                new ArrayList<AgendaItem>() {{
-                    add(new AgendaItem(1, "Ceremony", "Wedding ceremony at the main hall.", "12:03", "12:30", "Main Hall"));
-                    add(new AgendaItem(2, "Reception", "Wedding reception with dinner and music.", "12:30", "14:00", "Banquet Hall"));
-                }}
-        ));
-
-        events.add(new Event(4, new EventType(2, "Conference"), "Tech Conference 2024", 4.0,
-                new Organizer(4, "Alice", "Smith", new Location(5, "Serbia", "Belgrade", "Tech Hub", "20"),
-                        "alice.smith@example.com", "987654321", null),
-                new Location(6, "Serbia", "Belgrade", "Conference Center", "30"),
-                LocalDate.of(2024, 1, 14), "A gathering for tech enthusiasts.", 300, true,
-                new ArrayList<AgendaItem>() {{
-                    add(new AgendaItem(1, "Keynote", "Opening keynote by the CEO.", "09:00", "10:00", "Main Stage"));
-                    add(new AgendaItem(2, "Panel Discussion", "Discussion on the future of tech.", "10:15", "11:00", "Room A"));
-                    add(new AgendaItem(3, "Networking", "Networking session for all attendees.", "11:15", "12:00", "Lounge"));
-                }}
-        ));
-
-        events.add(new Event(5, new EventType(3, "Festival"), "Food Festival", 3.7,
-                new Organizer(5, "Emily", "Brown", new Location(7, "Serbia", "Novi Sad", "Food Street", "5"),
-                        "emily.brown@example.com", "1122334455", null),
-                new Location(8, "Serbia", "Novi Sad", "Festival Grounds", "40"),
-                LocalDate.of(2024, 2, 16), "A delicious culinary journey.", 500, true,
-                new ArrayList<AgendaItem>() {{
-                    add(new AgendaItem(1, "Food Tasting", "Taste a variety of cuisines.", "11:00", "13:00", "Food Court"));
-                    add(new AgendaItem(2, "Cooking Demo", "Live cooking demonstrations.", "13:15", "14:30", "Cooking Stage"));
-                    add(new AgendaItem(3, "Chef Talk", "Meet renowned chefs and learn their secrets.", "14:45", "16:00", "Chef's Corner"));
-                }}
-        ));
-
-        return events;
-    }
-
-    private Collection<Offering> getTopOfferings() {
-        Collection<Offering> list = new ArrayList<Offering>();
-
-        list.add(new Product(11L, "Luxury Wedding Shoes", 4.4, "Provider 11", 80));
-        list.add(new Service(12L, "Hair Styling for Wedding", 4.1, "Provider 12", 1500));
-        list.add(new Product(13L, "Wedding Party Favors", 3.9, "Provider 13", 70));
-        list.add(new Service(14L, "Officiant for Wedding", 4.7, "Provider 14", 1000));
-        list.add(new Product(15L, "Wedding Decor", 4.3, "Provider 15", 500));
-
-        return list;
-    }
-
-    private Collection<Offering> getAllOfferings() {
-        Collection<Offering> list = new ArrayList<Offering>();
-
-        list.add(new Product(1L, "Wedding Flowers", 2.5, "Provider 1", 90));
-        list.add(new Service(2L, "Wedding Makeup", 4, "Provider 2", 2500));
-        list.add(new Product(3L, "Custom Wedding Invitations", 4.2, "Provider 3", 50));
-        list.add(new Service(4L, "DJ for Wedding", 5, "Provider 4", 5000));
-        list.add(new Product(5L, "Bridal Gown", 4.8, "Provider 5", 200));
-        list.add(new Service(6L, "Wedding Photography", 4.9, "Provider 6", 3000));
-        list.add(new Product(7L, "Wedding Cake", 3.7, "Provider 7", 120));
-        list.add(new Service(8L, "Floral Arrangement for Wedding", 4.3, "Provider 8", 1500));
-        list.add(new Product(9L, "Bridal Jewelry Set", 4.6, "Provider 9", 250));
-        list.add(new Service(10L, "Wedding Video Editing", 4.5, "Provider 10", 1200));
-
-        return list;
-    }
-
 }
