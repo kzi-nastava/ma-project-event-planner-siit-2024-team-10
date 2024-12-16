@@ -202,7 +202,7 @@ public class HomeScreenFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
                     totalEventPages = response.body().getTotalPages();
-                    pageNumber.setText(currentEventPage+1+" of "+totalEventPages);
+                    pageNumber.setText("Page "+ (currentEventPage+1)+" of "+totalEventPages);
                     totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
                 } else {
                     handleNoDataFound();
