@@ -9,18 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Collection;
 import m3.eventplanner.R;
-import m3.eventplanner.models.Event;
+import m3.eventplanner.models.GetEventDTO;
+
 import androidx.navigation.Navigation;
 
 public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.EventViewHolder> {
 
-    private List<Event> eventItemList;
+    private Collection<GetEventDTO> eventItemCollection;
 
-    public EventListAdapter(List<Event> eventItemList) {
-        this.eventItemList = eventItemList;
+    public EventListAdapter(Collection<GetEventDTO> eventItemCollection){
+        this.eventItemCollection = eventItemCollection;
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -50,12 +50,12 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = eventItemList.get(position);
+        GetEventDTO event = (GetEventDTO) eventItemCollection.toArray()[position];
 
         holder.titleTextView.setText(event.getName());
-        holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName()+" "+event.getOrganizer().getLastName());
-        holder.ratingTextView.setText(event.getRating()+"★");
-        holder.locationAndDateTextView.setText(event.getLocation().getCity()+", "+event.getLocation().getCountry()+" at "+event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+        holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName() + " " + event.getOrganizer().getLastName());
+        holder.ratingTextView.setText(event.getAverageRating() + "★");
+        holder.locationAndDateTextView.setText(event.getLocation().getCity() + ", " + event.getLocation().getCountry() + " at " + event.getDate());
 
         holder.eventCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -66,6 +66,6 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
 
     @Override
     public int getItemCount() {
-        return eventItemList.size();
+        return eventItemCollection.size();
     }
 }

@@ -1,5 +1,19 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
+}
+
+fun getIpAddress(): String {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(FileInputStream(localPropertiesFile))
+        return properties.getProperty("ip_addr") ?: "127.0.0.1" // Default fallback IP
+    } else {
+        throw GradleException("local.properties file not found")
+    }
 }
 
 android {
@@ -14,6 +28,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "IP_ADDR", "\"${getIpAddress()}\"")
     }
 
     buildTypes {
@@ -45,4 +60,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.retrofit2:retrofit:2.3.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.3.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:3.12.1")
 }
