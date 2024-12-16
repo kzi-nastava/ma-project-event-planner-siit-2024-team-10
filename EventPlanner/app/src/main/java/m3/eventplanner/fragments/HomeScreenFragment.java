@@ -174,11 +174,11 @@ public class HomeScreenFragment extends Fragment {
         call.enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.code() == 200){
+                if (response.isSuccessful() && response.body() != null){
                     Collection<GetEventDTO> topEvents = response.body();
                     updateRecyclerView(topEvents, new EventListAdapter(topEvents));
                 } else{
-                    Log.d("REZ", "Message received: " + response.code());
+                    handleNoDataFound();
                 }
             }
 
