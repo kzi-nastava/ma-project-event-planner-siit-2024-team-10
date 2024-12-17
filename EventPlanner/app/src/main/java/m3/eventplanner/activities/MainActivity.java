@@ -1,9 +1,13 @@
 package m3.eventplanner.activities;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -18,6 +22,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -27,6 +32,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.fragments.LoginFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Set<Integer> topLevelDestinations = new HashSet<>();
 
+    private Button logoutButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.topAppBar);
+        logoutButton=findViewById(R.id.logout_button);
 
 
         setSupportActionBar(toolbar);
@@ -86,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+
+        logoutButton.setOnClickListener(v -> {
+            logout();
+        });
     }
 
 
@@ -99,5 +113,17 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
+    }
+
+    private void logout(){
+        TokenManager tokenManager=new TokenManager(this);
+        tokenManager.clearToken();
+        MenuInflater inflater = getMenuInflater();
+        Menu newMenu = navigationView.getMenu();
+        newMenu.clear();
+        inflater.inflate(R.menu.unauthenticated_user_nav_menu, newMenu);
+        drawer.close();
+        navController.navigate(R.id.homeScreenFragment);
+        logoutButton.setVisibility(GONE);
     }
 }

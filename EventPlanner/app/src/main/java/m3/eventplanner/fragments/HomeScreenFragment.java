@@ -62,9 +62,11 @@ public class HomeScreenFragment extends Fragment {
     }
 
     private PaginationContext currentPaginationContext = PaginationContext.EVENTS;
+    private ClientUtils clientUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        clientUtils = new ClientUtils(requireContext());
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
@@ -180,7 +182,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopEvents() {
         toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetEventDTO>> call = ClientUtils.eventService.getTopEvents();
+        Call<Collection<GetEventDTO>> call = clientUtils.getEventService().getTopEvents();
         call.enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
@@ -206,7 +208,7 @@ public class HomeScreenFragment extends Fragment {
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
         currentPaginationContext = PaginationContext.EVENTS;
-        Call<PagedResponse<GetEventDTO>> call = ClientUtils.eventService.getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
+        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
@@ -229,7 +231,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showTopOfferings() {
         toggleVisibility(View.GONE, View.VISIBLE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetOfferingDTO>> call = ClientUtils.offeringService.getTopOfferings();
+        Call<Collection<GetOfferingDTO>> call = clientUtils.getOfferingService().getTopOfferings();
         call.enqueue(new Callback<Collection<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
@@ -252,7 +254,7 @@ public class HomeScreenFragment extends Fragment {
     private void showAllOfferings() {
         toggleVisibility(View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
         currentPaginationContext = PaginationContext.OFFERINGS;
-        Call<PagedResponse<GetOfferingDTO>> call = ClientUtils.offeringService.getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
+        Call<PagedResponse<GetOfferingDTO>> call = clientUtils.getOfferingService().getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
         call.enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {

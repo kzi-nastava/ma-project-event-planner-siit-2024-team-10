@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_item"
+        android:title="@string/app_name">
+        <menu>
+            <item
+                android:id="@+id/homeScreenFragment"
+                android:title="@string/home"
+                android:checkable="true"
+                android:icon="@drawable/ic_home"/>
+            <item
+                android:id="@+id/manageOfferingsFragment"
+                android:title="@string/your_offerings"
+                android:checkable="true"
+                android:icon="@drawable/ic_offering"/>
+            <item
+                android:id="@+id/notificationFragment"
+                android:title="@string/notifications"
+                android:checkable="true"
+                android:icon="@drawable/ic_bell"/>
+            <item
+                android:id="@+id/chatFragment"
+                android:title="@string/your_chatrooms"
+                android:checkable="true"
+                android:icon="@drawable/ic_chat"/>
+        </menu>
+    </item>
+</menu>
