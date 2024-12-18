@@ -171,7 +171,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View widget) {
                 NavController navController = NavHostFragment.findNavController(LoginFragment.this);;
-                navController.navigate(R.id.registerPersonalFragment);
+                navController.navigate(R.id.registerFragment);
             }
         }, 0, registerText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
