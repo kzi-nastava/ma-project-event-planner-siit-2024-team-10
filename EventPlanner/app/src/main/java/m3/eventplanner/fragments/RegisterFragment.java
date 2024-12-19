@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Arrays;
@@ -644,6 +645,12 @@ public class RegisterFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     Toast.makeText(requireContext(), "Success! Please confirm your email", Toast.LENGTH_LONG).show();
                     NavController navController = NavHostFragment.findNavController(RegisterFragment.this);
+                    tokenManager.clearToken();
+                    NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
+                    MenuInflater inflater = getActivity().getMenuInflater();
+                    Menu newMenu = navigationView.getMenu();
+                    newMenu.clear();
+                    inflater.inflate(R.menu.unauthenticated_user_nav_menu, newMenu);
                     navController.navigate(R.id.homeScreenFragment);
                 } else if(response.code()==409){
                     emailLayout.setError("Account with given email already exists");
