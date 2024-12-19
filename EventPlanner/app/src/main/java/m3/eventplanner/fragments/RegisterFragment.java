@@ -11,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -658,8 +659,7 @@ public class RegisterFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<RegisterDTO> call, Throwable t) {
-                String a="aaaa";
-                //loginError.setVisibility(View.VISIBLE);
+                Log.e("Registration",t.getMessage());
             }
         });
     }
