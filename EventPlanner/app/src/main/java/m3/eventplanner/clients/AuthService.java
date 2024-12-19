@@ -1,5 +1,12 @@
 package m3.eventplanner.clients;
 
+import static android.view.View.GONE;
+
+import android.view.Menu;
+import android.view.MenuInflater;
+
+import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.models.LoginRequestDTO;
 import m3.eventplanner.models.LoginResponseDTO;
 import m3.eventplanner.models.RegisterDTO;

@@ -19,6 +19,11 @@
                 android:title="@string/your_chatrooms"
                 android:checkable="true"
                 android:icon="@drawable/ic_chat"/>
+            <item
+                android:id="@+id/upgradeRoleFragment"
+                android:title="Upgrade role"
+                android:checkable="true"
+                android:icon="@drawable/ic_upgrade_role"/>
         </menu>
     </item>
 </menu>

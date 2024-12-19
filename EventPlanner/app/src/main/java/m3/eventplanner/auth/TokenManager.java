@@ -12,6 +12,7 @@ public class TokenManager {
     private static final String KEY_ROLE = "role";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_ACCOUNT_ID = "account_id";
+    private static final String KEY_EMAIL="email";
     private SharedPreferences sharedPreferences;
 
     public TokenManager(Context context) {
@@ -25,6 +26,7 @@ public class TokenManager {
         editor.putInt(KEY_USER_ID,decodedJWT.getClaim(KEY_USER_ID).asInt());
         editor.putInt(KEY_ACCOUNT_ID,decodedJWT.getClaim(KEY_ACCOUNT_ID).asInt());
         editor.putString(KEY_ROLE,decodedJWT.getClaim(KEY_ROLE).asString());
+        editor.putString(KEY_EMAIL,decodedJWT.getSubject());
         editor.apply();
     }
 
@@ -34,6 +36,10 @@ public class TokenManager {
 
     public String getRole() {
         return sharedPreferences.getString(KEY_ROLE, null);
+    }
+
+    public String getEmail() {
+        return sharedPreferences.getString(KEY_EMAIL, null);
     }
 
     public int getAccountId() {
@@ -50,6 +56,7 @@ public class TokenManager {
         editor.remove(KEY_USER_ID);
         editor.remove(KEY_ACCOUNT_ID);
         editor.remove(KEY_ROLE);
+        editor.remove(KEY_EMAIL);
         editor.apply();
     }
 }

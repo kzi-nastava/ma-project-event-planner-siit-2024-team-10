@@ -65,4 +65,9 @@
         android:name="m3.eventplanner.fragments.RegisterFragment"
         android:label="Register" />
 
+    <fragment
+        android:id="@+id/upgradeRoleFragment"
+        android:name="m3.eventplanner.fragments.RegisterFragment"
+        android:label="Upgrade role" />
+
 </navigation>

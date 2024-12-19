@@ -1,5 +1,7 @@
 package m3.eventplanner.fragments;
 
+import static android.view.View.GONE;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -30,7 +34,6 @@ import m3.eventplanner.clients.AuthService;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.CreateCompanyDTO;
 import m3.eventplanner.models.CreateLocationDTO;
-import m3.eventplanner.models.LoginResponseDTO;
 import m3.eventplanner.models.RegisterDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,6 +46,8 @@ public class RegisterFragment extends Fragment {
     private TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, profilePhotoLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
     private EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, profilePhotoInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
     private ClientUtils clientUtils;
+    private boolean roleUpgrade;
+    private TokenManager tokenManager;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -57,6 +62,9 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
+        tokenManager = new TokenManager(requireContext());
+        roleUpgrade = tokenManager.getEmail()!=null;
+
         View view = inflater.inflate(R.layout.fragment_register, container, false);
         initializeForm(view);
         setValidationListeners();
@@ -74,12 +82,23 @@ public class RegisterFragment extends Fragment {
 
         emailLayout = view.findViewById(R.id.email);
         emailInput = emailLayout.getEditText();
+        if(roleUpgrade)
+        {
+            emailInput.setEnabled(false);
+            emailInput.setFocusable(false);
+            emailInput.setText(tokenManager.getEmail());
+        }
 
         passwordLayout = view.findViewById(R.id.password);
         passwordInput = passwordLayout.getEditText();
 
         passwordAgainLayout = view.findViewById(R.id.password_again);
         passwordAgainInput = passwordAgainLayout.getEditText();
+
+        if(roleUpgrade){
+            passwordLayout.setVisibility(View.GONE);
+            passwordAgainLayout.setVisibility(View.GONE);
+        }
 
         firstNameLayout = view.findViewById(R.id.first_name);
         firstNameInput = firstNameLayout.getEditText();
@@ -160,33 +179,35 @@ public class RegisterFragment extends Fragment {
             public void afterTextChanged(Editable editable) {}
         });
 
-        // Password validation
-        passwordInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+        if(!roleUpgrade){
+            // Password validation
+            passwordInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validatePassword();
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    validatePassword();
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
 
-        // Confirm password validation
-        passwordAgainInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+            // Confirm password validation
+            passwordAgainInput.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateConfirmPassword();
-            }
+                @Override
+                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                    validateConfirmPassword();
+                }
 
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+        }
 
         // First name validation
         firstNameInput.addTextChangedListener(new TextWatcher() {
@@ -447,7 +468,7 @@ public class RegisterFragment extends Fragment {
 
     private RegisterDTO getFormData(){
         String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
+        String password = roleUpgrade? null: passwordInput.getText().toString().trim();
         String firstName = firstNameInput.getText().toString().trim();
         String lastName = lastNameInput.getText().toString().trim();
         String phone = phoneInput.getText().toString().trim();
@@ -523,12 +544,12 @@ public class RegisterFragment extends Fragment {
         }
 
         // Validate password
-        if (!validatePassword()) {
+        if (!roleUpgrade && !validatePassword()) {
             isValid = false;
         }
 
         // Validate confirm password
-        if (!validateConfirmPassword()) {
+        if (!roleUpgrade && !validateConfirmPassword()) {
             isValid = false;
         }
 
@@ -617,7 +638,7 @@ public class RegisterFragment extends Fragment {
             return;
         RegisterDTO registerDTO = getFormData();
         AuthService authService = clientUtils.getAuthService();
-        authService.register(registerDTO,false).enqueue(new Callback<RegisterDTO>() {
+        authService.register(registerDTO,roleUpgrade).enqueue(new Callback<RegisterDTO>() {
             @Override
             public void onResponse(Call<RegisterDTO> call, Response<RegisterDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
