@@ -3,6 +3,8 @@ package m3.eventplanner.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -22,9 +25,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.AuthService;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.CreateCompanyDTO;
 import m3.eventplanner.models.CreateLocationDTO;
+import m3.eventplanner.models.LoginResponseDTO;
 import m3.eventplanner.models.RegisterDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterFragment extends Fragment {
     private RadioGroup roleRadioGroup;
@@ -32,6 +42,7 @@ public class RegisterFragment extends Fragment {
     private Button submitButton;
     private TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, profilePhotoLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
     private EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, profilePhotoInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
+    private ClientUtils clientUtils;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -45,15 +56,13 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        clientUtils = new ClientUtils(requireContext());
         View view = inflater.inflate(R.layout.fragment_register, container, false);
-
         initializeForm(view);
         setValidationListeners();
 
         submitButton.setOnClickListener(v -> {
-//            if(!validateForm())
-//                return;
-            RegisterDTO registerDTO = getFormData();
+            register();
         });
 
         return view;
@@ -601,5 +610,29 @@ public class RegisterFragment extends Fragment {
         }
 
         return isValid;
+    }
+
+    private void register(){
+        if(!isFormValid())
+            return;
+        RegisterDTO registerDTO = getFormData();
+        AuthService authService = clientUtils.getAuthService();
+        authService.register(registerDTO,false).enqueue(new Callback<RegisterDTO>() {
+            @Override
+            public void onResponse(Call<RegisterDTO> call, Response<RegisterDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(requireContext(), "Success! Please confirm your email", Toast.LENGTH_LONG).show();
+                    NavController navController = NavHostFragment.findNavController(RegisterFragment.this);
+                    navController.navigate(R.id.homeScreenFragment);
+                } else if(response.code()==409){
+                    emailLayout.setError("Account with given email already exists");
+                }
+            }
+            @Override
+            public void onFailure(Call<RegisterDTO> call, Throwable t) {
+                String a="aaaa";
+                //loginError.setVisibility(View.VISIBLE);
+            }
+        });
     }
 }
