@@ -201,7 +201,7 @@
                 android:textColor="?attr/colorPrimary" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/companyEmail"
+                android:id="@+id/company_email"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/email">

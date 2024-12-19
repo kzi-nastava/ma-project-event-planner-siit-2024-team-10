@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Arrays;
@@ -27,9 +29,9 @@ import m3.eventplanner.models.RegisterDTO;
 public class RegisterFragment extends Fragment {
     private RadioGroup roleRadioGroup;
     private LinearLayout companyInfoContainer;
-    Button submitButton;
-    TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, profilePhotoLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
-    EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, profilePhotoInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
+    private Button submitButton;
+    private TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, profilePhotoLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
+    private EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, profilePhotoInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -46,10 +48,11 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         initializeForm(view);
+        setValidationListeners();
 
         submitButton.setOnClickListener(v -> {
-            if(!validateForm())
-                return;
+//            if(!validateForm())
+//                return;
             RegisterDTO registerDTO = getFormData();
         });
 
@@ -94,7 +97,7 @@ public class RegisterFragment extends Fragment {
         phoneInput = phoneLayout.getEditText();
 
         // Initialize company fields
-        companyEmailLayout = view.findViewById(R.id.companyEmail);
+        companyEmailLayout = view.findViewById(R.id.company_email);
         companyEmailInput = companyEmailLayout.getEditText();
 
         companyNameLayout = view.findViewById(R.id.name);
@@ -133,191 +136,304 @@ public class RegisterFragment extends Fragment {
         });
     }
 
-    private boolean validateForm(){
-        boolean isValid=true;
+    private void setValidationListeners() {
+        // Email validation
+        emailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
-        // Validate Email
-        String email = emailInput.getText().toString();
-        if (email.isEmpty()) {
-            emailLayout.setError("Email is required");
-            isValid = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailLayout.setError("Invalid email format");
-            isValid = false;
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateEmail(emailLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Password validation
+        passwordInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validatePassword();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Confirm password validation
+        passwordAgainInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateConfirmPassword();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // First name validation
+        firstNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(firstNameLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Last name validation
+        lastNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(lastNameLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Country validation
+        countryInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(countryLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // City validation
+        cityInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(cityLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Street validation
+        streetInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(streetLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // House number validation
+        houseNumberInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(houseNumberLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Phone validation
+        phoneInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(phoneLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company email validation
+        companyEmailInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateEmail(companyEmailLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company name validation
+        companyNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyNameLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company country validation
+        companyCountryInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyCountryLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company city validation
+        companyCityInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyCityLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company street validation
+        companyStreetInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyStreetLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company house number validation
+        companyHouseNumberInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyHouseNumberLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company phone validation
+        companyPhoneInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyPhoneLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        // Company description validation
+        companyDescriptionInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(companyDescriptionLayout);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private boolean validateEmail(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(textInputLayout.getEditText().getText()).matches()) {
+            textInputLayout.setError("Invalid email format");
+            return false;
         } else {
-            emailLayout.setError(null);
+            textInputLayout.setError(null);
+            return true;
         }
+    }
 
-        // Validate Password
-        String password = passwordInput.getText().toString();
-        if (password.isEmpty()) {
-            passwordLayout.setError("Password is required");
-            isValid = false;
-        } else if (password.length() < 8) {
-            passwordLayout.setError("Password must be at least 8 characters");
-            isValid = false;
+    private boolean validatePassword() {
+        if (TextUtils.isEmpty(passwordInput.getText())) {
+            passwordLayout.setError("Required field");
+            return false;
+        } else if (passwordInput.getText().length() < 8) {
+            passwordLayout.setError("Password should be at least 8 characters");
+            return false;
         } else {
             passwordLayout.setError(null);
+            return true;
         }
+    }
 
-        // Validate Confirm Password
-        String passwordAgain = passwordAgainInput.getText().toString();
-        if (!passwordAgain.equals(password)) {
+    private boolean validateConfirmPassword() {
+        if (TextUtils.isEmpty(passwordAgainInput.getText()) || !passwordAgainInput.getText().toString().equals(passwordInput.getText().toString())) {
             passwordAgainLayout.setError("Passwords do not match");
-            isValid = false;
+            return false;
         } else {
             passwordAgainLayout.setError(null);
+            return true;
         }
+    }
 
-        // Validate First Name
-        String firstName = firstNameInput.getText().toString();
-        if (firstName.isEmpty()) {
-            firstNameLayout.setError("First name is required");
-            isValid = false;
+    private boolean validateRequiredField(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
         } else {
-            firstNameLayout.setError(null);
+            textInputLayout.setError(null);
+            return true;
         }
-
-        // Validate Last Name
-        String lastName = lastNameInput.getText().toString();
-        if (lastName.isEmpty()) {
-            lastNameLayout.setError("Last name is required");
-            isValid = false;
-        } else {
-            lastNameLayout.setError(null);
-        }
-
-        // Validate Profile Photo
-        String profilePhoto = profilePhotoInput.getText().toString();
-        if (profilePhoto.isEmpty()) {
-            profilePhotoLayout.setError("Profile photo is required");
-            isValid = false;
-        } else {
-            profilePhotoLayout.setError(null);
-        }
-
-        // Validate Address (Country, City, Street, House Number)
-        String country = countryInput.getText().toString();
-        if (country.isEmpty()) {
-            countryLayout.setError("Country is required");
-            isValid = false;
-        } else {
-            countryLayout.setError(null);
-        }
-
-        String city = cityInput.getText().toString();
-        if (city.isEmpty()) {
-            cityLayout.setError("City is required");
-            isValid = false;
-        } else {
-            cityLayout.setError(null);
-        }
-
-        String street = streetInput.getText().toString();
-        if (street.isEmpty()) {
-            streetLayout.setError("Street is required");
-            isValid = false;
-        } else {
-            streetLayout.setError(null);
-        }
-
-        String houseNumber = houseNumberInput.getText().toString();
-        if (houseNumber.isEmpty()) {
-            houseNumberLayout.setError("House number is required");
-            isValid = false;
-        } else {
-            houseNumberLayout.setError(null);
-        }
-
-        // Validate Phone Number
-        String phone = phoneInput.getText().toString();
-        if (phone.isEmpty()) {
-            phoneLayout.setError("Phone number is required");
-            isValid = false;
-        } else {
-            phoneLayout.setError(null);
-        }
-
-        int selectedRole = roleRadioGroup.getCheckedRadioButtonId();
-
-        if (selectedRole == R.id.product_service_provider) {
-            String companyEmail = companyEmailInput.getText().toString();
-            if (companyEmail.isEmpty()) {
-                companyEmailLayout.setError("Company email is required");
-                isValid = false;
-            } else if (!Patterns.EMAIL_ADDRESS.matcher(companyEmail).matches()) {
-                companyEmailLayout.setError("Invalid email format");
-                isValid = false;
-            } else {
-                companyEmailLayout.setError(null);
-            }
-
-            String companyName = companyNameInput.getText().toString();
-            if (companyName.isEmpty()) {
-                companyNameLayout.setError("Company name is required");
-                isValid = false;
-            } else {
-                companyNameLayout.setError(null);
-            }
-
-            String companyCountry = companyCountryInput.getText().toString();
-            if (companyCountry.isEmpty()) {
-                companyCountryLayout.setError("Company country is required");
-                isValid = false;
-            } else {
-                companyCountryLayout.setError(null);
-            }
-
-            String companyCity = companyCityInput.getText().toString();
-            if (companyCity.isEmpty()) {
-                companyCityLayout.setError("Company city is required");
-                isValid = false;
-            } else {
-                companyCityLayout.setError(null);
-            }
-
-            String companyStreet = companyStreetInput.getText().toString();
-            if (companyStreet.isEmpty()) {
-                companyStreetLayout.setError("Company street is required");
-                isValid = false;
-            } else {
-                companyStreetLayout.setError(null);
-            }
-
-            String companyHouseNumber = companyHouseNumberInput.getText().toString();
-            if (companyHouseNumber.isEmpty()) {
-                companyHouseNumberLayout.setError("Company house number is required");
-                isValid = false;
-            } else {
-                companyHouseNumberLayout.setError(null);
-            }
-
-            String companyPhone = companyPhoneInput.getText().toString();
-            if (companyPhone.isEmpty()) {
-                companyPhoneLayout.setError("Company phone is required");
-                isValid = false;
-            }else {
-                companyPhoneLayout.setError(null);
-            }
-
-            String companyDescription = companyDescriptionInput.getText().toString();
-            if (companyDescription.isEmpty()) {
-                companyDescriptionLayout.setError("Company description is required");
-                isValid = false;
-            } else {
-                companyDescriptionLayout.setError(null);
-            }
-
-            String companyPhotos = companyPhotosInput.getText().toString();
-            if (companyPhotos.isEmpty()) {
-                companyPhotosLayout.setError("Company photos are required");
-                isValid = false;
-            } else {
-                companyPhotosLayout.setError(null);
-            }
-        }
-
-        return isValid;
     }
 
     private RegisterDTO getFormData(){
@@ -334,8 +450,8 @@ public class RegisterFragment extends Fragment {
 
         // Determine role
         String role = (roleRadioGroup.getCheckedRadioButtonId() == R.id.event_organizer)
-                ? "Event Organizer"
-                : "Product Service Provider";
+                ? "EVENT_ORGANIZER"
+                : "PROVIDER";
 
         // Create location DTO
         CreateLocationDTO location = new CreateLocationDTO();
@@ -356,7 +472,7 @@ public class RegisterFragment extends Fragment {
         registerDTO.setLocation(location);
 
         // Check if role is Product Service Provider
-        if (role.equals("Product Service Provider")) {
+        if (role.equals("PROVIDER")) {
             String companyEmail = companyEmailInput.getText().toString().trim();
             String companyName = companyNameInput.getText().toString().trim();
             String companyPhone = companyPhoneInput.getText().toString().trim();
@@ -387,5 +503,103 @@ public class RegisterFragment extends Fragment {
             registerDTO.setCompany(companyDTO);
         }
         return registerDTO;
+    }
+
+    private boolean isFormValid() {
+        boolean isValid = true;
+
+        // Validate email
+        if (!validateEmail(emailLayout)) {
+            isValid = false;
+        }
+
+        // Validate password
+        if (!validatePassword()) {
+            isValid = false;
+        }
+
+        // Validate confirm password
+        if (!validateConfirmPassword()) {
+            isValid = false;
+        }
+
+        // Validate first name
+        if (!validateRequiredField(firstNameLayout)) {
+            isValid = false;
+        }
+
+        // Validate last name
+        if (!validateRequiredField(lastNameLayout)) {
+            isValid = false;
+        }
+
+        // Validate country
+        if (!validateRequiredField(countryLayout)) {
+            isValid = false;
+        }
+
+        // Validate city
+        if (!validateRequiredField(cityLayout)) {
+            isValid = false;
+        }
+
+        // Validate street
+        if (!validateRequiredField(streetLayout)) {
+            isValid = false;
+        }
+
+        // Validate house number
+        if (!validateRequiredField(houseNumberLayout)) {
+            isValid = false;
+        }
+
+        // Validate phone
+        if (!validateRequiredField(phoneLayout)) {
+            isValid = false;
+        }
+
+        if (roleRadioGroup.getCheckedRadioButtonId() == R.id.product_service_provider) {
+            // Validate company email
+            if (!validateEmail(companyEmailLayout)) {
+                isValid = false;
+            }
+
+            // Validate company name
+            if (!validateRequiredField(companyNameLayout)) {
+                isValid = false;
+            }
+
+            // Validate company country
+            if (!validateRequiredField(companyCountryLayout)) {
+                isValid = false;
+            }
+
+            // Validate company city
+            if (!validateRequiredField(companyCityLayout)) {
+                isValid = false;
+            }
+
+            // Validate company street
+            if (!validateRequiredField(companyStreetLayout)) {
+                isValid = false;
+            }
+
+            // Validate company house number
+            if (!validateRequiredField(companyHouseNumberLayout)) {
+                isValid = false;
+            }
+
+            // Validate company phone
+            if (!validateRequiredField(companyPhoneLayout)) {
+                isValid = false;
+            }
+
+            // Validate company description
+            if (!validateRequiredField(companyDescriptionLayout)) {
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 }
