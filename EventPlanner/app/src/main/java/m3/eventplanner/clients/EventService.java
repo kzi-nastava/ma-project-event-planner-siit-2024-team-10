@@ -3,11 +3,13 @@ package m3.eventplanner.clients;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EventService {
@@ -45,4 +47,14 @@ public interface EventService {
             @Query("name") String name
     );
 
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+
+    @GET("events/{eventId}")
+    Call<GetEventDTO> getEvent(@Path("eventId") int eventId);
+
+    @GET("events/{eventId}/agenda")
+    Call<Collection<GetAgendaItemDTO>> getEventAgenda(@Path("eventId") int eventId);
 }
