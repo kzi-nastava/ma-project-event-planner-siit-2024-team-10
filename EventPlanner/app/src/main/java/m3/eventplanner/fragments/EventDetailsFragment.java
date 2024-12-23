@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,22 @@ import com.squareup.picasso.Picasso;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.AgendaItemListAdapter;
+import m3.eventplanner.adapters.EventListAdapter;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AgendaItem;
 import m3.eventplanner.models.Event;
+import m3.eventplanner.models.GetAgendaItemDTO;
+import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetOrganizerDTO;
 import m3.eventplanner.models.Organizer;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EventDetailsFragment extends Fragment {
     private TextView eventName, eventType, eventDescription, eventLocation, eventDate;
@@ -31,7 +41,10 @@ public class EventDetailsFragment extends Fragment {
     private ImageView eventOrganizerProfilePhoto;
     private TextView eventOrganizerName, eventOrganizerLocation, eventOrganizerEmail, eventOrganizerPhone;
 
-    private Event event;
+    private int eventId;
+    private GetEventDTO event;
+    private Collection<GetAgendaItemDTO> agenda;
+    private ClientUtils clientUtils;
 
 
     public EventDetailsFragment() {
@@ -42,11 +55,46 @@ public class EventDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_event_details, container, false);
 
+        clientUtils = new ClientUtils(requireContext());
+
         InitializeUIComponents(view);
 
         if (getArguments() != null) {
-            event = getArguments().getParcelable("selectedEvent");
-            PopulateEventDetails();
+            eventId = getArguments().getInt("selectedEventId");
+            Call<GetEventDTO> eventCall = clientUtils.getEventService().getEvent(eventId);
+            eventCall.enqueue(new Callback<GetEventDTO>() {
+                @Override
+                public void onResponse(Call<GetEventDTO> call, Response<GetEventDTO> response) {
+                    if (response.isSuccessful() && response.body() != null){
+                        event=response.body();
+                        PopulateEventDetails();
+                    } else{
+
+                        return;
+                    }
+                }
+                @Override
+                public void onFailure(Call<GetEventDTO> call, Throwable t) {
+                    Log.d("REZ", t.getMessage() != null ? t.getMessage() : "error");
+                }
+            });
+
+            Call<Collection<GetAgendaItemDTO>> agendaCall = clientUtils.getEventService().getEventAgenda(eventId);
+            agendaCall.enqueue(new Callback<Collection<GetAgendaItemDTO>>() {
+                @Override
+                public void onResponse(Call<Collection<GetAgendaItemDTO>> call, Response<Collection<GetAgendaItemDTO>> response) {
+                    if (response.isSuccessful() && response.body() != null){
+                        agenda = response.body();
+                        PopulateAgenda();
+                    } else{
+                        String a="aaaa";
+                    }
+                }
+                @Override
+                public void onFailure(Call<Collection<GetAgendaItemDTO>> call, Throwable t) {
+                    Log.d("REZ", t.getMessage() != null ? t.getMessage() : "error");
+                }
+            });
         }
         return view;
     }
@@ -70,10 +118,10 @@ public class EventDetailsFragment extends Fragment {
         eventType.setText(event.getEventType().getName());
         eventDescription.setText(event.getDescription());
         eventLocation.setText(event.getLocation().toString());
-        eventDate.setText(event.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+        eventDate.setText(event.getDate());
 
         // Populate the organizer details
-        Organizer organizer = event.getOrganizer();
+        GetOrganizerDTO organizer = event.getOrganizer();
         eventOrganizerName.setText(organizer.getFirstName()+" "+organizer.getLastName());
         eventOrganizerLocation.setText(organizer.getLocation().getCity()+", "+organizer.getLocation().getCountry());
         eventOrganizerEmail.setText(organizer.getEmail());
@@ -81,9 +129,11 @@ public class EventDetailsFragment extends Fragment {
 
         if(event.getOrganizer().getProfilePhoto()!=null)
             Picasso.get().load(event.getOrganizer().getProfilePhoto()).into(eventOrganizerProfilePhoto);
+    }
 
+    private void PopulateAgenda()
+    {
         agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        agendaRecyclerView.setAdapter(new AgendaItemListAdapter(event.getAgenda()));
-
+        agendaRecyclerView.setAdapter(new AgendaItemListAdapter((List<GetAgendaItemDTO>) agenda));
     }
 }
