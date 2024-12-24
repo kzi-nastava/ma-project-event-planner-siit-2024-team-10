@@ -20,6 +20,10 @@ android {
     namespace = "m3.eventplanner"
     compileSdk = 34
 
+    buildFeatures{
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "m3.eventplanner"
         minSdk = 30
