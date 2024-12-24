@@ -62,6 +62,9 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.squareup.retrofit2:retrofit:2.3.0")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:3.12.1")
-    implementation ("com.auth0:java-jwt:4.4.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
 }
