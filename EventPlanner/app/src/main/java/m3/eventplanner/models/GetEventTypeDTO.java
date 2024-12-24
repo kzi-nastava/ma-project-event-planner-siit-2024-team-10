@@ -19,7 +19,7 @@ public class GetEventTypeDTO implements Parcelable, Serializable {
     private String description;
 
     @SerializedName("active")
-    private boolean active;
+    private Boolean active;
 
     @SerializedName("recommendedCategories")
     private List<GetOfferingCategoryDTO> recommendedCategories;

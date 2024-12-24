@@ -208,7 +208,7 @@ public class HomeScreenFragment extends Fragment {
     private void showAllEvents() {
         toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
         currentPaginationContext = PaginationContext.EVENTS;
-        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
+        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null,null,null);
         call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
