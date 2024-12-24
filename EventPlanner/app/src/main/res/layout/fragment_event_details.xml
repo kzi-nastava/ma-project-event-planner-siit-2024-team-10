@@ -31,7 +31,7 @@
                     android:textStyle="bold" />
 
                 <ImageButton
-                    android:id="@+id/offering_card_heart"
+                    android:id="@+id/favourite_button"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
