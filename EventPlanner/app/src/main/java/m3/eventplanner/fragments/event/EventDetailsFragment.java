@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments;
+package m3.eventplanner.fragments.event;
 
 import android.os.Bundle;
 
@@ -16,23 +16,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.AgendaItemListAdapter;
-import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AddFavouriteEventDTO;
-import m3.eventplanner.models.AgendaItem;
-import m3.eventplanner.models.Event;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOrganizerDTO;
-import m3.eventplanner.models.Organizer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
