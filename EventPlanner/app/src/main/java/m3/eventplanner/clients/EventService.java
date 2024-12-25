@@ -3,12 +3,17 @@ package m3.eventplanner.clients;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.CreateEventRatingDTO;
+import m3.eventplanner.models.CreatedEventRatingDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -57,4 +62,7 @@ public interface EventService {
 
     @GET("events/{eventId}/agenda")
     Call<Collection<GetAgendaItemDTO>> getEventAgenda(@Path("eventId") int eventId);
+
+    @POST("events/{eventId}/ratings")
+    Call<CreatedEventRatingDTO> addRating(@Path("eventId") int eventId, @Body CreateEventRatingDTO createEventRatingDTO);
 }
