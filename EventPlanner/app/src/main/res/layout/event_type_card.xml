@@ -23,14 +23,55 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:id="@+id/eventTypeName"
-                android:text="Conference"
-                android:textSize="25sp"
-                android:textStyle="bold"  />
+                android:padding="15dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:id="@+id/eventTypeName"
+                    android:text="Conference"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+
+                <ImageButton
+                    android:id="@+id/edit_event_type_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="TODO"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    app:tint="@color/brand_purple"
+                    android:src="@drawable/ic_edit" />
+
+                <ImageButton
+                    android:id="@+id/activate_event_type_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="TODO"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    app:tint="@color/vibrant_green"
+                    android:src="@drawable/ic_check"
+                    />
+
+                <ImageButton
+                    android:id="@+id/deactivate_event_type_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="TODO"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    app:tint="@color/vibrant_red"
+                    android:src="@drawable/ic_cancel" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"

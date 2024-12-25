@@ -3,6 +3,7 @@ package m3.eventplanner.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdap
         public TextView nameTextView;
         public TextView descriptionTextView;
         public TextView categoriesTextView;
+        public ImageButton editButton, activateButton, deactivateButton;
 
         public EventTypeViewHolder(View view) {
             super(view);
@@ -37,6 +39,9 @@ public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdap
             nameTextView = view.findViewById(R.id.eventTypeName);
             descriptionTextView = view.findViewById(R.id.eventTypeDescription);
             categoriesTextView = view.findViewById(R.id.eventTypeCategories);
+            editButton = view.findViewById(R.id.edit_event_type_button);
+            activateButton = view.findViewById(R.id.activate_event_type_button);
+            deactivateButton = view.findViewById(R.id.deactivate_event_type_button);
         }
     }
 
@@ -58,6 +63,11 @@ public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdap
                 .map(GetOfferingCategoryDTO::getName)
                 .collect(Collectors.joining(", "));
         holder.categoriesTextView.setText(categories);
+
+        if(eventType.isActive())
+            holder.activateButton.setVisibility(View.GONE);
+        else
+            holder.deactivateButton.setVisibility(View.GONE);
     }
 
     @Override
