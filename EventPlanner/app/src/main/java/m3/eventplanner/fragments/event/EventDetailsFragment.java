@@ -63,6 +63,8 @@ public class EventDetailsFragment extends Fragment {
         if (getArguments() != null) {
             int eventId = getArguments().getInt("selectedEventId");
             int accountId = new TokenManager(requireContext()).getAccountId();
+            if(accountId==0)
+                binding.favouriteButton.setVisibility(View.GONE);
             viewModel.loadEventDetails(eventId, accountId);
         }
     }

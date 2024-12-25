@@ -87,6 +87,9 @@ public class EventDetailsViewModel extends ViewModel {
             }
         });
 
+        if(accountId==0)
+            return;
+
         // Check if event is favourite
         clientUtils.getAccountService().getFavouriteEvents(accountId).enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
