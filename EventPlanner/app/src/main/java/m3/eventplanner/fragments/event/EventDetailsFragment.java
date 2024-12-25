@@ -93,6 +93,17 @@ public class EventDetailsFragment extends Fragment {
                 viewModel.toggleFavourite(accountId, eventId);
             }
         });
+
+        binding.submitCommentButton.setOnClickListener(v -> {
+            int rating = (int) binding.newRating.getRating();
+            if (rating > 0) {
+                int eventId = getArguments().getInt("selectedEventId");
+                viewModel.submitRating(eventId, rating);
+                Toast.makeText(getContext(), "Rating submitted successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void populateEventDetails(GetEventDTO event) {
@@ -101,6 +112,7 @@ public class EventDetailsFragment extends Fragment {
         binding.eventDescription.setText(event.getDescription());
         binding.eventLocation.setText(event.getLocation().toString());
         binding.eventDate.setText(event.getDate());
+        binding.averageRating.setText("★ "+event.getAverageRating());
 
         // Populate organizer details
         GetOrganizerDTO organizer = event.getOrganizer();

@@ -39,6 +39,13 @@
                     android:padding="4dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/heart_outline" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/averageRating"
+                    android:textColor="#2d3748"
+                    android:textSize="24sp" />
             </LinearLayout>
 
             <!-- Event Details Card -->
@@ -267,30 +274,12 @@
 
                     <!-- Rating Input -->
                     <RatingBar
-                        android:id="@+id/new_comment_rating"
+                        android:id="@+id/new_rating"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:numStars="5"
-                        android:stepSize="0.5"
+                        android:stepSize="1"
                         android:layout_marginBottom="16dp"/>
-
-                    <!-- Comment Input -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/new_comment_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/write_your_review_here"
-                            android:inputType="textMultiLine"
-                            android:minLines="3"
-                            android:maxLines="6"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Submit Button -->
                     <Button
@@ -298,8 +287,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/submit_review"
-                        android:padding="12dp"
-                        android:backgroundTint="@android:color/holo_blue_dark"/>
+                        android:padding="12dp"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

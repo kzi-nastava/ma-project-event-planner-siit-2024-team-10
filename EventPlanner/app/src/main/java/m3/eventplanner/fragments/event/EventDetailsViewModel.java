@@ -14,6 +14,8 @@ import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.CreateEventRatingDTO;
+import m3.eventplanner.models.CreatedEventRatingDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import retrofit2.Call;
@@ -141,5 +143,29 @@ public class EventDetailsViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void submitRating(int eventId, int rating) {
+        CreateEventRatingDTO ratingDTO = new CreateEventRatingDTO(rating);
+
+        clientUtils.getEventService().addRating(eventId, ratingDTO).enqueue(new Callback<CreatedEventRatingDTO>() {
+            @Override
+            public void onResponse(Call<CreatedEventRatingDTO> call, Response<CreatedEventRatingDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetEventDTO currentEvent = event.getValue();
+                    if (currentEvent != null) {
+                        currentEvent.setAverageRating(response.body().getAverageRating());
+                        event.setValue(currentEvent);
+                    }
+                } else {
+                    error.setValue("Failed to submit rating");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedEventRatingDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error submitting rating");
+            }
+        });
     }
 }
