@@ -19,6 +19,11 @@
                 android:title="@string/your_chatrooms"
                 android:checkable="true"
                 android:icon="@drawable/ic_chat"/>
+            <item
+                android:id="@+id/eventTypesFragment"
+                android:title="@string/event_types"
+                android:checkable="true"
+                android:icon="@drawable/ic_event"/>
         </menu>
     </item>
 </menu>

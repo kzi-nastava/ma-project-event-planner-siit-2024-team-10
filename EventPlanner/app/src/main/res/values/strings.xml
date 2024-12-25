@@ -101,5 +101,6 @@
     <string name="number_of_results">Number of results: 10</string>
     <string name="log_out">Log out</string>
     <string name="incorrect_credentials">Incorrect email or password</string>
+    <string name="event_types">Event types</string>
 
 </resources>
