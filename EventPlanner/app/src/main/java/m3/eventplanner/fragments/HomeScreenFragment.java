@@ -261,7 +261,6 @@ public class HomeScreenFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
-        setUpOfferingFilterDateRangePicker(bottomSheetView);
         setUpCategorySpinner(bottomSheetView);
         setUpEventTypeSpinner(bottomSheetView);
         setUpVisibilityForOfferingType(bottomSheetView, selected);
@@ -269,14 +268,6 @@ public class HomeScreenFragment extends Fragment {
     }
 
     private void setUpEventFilterDateRangePicker(View bottomSheetView) {
-        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
-        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
-        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
-        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
-        picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
-    }
-
-    private void setUpOfferingFilterDateRangePicker(View bottomSheetView) {
         Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
         TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
         MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
@@ -366,6 +357,4 @@ public class HomeScreenFragment extends Fragment {
             }
         });
     }
-
-
 }
