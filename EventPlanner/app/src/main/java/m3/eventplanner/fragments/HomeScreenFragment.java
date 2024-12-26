@@ -78,6 +78,8 @@ public class HomeScreenFragment extends Fragment {
                 eventAdapter.notifyDataSetChanged();
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
+                topEventsTextView.setVisibility(View.VISIBLE);
+                topOfferingsTextView.setVisibility(View.GONE);
             } else {
                 handleNoDataFound();
             }
@@ -90,6 +92,8 @@ public class HomeScreenFragment extends Fragment {
                 offeringAdapter.notifyDataSetChanged();
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.VISIBLE);
             } else {
                 handleNoDataFound();
             }
@@ -103,6 +107,8 @@ public class HomeScreenFragment extends Fragment {
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
                 paginationBar.setVisibility(View.VISIBLE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
                 pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentEventPage() + 1) +" of "+ homeScreenViewModel.getTotalEventPages()));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfEvents()));
             } else {
@@ -118,6 +124,8 @@ public class HomeScreenFragment extends Fragment {
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
                 paginationBar.setVisibility(View.VISIBLE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
                 pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentOfferingPage() + 1) +" of "+ homeScreenViewModel.getTotalOfferingPages()));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfOfferings()));
             } else {
@@ -325,7 +333,6 @@ public class HomeScreenFragment extends Fragment {
             }
 
             homeScreenViewModel.loadPagedEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
-
             bottomSheetDialog.dismiss();
         });
 
