@@ -24,10 +24,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
@@ -58,6 +63,7 @@ public class HomeScreenFragment extends Fragment {
         initializeUIElements(rootView);
         setUpRecyclerView();
         setUpToggleGroup();
+        homeScreenViewModel.fetchEventTypes();
         return rootView;
     }
 
@@ -253,7 +259,74 @@ public class HomeScreenFragment extends Fragment {
         View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         setUpEventFilterDateRangePicker(bottomSheetView);
-        setUpEventTypeSpinner(bottomSheetView);
+
+        homeScreenViewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
+            if (eventTypes != null && !eventTypes.isEmpty()) {
+                setUpEventTypeSpinner(bottomSheetView, eventTypes);
+            }
+        });
+
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+
+        Button eventFilterSendButton = bottomSheetView.findViewById(R.id.event_filter_send);
+
+        eventFilterSendButton.setOnClickListener(v -> {
+            GetEventTypeDTO selectedEventType = (GetEventTypeDTO) eventTypeSpinner.getSelectedItem();
+
+            Integer eventTypeId = null;
+            if (selectedEventType != null && selectedEventType.getId() != -1) {
+                eventTypeId = selectedEventType.getId();
+            }
+
+            String location = ((TextInputEditText) bottomSheetView.findViewById(R.id.locationTextField)).getText().toString();
+            if (location.isEmpty()) {
+                location = null;
+            }
+
+            Integer maxParticipants = null;
+            TextInputEditText maxParticipantsEditText = bottomSheetView.findViewById(R.id.max_participants);
+            String maxParticipantsText = maxParticipantsEditText.getText().toString().trim();
+            if (!maxParticipantsText.isEmpty()) {
+                try {
+                    maxParticipants = Integer.parseInt(maxParticipantsText);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Double minRating = (double) ((Slider) bottomSheetView.findViewById(R.id.minPriceSlider)).getValue();
+            if (minRating == 0.0){
+                minRating = null;
+            }
+            TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+            String dates = selectedDatesTextView.getText().toString().trim();
+            String startDateString = null;
+            String endDateString = null;
+            String[] dateParts = dates.split(" - ");
+            if (dateParts.length == 2) {
+                String startDateStr = dateParts[0].trim();
+                String endDateStr = dateParts[1].trim();
+
+                SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+
+                try {
+                    Date startDate = inputDateFormat.parse(startDateStr);
+                    Date endDate = inputDateFormat.parse(endDateStr);
+
+                    SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
+                    startDateString = outputDateFormat.format(startDate);
+                    endDateString = outputDateFormat.format(endDate);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            homeScreenViewModel.loadPagedEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
+
+            bottomSheetDialog.dismiss();
+        });
         bottomSheetDialog.show();
     }
 
@@ -262,7 +335,6 @@ public class HomeScreenFragment extends Fragment {
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         setUpCategorySpinner(bottomSheetView);
-        setUpEventTypeSpinner(bottomSheetView);
         setUpVisibilityForOfferingType(bottomSheetView, selected);
         bottomSheetDialog.show();
     }
@@ -275,29 +347,57 @@ public class HomeScreenFragment extends Fragment {
         picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
     }
 
-    private void setUpEventTypeSpinner(View view) {
-        Spinner eventTypeSpinner = view.findViewById(R.id.event_type_spinner);
+    private void setUpEventTypeSpinner(View bottomSheetView, List<GetEventTypeDTO> eventTypes) {
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+        if (eventTypeSpinner != null) {
+            List<GetEventTypeDTO> spinnerList = new ArrayList<>();
+            GetEventTypeDTO anyOption = new GetEventTypeDTO();
+            anyOption.setName("Any");
+            anyOption.setId(-1);
+            spinnerList.add(anyOption);
+            spinnerList.addAll(eventTypes);
 
-        fetchEventTypesAndPopulateSpinner(eventTypeSpinner);
-
-        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                List<GetEventTypeDTO> eventTypes = (List<GetEventTypeDTO>) eventTypeSpinner.getTag();
-                if (eventTypes != null && !eventTypes.isEmpty()) {
-                    GetEventTypeDTO selectedEventType = eventTypes.get(position);
-                    int selectedEventTypeId = selectedEventType.getId();
-
-                    Log.d("SelectedEventType", "ID: " + selectedEventTypeId + ", Name: " + selectedEventType.getName());
+            ArrayAdapter<GetEventTypeDTO> adapter = new ArrayAdapter<GetEventTypeDTO>(requireContext(), android.R.layout.simple_spinner_item, spinnerList) {
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    TextView textView = (TextView) view;
+                    textView.setText(spinnerList.get(position).getName());
+                    return view;
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    TextView textView = (TextView) super.getView(position, convertView, parent);
+                    textView.setText(spinnerList.get(position).getName());
+                    return textView;
+                }
+            };
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            eventTypeSpinner.setAdapter(adapter);
+            eventTypeSpinner.setTag(spinnerList);
+
+            eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (spinnerList != null && !spinnerList.isEmpty()) {
+                        GetEventTypeDTO selectedEventType = spinnerList.get(position);
+                        if (selectedEventType != null && selectedEventType.getId() != -1) {
+                            int selectedEventTypeId = selectedEventType.getId();
+                        } else {
+                        }
+                    }
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        } else {
+            Log.e("HomeScreenFragment", "Event Type Spinner is null.");
+        }
     }
-
     private void setUpCategorySpinner(View bottomSheetView) {
         Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(createSpinnerAdapter(R.array.categories));
@@ -325,36 +425,5 @@ public class HomeScreenFragment extends Fragment {
 
     private String formatDate(Long dateInMillis) {
         return java.text.DateFormat.getDateInstance().format(new java.util.Date(dateInMillis));
-    }
-
-    private void fetchEventTypesAndPopulateSpinner(Spinner spinner) {
-
-        clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
-            @Override
-            public void onResponse(Call<List<GetEventTypeDTO>> call, Response<List<GetEventTypeDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<GetEventTypeDTO> eventTypes = response.body();
-
-                    List<String> eventTypeNames = new ArrayList<>();
-                    for (GetEventTypeDTO eventType : eventTypes) {
-                        eventTypeNames.add(eventType.getName());
-                    }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                            getContext(), android.R.layout.simple_spinner_item, eventTypeNames);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(adapter);
-
-                    spinner.setTag(eventTypes);
-                } else {
-                    Toast.makeText(getContext(), "Failed to fetch event types", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<GetEventTypeDTO>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

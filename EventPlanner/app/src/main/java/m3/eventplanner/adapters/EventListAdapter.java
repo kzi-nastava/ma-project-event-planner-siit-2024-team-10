@@ -38,7 +38,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
             organizerTextView = view.findViewById(R.id.event_card_organizer);
             ratingTextView = view.findViewById(R.id.event_card_rating);
             locationAndDateTextView = view.findViewById(R.id.event_card_location_date);
-            eventTypeTextView = view.findViewById(R.id.eventType);
+            eventTypeTextView = view.findViewById(R.id.event_card_type);
         }
     }
 
@@ -58,7 +58,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         holder.organizerTextView.setText("Organizer: " + event.getOrganizer().getFirstName() + " " + event.getOrganizer().getLastName());
         holder.ratingTextView.setText(event.getAverageRating() + "★");
         holder.locationAndDateTextView.setText(event.getLocation().getCity() + ", " + event.getLocation().getCountry() + " at " + event.getDate());
-
+        holder.eventTypeTextView.setText(event.getEventType().getName().toUpperCase());
 
         holder.eventCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();

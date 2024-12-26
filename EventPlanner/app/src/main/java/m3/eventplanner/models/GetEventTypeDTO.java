@@ -27,6 +27,14 @@ public class GetEventTypeDTO implements Parcelable, Serializable {
     public GetEventTypeDTO() {
     }
 
+    public GetEventTypeDTO(int id, String name, String description, Boolean active, List<GetOfferingCategoryDTO> recommendedCategories) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.active = active;
+        this.recommendedCategories = recommendedCategories;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);

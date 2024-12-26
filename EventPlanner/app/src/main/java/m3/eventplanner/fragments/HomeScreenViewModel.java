@@ -10,6 +10,7 @@ import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
@@ -25,6 +26,8 @@ public class HomeScreenViewModel extends ViewModel {
 
     private final MutableLiveData<PagedResponse<GetEventDTO>> pagedEvents = new MutableLiveData<>();
     private final MutableLiveData<PagedResponse<GetOfferingDTO>> pagedOfferings = new MutableLiveData<>();
+    private final MutableLiveData<List<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+
 
     private int currentEventPage = 0;
     private final int eventPageSize = 3;
@@ -40,6 +43,14 @@ public class HomeScreenViewModel extends ViewModel {
     }
 
     private PaginationContext currentPaginationContext = PaginationContext.EVENTS;
+
+    private Integer filterEventTypeId;
+    private String filterEventLocation;
+    private Integer filterEventMaxParticipants;
+    private Double filterEventMinRating;
+    private String filterEventStartDate;
+    private String filterEventEndDate;
+
 
     public HomeScreenViewModel(ClientUtils clientUtils) {
         this.clientUtils = clientUtils;
@@ -91,11 +102,12 @@ public class HomeScreenViewModel extends ViewModel {
             }
         });
     }
-
     public void loadPagedEvents(int page) {
         currentEventPage = page;
-        currentPaginationContext=PaginationContext.EVENTS;
-        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null, null, null, null, null, null, null, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
+        currentPaginationContext = PaginationContext.EVENTS;
+        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
+                filterEventTypeId, filterEventLocation, filterEventMaxParticipants, filterEventMinRating,
+                filterEventStartDate, filterEventEndDate, null, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -111,6 +123,37 @@ public class HomeScreenViewModel extends ViewModel {
             }
         });
     }
+    public void loadPagedEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
+        currentEventPage = page;
+        currentPaginationContext = PaginationContext.EVENTS;
+
+        this.filterEventTypeId = eventTypeId;
+        this.filterEventLocation = location;
+        this.filterEventMaxParticipants = maxParticipants;
+        this.filterEventMinRating = minRating;
+        this.filterEventStartDate = startDate;
+        this.filterEventEndDate = endDate;
+
+        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
+                eventTypeId, location, maxParticipants, minRating, startDate, endDate,
+                null, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    pagedEvents.setValue(response.body());
+                    totalEventPages = response.body().getTotalPages();
+                    totalEvents = response.body().getTotalElements();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
+                pagedEvents.setValue(null);
+            }
+        });
+    }
+
+
 
     public void loadPagedOfferings(int page) {
         currentOfferingPage = page;
@@ -130,6 +173,25 @@ public class HomeScreenViewModel extends ViewModel {
                 pagedOfferings.setValue(null);
             }
         });
+    }
+    public void fetchEventTypes() {
+        clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetEventTypeDTO>> call, Response<List<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventTypes.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetEventTypeDTO>> call, Throwable t) {
+                eventTypes.setValue(new ArrayList<>());
+            }
+        });
+    }
+
+    public LiveData<List<GetEventTypeDTO>> getEventTypes() {
+        return eventTypes;
     }
     public void loadNextPage() {
         switch (currentPaginationContext){
