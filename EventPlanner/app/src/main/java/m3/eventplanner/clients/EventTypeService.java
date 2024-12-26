@@ -7,7 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface EventTypeService {
-    @GET("api/event-types")
+    @GET("event-types")
     Call<List<GetEventTypeDTO>> getAllEventTypes();
 }
 

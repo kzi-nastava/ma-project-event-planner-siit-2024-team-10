@@ -5,41 +5,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.clients.EventService;
-import m3.eventplanner.models.AgendaItem;
-import m3.eventplanner.models.Event;
-import m3.eventplanner.models.EventType;
-import m3.eventplanner.models.GetEventDTO;
-import m3.eventplanner.models.GetOfferingDTO;
-import m3.eventplanner.models.Location;
-import m3.eventplanner.models.Offering;
-import m3.eventplanner.models.Organizer;
-import m3.eventplanner.models.PagedResponse;
-import m3.eventplanner.models.Product;
-import m3.eventplanner.models.Service;
+import m3.eventplanner.models.GetEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,24 +43,17 @@ public class HomeScreenFragment extends Fragment {
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
-    private int currentEventPage = 0;
-    private final int eventPageSize = 3;
-    private int totalEventPages = 0;
+    private HomeScreenViewModel homeScreenViewModel;
+    private EventListAdapter eventAdapter;
+    private OfferingListAdapter offeringAdapter;
 
-    private int currentOfferingPage = 0;
-    private final int offeringPageSize = 3;
-    private int totalOfferingPages = 0;
 
-    private enum PaginationContext {
-        EVENTS, OFFERINGS
-    }
-
-    private PaginationContext currentPaginationContext = PaginationContext.EVENTS;
     private ClientUtils clientUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
+        homeScreenViewModel = new ViewModelProvider(this, new HomeScreenViewModelFactory(clientUtils)).get(HomeScreenViewModel.class);
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
@@ -77,9 +64,68 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        homeScreenViewModel.getTopEvents().observe(getViewLifecycleOwner(), events -> {
+            if (events != null && !events.isEmpty()) {
+                eventAdapter = new EventListAdapter(events);
+                contentRecyclerView.setAdapter(eventAdapter);
+                eventAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getTopOfferings().observe(getViewLifecycleOwner(), offerings -> {
+            if (offerings != null) {
+                offeringAdapter = new OfferingListAdapter(offerings);
+                contentRecyclerView.setAdapter(offeringAdapter);
+                offeringAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getPagedEvents().observe(getViewLifecycleOwner(), pagedEvents -> {
+            if (pagedEvents != null && pagedEvents.getContent() != null) {
+                eventAdapter = new EventListAdapter(pagedEvents.getContent());
+                contentRecyclerView.setAdapter(eventAdapter);
+                eventAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                paginationBar.setVisibility(View.VISIBLE);
+                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentEventPage() + 1) +" of "+ homeScreenViewModel.getTotalEventPages()));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfEvents()));
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getPagedOfferings().observe(getViewLifecycleOwner(), pagedOfferings -> {
+            if (pagedOfferings != null && pagedOfferings.getContent() != null) {
+                offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
+                contentRecyclerView.setAdapter(offeringAdapter);
+                offeringAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                paginationBar.setVisibility(View.VISIBLE);
+                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentOfferingPage() + 1) +" of "+ homeScreenViewModel.getTotalOfferingPages()));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfOfferings()));
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.loadTopEvents();
+
         setUpSortSpinners(view);
         setUpFilterButtons(view);
         setUpPaginationButtons(view);
+
+        setUpToggleGroup();
     }
 
     private void initializeUIElements(View rootView) {
@@ -99,26 +145,43 @@ public class HomeScreenFragment extends Fragment {
         pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
         totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
 
-        paginationForwardButton.setOnClickListener(v -> loadNextPage());
-        paginationBackButton.setOnClickListener(v -> loadPreviousPage());
+        paginationForwardButton.setOnClickListener(v -> homeScreenViewModel.loadNextPage());
+        paginationBackButton.setOnClickListener(v -> homeScreenViewModel.loadPreviousPage());
     }
 
     private void setUpRecyclerView() {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+    private void resetVisibilityForTab(int tabId) {
+        eventSearchBar.setVisibility(View.GONE);
+        offeringSearchBar.setVisibility(View.GONE);
+        paginationBar.setVisibility(View.GONE);
+        contentRecyclerView.setVisibility(View.GONE);
 
+        if (tabId == R.id.tabAllEvents) {
+            eventSearchBar.setVisibility(View.VISIBLE);
+            paginationBar.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        } else if (tabId == R.id.tabAllOfferings) {
+            offeringSearchBar.setVisibility(View.VISIBLE);
+            paginationBar.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
     private void setUpToggleGroup() {
-        showTopEvents();
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
+                resetVisibilityForTab(checkedId);
                 if (checkedId == R.id.tabTopEvents) {
-                    showTopEvents();
+                    homeScreenViewModel.loadTopEvents();
                 } else if (checkedId == R.id.tabAllEvents) {
-                    showAllEvents();
+                    homeScreenViewModel.loadPagedEvents(0);
                 } else if (checkedId == R.id.tabTopOfferings) {
-                    showTopOfferings();
+                    homeScreenViewModel.loadTopOfferings();
                 } else if (checkedId == R.id.tabAllOfferings) {
-                    showAllOfferings();
+                    homeScreenViewModel.loadPagedOfferings(0);
                 }
             }
         });
@@ -180,172 +243,11 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
-    private void showTopEvents() {
-        toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetEventDTO>> call = clientUtils.getEventService().getTopEvents();
-        call.enqueue(new Callback<Collection<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null){
-                    Collection<GetEventDTO> topEvents = response.body();
-                    updateRecyclerView(topEvents, new EventListAdapter(topEvents));
-                } else{
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
-                Log.d("REZ", t.getMessage() != null ? t.getMessage() : "error");
-            }
-        });
-    }
     private void handleNoDataFound() {
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
+        paginationBar.setVisibility(View.GONE);
     }
-
-    private void showAllEvents() {
-        toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        currentPaginationContext = PaginationContext.EVENTS;
-        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null,null,null);
-        call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
-                    totalEventPages = response.body().getTotalPages();
-                    pageNumber.setText("Page "+ (currentEventPage+1)+" of "+totalEventPages);
-                    totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
-                Log.e("Pagination", "Failed to fetch data: " + t.getMessage());
-            }
-        });
-    }
-
-    private void showTopOfferings() {
-        toggleVisibility(View.GONE, View.VISIBLE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetOfferingDTO>> call = clientUtils.getOfferingService().getTopOfferings();
-        call.enqueue(new Callback<Collection<GetOfferingDTO>>() {
-            @Override
-            public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Collection<GetOfferingDTO> topOfferings = response.body();
-                    updateRecyclerView(topOfferings, new OfferingListAdapter(topOfferings));
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Collection<GetOfferingDTO>> call, Throwable t) {
-                Log.d("Offerings", t.getMessage() != null ? t.getMessage() : "error");
-            }
-        });
-    }
-
-
-    private void showAllOfferings() {
-        toggleVisibility(View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
-        currentPaginationContext = PaginationContext.OFFERINGS;
-        Call<PagedResponse<GetOfferingDTO>> call = clientUtils.getOfferingService().getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
-        call.enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateRecyclerView(response.body().getContent(), new OfferingListAdapter(response.body().getContent()));
-                    totalOfferingPages = response.body().getTotalPages();
-                    pageNumber.setText("Page " + (currentOfferingPage + 1) + " of " + totalOfferingPages);
-                    totalNumberOfElements.setText("Number of results: " + response.body().getTotalElements());
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetOfferingDTO>> call, Throwable t) {
-                Log.e("OfferingsPagination", "Failed to fetch data: " + t.getMessage());
-            }
-        });
-    }
-
-
-    private void loadNextPage() {
-        switch (currentPaginationContext){
-            case EVENTS:
-                if (currentEventPage+1<totalEventPages) {
-                    currentEventPage++;
-                    showAllEvents();
-                }
-                break;
-            case OFFERINGS:
-                if(currentOfferingPage+1 <totalOfferingPages){
-                    currentOfferingPage++;
-                    showAllOfferings();
-                }
-                break;
-        }
-    }
-
-    private void loadPreviousPage() {
-
-        switch (currentPaginationContext){
-            case EVENTS:
-                if (currentEventPage > 0) {
-                    currentEventPage--;
-                    showAllEvents();
-                }
-                break;
-            case OFFERINGS:
-                if (currentOfferingPage > 0) {
-                    currentOfferingPage--;
-                    showAllOfferings();
-                }
-                break;
-        }
-    }
-
-    private void loadNextOfferingPage() {
-        if (currentOfferingPage + 1 < totalOfferingPages) {
-            currentOfferingPage++;
-            showAllOfferings();
-        }
-    }
-
-    private void loadPreviousOfferingPage() {
-        if (currentOfferingPage > 0) {
-            currentOfferingPage--;
-            showAllOfferings();
-        }
-    }
-
-
-
-    private void toggleVisibility(int topEventsVisibility, int topOfferingsVisibility, int eventSearchVisibility, int offeringSearchVisibility, int paginationVisibility) {
-        topEventsTextView.setVisibility(topEventsVisibility);
-        topOfferingsTextView.setVisibility(topOfferingsVisibility);
-        eventSearchBar.setVisibility(eventSearchVisibility);
-        offeringSearchBar.setVisibility(offeringSearchVisibility);
-        paginationBar.setVisibility(paginationVisibility);
-    }
-
-    private <T> void updateRecyclerView(Collection<T> data, RecyclerView.Adapter<?> adapter) {
-        if (data == null || data.isEmpty()) {
-            noCardsFoundTextView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCardsFoundTextView.setVisibility(View.GONE);
-            contentRecyclerView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setAdapter(adapter);
-        }
-    }
-
     private void showEventFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
@@ -382,9 +284,27 @@ public class HomeScreenFragment extends Fragment {
         picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
     }
 
-    private void setUpEventTypeSpinner(View bottomSheetView) {
-        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
-        eventTypeSpinner.setAdapter(createSpinnerAdapter(R.array.event_types));
+    private void setUpEventTypeSpinner(View view) {
+        Spinner eventTypeSpinner = view.findViewById(R.id.event_type_spinner);
+
+        fetchEventTypesAndPopulateSpinner(eventTypeSpinner);
+
+        eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                List<GetEventTypeDTO> eventTypes = (List<GetEventTypeDTO>) eventTypeSpinner.getTag();
+                if (eventTypes != null && !eventTypes.isEmpty()) {
+                    GetEventTypeDTO selectedEventType = eventTypes.get(position);
+                    int selectedEventTypeId = selectedEventType.getId();
+
+                    Log.d("SelectedEventType", "ID: " + selectedEventTypeId + ", Name: " + selectedEventType.getName());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setUpCategorySpinner(View bottomSheetView) {
@@ -415,4 +335,37 @@ public class HomeScreenFragment extends Fragment {
     private String formatDate(Long dateInMillis) {
         return java.text.DateFormat.getDateInstance().format(new java.util.Date(dateInMillis));
     }
+
+    private void fetchEventTypesAndPopulateSpinner(Spinner spinner) {
+
+        clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetEventTypeDTO>> call, Response<List<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetEventTypeDTO> eventTypes = response.body();
+
+                    List<String> eventTypeNames = new ArrayList<>();
+                    for (GetEventTypeDTO eventType : eventTypes) {
+                        eventTypeNames.add(eventType.getName());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                            getContext(), android.R.layout.simple_spinner_item, eventTypeNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(adapter);
+
+                    spinner.setTag(eventTypes);
+                } else {
+                    Toast.makeText(getContext(), "Failed to fetch event types", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetEventTypeDTO>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }
