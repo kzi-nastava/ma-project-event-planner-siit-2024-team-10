@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -56,7 +57,19 @@ public class EventTypesFragment extends Fragment {
 
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             binding.eventTypesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.eventTypesRecyclerView.setAdapter(new EventTypeListAdapter(eventTypes));
+            binding.eventTypesRecyclerView.setAdapter(new EventTypeListAdapter(eventTypes,this));
+        });
+
+        viewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), successMessage -> {
+            if (successMessage != null && !successMessage.isEmpty()) {
+                Toast.makeText(getContext(), successMessage, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

@@ -7,23 +7,31 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import m3.eventplanner.R;
+import m3.eventplanner.fragments.eventtype.EventTypesFragment;
+import m3.eventplanner.fragments.eventtype.EventTypesViewModel;
 import m3.eventplanner.models.AgendaItem;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 
 public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdapter.EventTypeViewHolder>{
     private List<GetEventTypeDTO> eventTypeList;
+    private EventTypesViewModel eventTypesViewModel;
 
-    public EventTypeListAdapter(List<GetEventTypeDTO> eventTypeList) {
+    public EventTypeListAdapter(List<GetEventTypeDTO> eventTypeList, EventTypesFragment fragment) {
+        eventTypeList.sort(Comparator.comparing(GetEventTypeDTO::getName));
         this.eventTypeList = eventTypeList;
+        this.eventTypesViewModel = new ViewModelProvider(fragment).get(EventTypesViewModel.class);
     }
 
     public static class EventTypeViewHolder extends RecyclerView.ViewHolder {
@@ -68,6 +76,14 @@ public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdap
             holder.activateButton.setVisibility(View.GONE);
         else
             holder.deactivateButton.setVisibility(View.GONE);
+
+        holder.activateButton.setOnClickListener(v -> {
+            eventTypesViewModel.activateEventType(eventType.getId());
+        });
+
+        holder.deactivateButton.setOnClickListener(v -> {
+            eventTypesViewModel.deactivateEventType(eventType.getId());
+        });
     }
 
     @Override
