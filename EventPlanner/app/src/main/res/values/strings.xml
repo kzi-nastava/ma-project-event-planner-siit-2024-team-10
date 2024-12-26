@@ -103,5 +103,6 @@
     <string name="incorrect_credentials">Incorrect email or password</string>
     <string name="filter_offerings">Filter Offerings</string>
     <string name="filter_events">Filter Events</string>
+    <string name="restart_event_filter">Restart Filter</string>
 
 </resources>

@@ -269,6 +269,7 @@ public class HomeScreenFragment extends Fragment {
         Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
 
         Button eventFilterSendButton = bottomSheetView.findViewById(R.id.event_filter_send);
+        Button restartEventFilterButton = bottomSheetView.findViewById(R.id.restart_event_filter);
 
         eventFilterSendButton.setOnClickListener(v -> {
             GetEventTypeDTO selectedEventType = (GetEventTypeDTO) eventTypeSpinner.getSelectedItem();
@@ -327,6 +328,13 @@ public class HomeScreenFragment extends Fragment {
 
             bottomSheetDialog.dismiss();
         });
+
+        restartEventFilterButton.setOnClickListener(v->{
+            homeScreenViewModel.loadPagedEvents(0,null,null,null,null,null,null);
+
+            bottomSheetDialog.dismiss();
+        });
+
         bottomSheetDialog.show();
     }
 

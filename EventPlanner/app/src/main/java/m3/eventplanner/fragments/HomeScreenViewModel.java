@@ -50,6 +50,9 @@ public class HomeScreenViewModel extends ViewModel {
     private Double filterEventMinRating;
     private String filterEventStartDate;
     private String filterEventEndDate;
+    private String eventSearchQuery;
+    private String sortEventsBy;
+    private String sortEventsDirection;
 
 
     public HomeScreenViewModel(ClientUtils clientUtils) {
