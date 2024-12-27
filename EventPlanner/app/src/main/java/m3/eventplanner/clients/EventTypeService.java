@@ -28,11 +28,11 @@ public interface EventTypeService {
     Call<CreatedEventTypeDTO> addEventType(@Body CreateEventTypeDTO eventType);
 
     @PUT("event-types/{id}")
-    Call<UpdatedEventTypeDTO> editEventType(@Path("id") long id, @Body UpdateEventTypeDTO eventType);
+    Call<UpdatedEventTypeDTO> editEventType(@Path("id") int id, @Body UpdateEventTypeDTO eventType);
 
     @DELETE("event-types/{id}")
-    Call<Void> deactivateEventType(@Path("id") long id);
+    Call<Void> deactivateEventType(@Path("id") int id);
 
     @PUT("event-types/{id}/activate")
-    Call<Void> activateEventType(@Path("id") long id);
+    Call<Void> activateEventType(@Path("id") int id);
 }

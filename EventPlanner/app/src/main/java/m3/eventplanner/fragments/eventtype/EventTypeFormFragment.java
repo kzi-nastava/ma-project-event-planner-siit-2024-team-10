@@ -51,7 +51,7 @@ public class EventTypeFormFragment extends DialogFragment {
     private View view;
 
     public interface OnEventTypeFormFilledListener {
-        void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds, boolean edit);
+        void onEventTypeFormFilled(int id, String name, String description, List<Integer> recommendedCategoryIds, boolean edit);
     }
 
     public static EventTypeFormFragment newInstance() {
@@ -124,7 +124,7 @@ public class EventTypeFormFragment extends DialogFragment {
                             .map(GetOfferingCategoryDTO::getId)
                             .collect(Collectors.toList());
                     if (isFormValid()) {
-                        listener.onEventTypeFormFilled(name, description, recommendedCategoryIds, eventType!=null);
+                        listener.onEventTypeFormFilled(eventType==null?0:eventType.getId(), name, description, recommendedCategoryIds, eventType!=null);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
