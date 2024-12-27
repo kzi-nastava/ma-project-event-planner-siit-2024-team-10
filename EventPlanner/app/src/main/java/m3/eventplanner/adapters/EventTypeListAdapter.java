@@ -1,5 +1,6 @@
 package m3.eventplanner.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import m3.eventplanner.R;
+import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
 import m3.eventplanner.fragments.eventtype.EventTypesFragment;
 import m3.eventplanner.fragments.eventtype.EventTypesViewModel;
 import m3.eventplanner.models.AgendaItem;
@@ -27,8 +29,10 @@ import m3.eventplanner.models.GetOfferingCategoryDTO;
 public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdapter.EventTypeViewHolder>{
     private List<GetEventTypeDTO> eventTypeList;
     private EventTypesViewModel eventTypesViewModel;
+    private EventTypesFragment eventTypesFragment;
 
     public EventTypeListAdapter(List<GetEventTypeDTO> eventTypeList, EventTypesFragment fragment) {
+        this.eventTypesFragment=fragment;
         eventTypeList.sort(Comparator.comparing(GetEventTypeDTO::getName));
         this.eventTypeList = eventTypeList;
         this.eventTypesViewModel = new ViewModelProvider(fragment).get(EventTypesViewModel.class);
@@ -83,6 +87,14 @@ public class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdap
 
         holder.deactivateButton.setOnClickListener(v -> {
             eventTypesViewModel.deactivateEventType(eventType.getId());
+        });
+
+        holder.editButton.setOnClickListener(v ->{
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("selectedEventType", eventType);
+            EventTypeFormFragment dialog = new EventTypeFormFragment();
+            dialog.setArguments(bundle);
+            dialog.show(eventTypesFragment.getChildFragmentManager(), "EventTypeFormFragment");
         });
     }
 

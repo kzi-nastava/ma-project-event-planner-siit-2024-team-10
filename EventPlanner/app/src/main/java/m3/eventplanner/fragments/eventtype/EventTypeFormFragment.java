@@ -69,6 +69,12 @@ public class EventTypeFormFragment extends DialogFragment {
         viewModel = new ViewModelProvider(this).get(EventTypeFormViewModel.class);
         clientUtils = new ClientUtils(requireContext());
         viewModel.initialize(clientUtils);
+
+        if (getArguments() != null) {
+            eventType = getArguments().getParcelable("selectedEventType");
+            if(eventType!=null)
+                recommendedCategories=eventType.getRecommendedCategories();
+        }
     }
 
     @Override
@@ -96,6 +102,12 @@ public class EventTypeFormFragment extends DialogFragment {
         descriptionInput = view.findViewById(R.id.event_description_input);
         recommendedCategoriesTextView = view.findViewById(R.id.recommended_categories_textview);
 
+        if(eventType!=null){
+            nameInput.setText(eventType.getName());
+            descriptionInput.setText(eventType.getDescription());
+            nameInput.setEnabled(false);
+        }
+
         builder.setView(view)
                 .setTitle(eventType==null?"Create Event Type":"Edit Event Type")
                 .setPositiveButton("Submit", (dialog, id) -> {
@@ -118,9 +130,17 @@ public class EventTypeFormFragment extends DialogFragment {
                 .map(GetOfferingCategoryDTO::getName)
                 .toArray(String[]::new);
         boolean[] selectedCategories = new boolean[categories.size()];
-        for(int i=0;i<selectedCategories.length;i++){
-            selectedCategories[i]=recommendedCategories.contains(categories.get(i));
+        for (int i = 0; i < selectedCategories.length; i++) {
+            final GetOfferingCategoryDTO currentCategory = categories.get(i);
+            selectedCategories[i] = recommendedCategories.stream()
+                    .anyMatch(recommended -> recommended.getId()==currentCategory.getId());
         }
+
+        recommendedCategoriesTextView.setText(
+                recommendedCategories.stream()
+                        .map(GetOfferingCategoryDTO::getName)
+                        .collect(Collectors.joining(", "))
+        );
 
         recommendedCategoriesTextView.setOnClickListener(new View.OnClickListener() {
             @Override
