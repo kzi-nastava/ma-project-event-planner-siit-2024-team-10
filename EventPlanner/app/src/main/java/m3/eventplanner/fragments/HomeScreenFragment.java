@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,9 +40,6 @@ import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;
@@ -51,6 +49,7 @@ public class HomeScreenFragment extends Fragment {
     private HomeScreenViewModel homeScreenViewModel;
     private EventListAdapter eventAdapter;
     private OfferingListAdapter offeringAdapter;
+    private SearchView searchView;
 
 
     private ClientUtils clientUtils;
@@ -138,6 +137,7 @@ public class HomeScreenFragment extends Fragment {
         setUpSortSpinners(view);
         setUpFilterButtons(view);
         setUpPaginationButtons(view);
+        setUpSearchBar(view);
 
         setUpToggleGroup();
     }
@@ -162,7 +162,23 @@ public class HomeScreenFragment extends Fragment {
         paginationForwardButton.setOnClickListener(v -> homeScreenViewModel.loadNextPage());
         paginationBackButton.setOnClickListener(v -> homeScreenViewModel.loadPreviousPage());
     }
+    private void setUpSearchBar(View view) {
+        searchView = view.findViewById(R.id.event_search_text);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                homeScreenViewModel.loadSearchedEvents(0,query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+
+    }
     private void setUpRecyclerView() {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -337,8 +353,7 @@ public class HomeScreenFragment extends Fragment {
         });
 
         restartEventFilterButton.setOnClickListener(v->{
-            homeScreenViewModel.loadPagedEvents(0,null,null,null,null,null,null);
-
+            homeScreenViewModel.resetFilters();
             bottomSheetDialog.dismiss();
         });
 

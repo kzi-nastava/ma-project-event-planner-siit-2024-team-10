@@ -126,6 +126,29 @@ public class HomeScreenViewModel extends ViewModel {
             }
         });
     }
+    public void loadSearchedEvents(int page, String query){
+        currentEventPage = page;
+        currentPaginationContext = PaginationContext.EVENTS;
+
+        this.eventSearchQuery = query;
+        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
+                null, null, null, null, null, null,
+                query, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
+            @Override
+            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    pagedEvents.setValue(response.body());
+                    totalEventPages = response.body().getTotalPages();
+                    totalEvents = response.body().getTotalElements();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
+                pagedEvents.setValue(null);
+            }
+        });
+    }
     public void loadPagedEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
         currentEventPage = page;
         currentPaginationContext = PaginationContext.EVENTS;
@@ -156,8 +179,6 @@ public class HomeScreenViewModel extends ViewModel {
         });
     }
 
-
-
     public void loadPagedOfferings(int page) {
         currentOfferingPage = page;
         currentPaginationContext = PaginationContext.OFFERINGS;
@@ -177,6 +198,19 @@ public class HomeScreenViewModel extends ViewModel {
             }
         });
     }
+
+    public void resetFilters(){
+        this.filterEventTypeId = null;
+        this.filterEventLocation = null;
+        this.filterEventMaxParticipants = null;
+        this.filterEventMinRating = null;
+        this.filterEventStartDate = null;
+        this.filterEventEndDate = null;
+        this.eventSearchQuery = null;
+        this.sortEventsBy = null;
+        this.sortEventsDirection = null;
+    }
+
     public void fetchEventTypes() {
         clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
             @Override
