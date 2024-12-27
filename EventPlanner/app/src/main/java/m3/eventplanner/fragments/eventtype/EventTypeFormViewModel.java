@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
@@ -31,7 +32,9 @@ public class EventTypeFormViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Collection<GetOfferingCategoryDTO>> call, Response<Collection<GetOfferingCategoryDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    categories.setValue((List<GetOfferingCategoryDTO>) response.body());
+                    categories.setValue((List<GetOfferingCategoryDTO>) response.body().stream()
+                            .filter(item-> !item.isDeleted() && !item.isPending())
+                            .collect(Collectors.toList()));
                 } else {
                     error.setValue("Failed to load event details");
                 }
