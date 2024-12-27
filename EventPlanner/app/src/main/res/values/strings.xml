@@ -102,5 +102,8 @@
     <string name="log_out">Log out</string>
     <string name="incorrect_credentials">Incorrect email or password</string>
     <string name="event_types">Event types</string>
+    <string name="recommended_categories">Recommended categories</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -22,7 +22,7 @@ import m3.eventplanner.databinding.FragmentEventTypesBinding;
 import m3.eventplanner.models.GetEventTypeDTO;
 
 
-public class EventTypesFragment extends Fragment {
+public class EventTypesFragment extends Fragment implements EventTypeFormFragment.OnEventTypeFormFilledListener {
     private EventTypesViewModel viewModel;
     private ClientUtils clientUtils;
     private FragmentEventTypesBinding binding;
@@ -71,10 +71,20 @@ public class EventTypesFragment extends Fragment {
                 Toast.makeText(getContext(), successMessage, Toast.LENGTH_SHORT).show();
             }
         });
+
+        binding.createEventTypeButton.setOnClickListener(v -> {
+            EventTypeFormFragment dialog = new EventTypeFormFragment();
+            dialog.show(getChildFragmentManager(), "EventTypeFormFragment");
+        });
     }
 
     private void populateEventTypes(List<GetEventTypeDTO> eventTypes) {
 
+    }
+
+    @Override
+    public void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds) {
+        String a ="aaaa";
     }
 
 }
