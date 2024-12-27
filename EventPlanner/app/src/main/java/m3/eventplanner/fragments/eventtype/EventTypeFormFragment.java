@@ -12,6 +12,9 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +40,8 @@ import retrofit2.Response;
 
 
 public class EventTypeFormFragment extends DialogFragment {
-    private EditText nameInput;
-    private EditText descriptionInput;
+    private TextInputLayout nameInput;
+    private TextInputLayout descriptionInput;
     private TextView recommendedCategoriesTextView;
     private OnEventTypeFormFilledListener listener;
     private GetEventTypeDTO eventType;
@@ -46,7 +51,7 @@ public class EventTypeFormFragment extends DialogFragment {
     private View view;
 
     public interface OnEventTypeFormFilledListener {
-        void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds);
+        void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds, boolean edit);
     }
 
     public static EventTypeFormFragment newInstance() {
@@ -103,21 +108,23 @@ public class EventTypeFormFragment extends DialogFragment {
         recommendedCategoriesTextView = view.findViewById(R.id.recommended_categories_textview);
 
         if(eventType!=null){
-            nameInput.setText(eventType.getName());
-            descriptionInput.setText(eventType.getDescription());
+            nameInput.getEditText().setText(eventType.getName());
+            descriptionInput.getEditText().setText(eventType.getDescription());
             nameInput.setEnabled(false);
         }
+
+        setupValidation();
 
         builder.setView(view)
                 .setTitle(eventType==null?"Create Event Type":"Edit Event Type")
                 .setPositiveButton("Submit", (dialog, id) -> {
-                    String name = nameInput.getText().toString().trim();
-                    String description = descriptionInput.getText().toString().trim();
+                    String name = nameInput.getEditText().getText().toString().trim();
+                    String description = descriptionInput.getEditText().getText().toString().trim();
                     List<Integer> recommendedCategoryIds = recommendedCategories.stream()
                             .map(GetOfferingCategoryDTO::getId)
                             .collect(Collectors.toList());
-                    if (!name.isEmpty()) {
-                        listener.onEventTypeFormFilled(name, description, recommendedCategoryIds);
+                    if (isFormValid()) {
+                        listener.onEventTypeFormFilled(name, description, recommendedCategoryIds, eventType!=null);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
@@ -188,5 +195,51 @@ public class EventTypeFormFragment extends DialogFragment {
                 builder.show();
             }
         });
+    }
+
+    private void setupValidation(){
+        nameInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(nameInput);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        descriptionInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(descriptionInput);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private boolean validateRequiredField(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
+        } else {
+            textInputLayout.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isFormValid(){
+        if(!validateRequiredField(nameInput))
+            return false;
+        if(!validateRequiredField(descriptionInput))
+            return false;
+        return true;
     }
 }

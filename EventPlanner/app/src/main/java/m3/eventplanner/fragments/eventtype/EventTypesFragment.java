@@ -83,7 +83,7 @@ public class EventTypesFragment extends Fragment implements EventTypeFormFragmen
     }
 
     @Override
-    public void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds) {
+    public void onEventTypeFormFilled(String name, String description, List<Integer> recommendedCategoryIds, boolean edit) {
         String a ="aaaa";
     }
 
