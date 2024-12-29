@@ -17,7 +17,7 @@
         android:textColor="@color/chocolate_brown"/>
 
     <com.google.android.material.search.SearchBar
-        android:id="@+id/search_bar"
+        android:id="@+id/offering_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/search_offering" />
