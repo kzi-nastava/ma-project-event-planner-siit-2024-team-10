@@ -53,8 +53,6 @@ public class EventTypesFragment extends Fragment implements EventTypeFormFragmen
     }
 
     private void setupObservers() {
-        viewModel.getEventTypes().observe(getViewLifecycleOwner(), this::populateEventTypes);
-
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             binding.eventTypesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             binding.eventTypesRecyclerView.setAdapter(new EventTypeListAdapter(eventTypes,this));
@@ -76,10 +74,6 @@ public class EventTypesFragment extends Fragment implements EventTypeFormFragmen
             EventTypeFormFragment dialog = new EventTypeFormFragment();
             dialog.show(getChildFragmentManager(), "EventTypeFormFragment");
         });
-    }
-
-    private void populateEventTypes(List<GetEventTypeDTO> eventTypes) {
-
     }
 
     @Override
