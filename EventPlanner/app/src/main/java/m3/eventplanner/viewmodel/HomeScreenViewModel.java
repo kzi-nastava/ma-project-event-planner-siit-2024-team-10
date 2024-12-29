@@ -208,16 +208,16 @@ public class HomeScreenViewModel extends ViewModel {
     }
 
     public void fetchEventTypes() {
-        clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
+        clientUtils.getEventTypeService().getEventTypes().enqueue(new Callback<Collection<GetEventTypeDTO>>() {
             @Override
-            public void onResponse(Call<List<GetEventTypeDTO>> call, Response<List<GetEventTypeDTO>> response) {
+            public void onResponse(Call<Collection<GetEventTypeDTO>> call, Response<Collection<GetEventTypeDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    eventTypes.setValue(response.body());
+                    eventTypes.setValue((List<GetEventTypeDTO>) response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<GetEventTypeDTO>> call, Throwable t) {
+            public void onFailure(Call<Collection<GetEventTypeDTO>> call, Throwable t) {
                 eventTypes.setValue(new ArrayList<>());
             }
         });
