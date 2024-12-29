@@ -78,14 +78,20 @@ public class HomeScreenViewModel extends ViewModel {
         clientUtils.getEventService().getTopEvents().enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    topEvents.setValue(new ArrayList<>(response.body()));
+                if (response.isSuccessful() && response.body() != null && response.body() != null) {
+                    if (response.body().isEmpty()) {
+                        topEvents.setValue(null);
+                    } else {
+                        topEvents.setValue(new ArrayList<>(response.body()));
+                    }
+                } else {
+                    topEvents.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
-                topEvents.setValue(new ArrayList<>());
+                topEvents.setValue(null);
             }
         });
     }
@@ -106,53 +112,9 @@ public class HomeScreenViewModel extends ViewModel {
         });
     }
     public void loadPagedEvents(int page) {
-        currentEventPage = page;
-        currentPaginationContext = PaginationContext.EVENTS;
-        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
-                filterEventTypeId, filterEventLocation, filterEventMaxParticipants, filterEventMinRating,
-                filterEventStartDate, filterEventEndDate, null, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    pagedEvents.setValue(response.body());
-                    totalEventPages = response.body().getTotalPages();
-                    totalEvents = response.body().getTotalElements();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
-                pagedEvents.setValue(null);
-            }
-        });
+        fetchPagedEvents(page);
     }
-    public void loadSearchedEvents(int page, String query){
-        currentEventPage = page;
-        currentPaginationContext = PaginationContext.EVENTS;
-
-        this.eventSearchQuery = query;
-        clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
-                null, null, null, null, null, null,
-                query, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    pagedEvents.setValue(response.body());
-                    totalEventPages = response.body().getTotalPages();
-                    totalEvents = response.body().getTotalElements();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
-                pagedEvents.setValue(null);
-            }
-        });
-    }
-    public void loadPagedEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
-        currentEventPage = page;
-        currentPaginationContext = PaginationContext.EVENTS;
-
+    public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
         this.filterEventTypeId = eventTypeId;
         this.filterEventLocation = location;
         this.filterEventMaxParticipants = maxParticipants;
@@ -160,15 +122,33 @@ public class HomeScreenViewModel extends ViewModel {
         this.filterEventStartDate = startDate;
         this.filterEventEndDate = endDate;
 
+        fetchPagedEvents(page);
+    }
+    public void loadSearchedEvents(int page, String query){
+        this.eventSearchQuery = query;
+
+        fetchPagedEvents(page);
+    }
+
+    private void fetchPagedEvents(int page){
+        currentEventPage = page;
+        currentPaginationContext = PaginationContext.EVENTS;
+
         clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
-                eventTypeId, location, maxParticipants, minRating, startDate, endDate,
-                null, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
+                filterEventTypeId, filterEventLocation, filterEventMaxParticipants, filterEventMinRating, filterEventStartDate, filterEventEndDate,
+                eventSearchQuery, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    pagedEvents.setValue(response.body());
-                    totalEventPages = response.body().getTotalPages();
-                    totalEvents = response.body().getTotalElements();
+                if (response.isSuccessful() && response.body() != null && response.body().getContent() != null) {
+                    if (response.body().getContent().isEmpty()) {
+                        pagedEvents.setValue(null);
+                    } else {
+                        pagedEvents.setValue(response.body());
+                        totalEventPages = response.body().getTotalPages();
+                        totalEvents = response.body().getTotalElements();
+                    }
+                } else {
+                    pagedEvents.setValue(null);
                 }
             }
 
@@ -178,6 +158,7 @@ public class HomeScreenViewModel extends ViewModel {
             }
         });
     }
+
 
     public void loadPagedOfferings(int page) {
         currentOfferingPage = page;
@@ -209,6 +190,8 @@ public class HomeScreenViewModel extends ViewModel {
         this.eventSearchQuery = null;
         this.sortEventsBy = null;
         this.sortEventsDirection = null;
+
+        fetchPagedEvents(0);
     }
 
     public void fetchEventTypes() {

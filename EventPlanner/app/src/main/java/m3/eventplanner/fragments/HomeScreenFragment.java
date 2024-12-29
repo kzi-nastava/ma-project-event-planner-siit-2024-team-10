@@ -349,7 +349,7 @@ public class HomeScreenFragment extends Fragment {
                 }
             }
 
-            homeScreenViewModel.loadPagedEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
+            homeScreenViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
             bottomSheetDialog.dismiss();
         });
 
