@@ -55,6 +55,16 @@ public class HomeScreenViewModel extends ViewModel {
     private String sortEventsBy;
     private String sortEventsDirection;
 
+    private Integer filterOfferingTypeId;
+    private String filterOfferingLocation;
+    private Integer filterOfferingMaxParticipants;
+    private Double filterOfferingMinRating;
+    private String filterOfferingStartDate;
+    private String filterOfferingEndDate;
+    private String offeringSearchQuery;
+    private String sortOfferingsBy;
+    private String sortOfferingsDirection;
+
 
     public HomeScreenViewModel(ClientUtils clientUtils) {
         this.clientUtils = clientUtils;
