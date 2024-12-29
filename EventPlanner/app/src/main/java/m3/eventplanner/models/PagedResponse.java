@@ -5,9 +5,9 @@ import java.util.Collection;
 public class PagedResponse<T>{
     private Collection<T> content;
     private int totalPages;
-    private long totalElements;
+    private int totalElements;
 
-    public PagedResponse(Collection<T> content, int totalPages, long totalElements) {
+    public PagedResponse(Collection<T> content, int totalPages, int totalElements) {
         this.content = content;
         this.totalPages = totalPages;
         this.totalElements = totalElements;
@@ -21,11 +21,11 @@ public class PagedResponse<T>{
         this.content = content;
     }
 
-    public long getTotalElements() {
+    public int getTotalElements() {
         return totalElements;
     }
 
-    public void setTotalElements(long totalElements) {
+    public void setTotalElements(int totalElements) {
         this.totalElements = totalElements;
     }
 

@@ -20,14 +20,18 @@
         <item>Descending</item>
     </array>
     <array name="offering_sort_criteria">
+        <item>Any</item>
         <item>Name</item>
-        <item>Rating</item>
+        <item>Average Rating</item>
         <item>Price</item>
         <item>Discount</item>
+        <item>City</item>
     </array>
     <array name="event_sort_criteria">
+        <item>Any</item>
         <item>Name</item>
-        <item>Rating</item>
-        <item>Number of attendees</item>
+        <item>Date</item>
+        <item>Average Rating</item>
+        <item>City</item>
     </array>
 </resources>

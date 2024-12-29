@@ -35,8 +35,8 @@ public interface EventService {
             @Query("location") String location,
             @Query("maxParticipants") Integer maxParticipants,
             @Query("minRating") Double minRating,
-            @Query("startDate") LocalDate startDate,
-            @Query("endDate") LocalDate endDate,
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
             @Query("name") String name
     );
     @GET("events")
@@ -47,9 +47,11 @@ public interface EventService {
             @Query("location") String location,
             @Query("maxParticipants") Integer maxParticipants,
             @Query("minRating") Double minRating,
-            @Query("startDate") LocalDate startDate,
-            @Query("endDate") LocalDate endDate,
-            @Query("name") String name
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
+            @Query("name") String name,
+            @Query("sortBy") String sortBy,
+            @Query("sortDirection") String sortDirection
     );
 
     @Headers({

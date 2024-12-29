@@ -20,6 +20,7 @@ public class ClientUtils {
     private EventService eventService;
     private AuthService authService;
     private OfferingService offeringService;
+    private EventTypeService eventTypeService;
     private AccountService accountService;
 
     public ClientUtils(Context context){
@@ -44,6 +45,7 @@ public class ClientUtils {
         eventService = retrofit.create(EventService.class);
         authService = retrofit.create(AuthService.class);
         offeringService = retrofit.create(OfferingService.class);
+        eventTypeService = retrofit.create(EventTypeService.class);
         accountService = retrofit.create(AccountService.class);
     }
 
@@ -59,6 +61,7 @@ public class ClientUtils {
         return offeringService;
     }
 
+    public EventTypeService getEventTypeService() {return  eventTypeService;}
     public AccountService getAccountService(){
         return accountService;
     }
