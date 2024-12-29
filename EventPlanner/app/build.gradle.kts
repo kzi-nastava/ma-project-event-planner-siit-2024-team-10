@@ -20,6 +20,10 @@ android {
     namespace = "m3.eventplanner"
     compileSdk = 34
 
+    buildFeatures{
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "m3.eventplanner"
         minSdk = 30
@@ -56,12 +60,16 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.recyclerview)
+    implementation(libs.lifecycle.viewmodel.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.squareup.retrofit2:retrofit:2.3.0")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:3.12.1")
-    implementation ("com.auth0:java-jwt:4.4.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.1")
+    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
 }

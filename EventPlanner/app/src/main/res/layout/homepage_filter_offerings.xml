@@ -64,20 +64,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/event_type"/>
 
-        <Spinner
-            android:id="@+id/event_type_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginStart="10dp"
-            android:text="@string/event_type_spinner"
-            android:tooltipText="@string/event_type_spinner"
-            android:contentDescription="@string/event_type_spinner"
-            />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/service_duration"
@@ -154,7 +141,11 @@
             android:layout_height="wrap_content"
             android:text="@string/available"
             android:checked="false" />
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_offerings">
+        </Button>
 
     </LinearLayout>
 

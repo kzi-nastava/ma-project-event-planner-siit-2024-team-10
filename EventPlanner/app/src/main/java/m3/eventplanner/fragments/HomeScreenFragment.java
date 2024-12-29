@@ -5,81 +5,151 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.clients.EventService;
-import m3.eventplanner.models.AgendaItem;
-import m3.eventplanner.models.Event;
-import m3.eventplanner.models.EventType;
-import m3.eventplanner.models.GetEventDTO;
-import m3.eventplanner.models.GetOfferingDTO;
-import m3.eventplanner.models.Location;
-import m3.eventplanner.models.Offering;
-import m3.eventplanner.models.Organizer;
-import m3.eventplanner.models.PagedResponse;
-import m3.eventplanner.models.Product;
-import m3.eventplanner.models.Service;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.viewmodel.HomeScreenViewModel;
+import m3.eventplanner.viewmodel.factory.HomeScreenViewModelFactory;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
-    private int currentEventPage = 0;
-    private final int eventPageSize = 3;
-    private int totalEventPages = 0;
+    private HomeScreenViewModel homeScreenViewModel;
+    private EventListAdapter eventAdapter;
+    private OfferingListAdapter offeringAdapter;
+    private SearchView searchView;
 
-    private int currentOfferingPage = 0;
-    private final int offeringPageSize = 3;
-    private int totalOfferingPages = 0;
 
-    private enum PaginationContext {
-        EVENTS, OFFERINGS
-    }
-
-    private PaginationContext currentPaginationContext = PaginationContext.EVENTS;
     private ClientUtils clientUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
+        homeScreenViewModel = new ViewModelProvider(this, new HomeScreenViewModelFactory(clientUtils)).get(HomeScreenViewModel.class);
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
         setUpToggleGroup();
+        homeScreenViewModel.fetchEventTypes();
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        homeScreenViewModel.getTopEvents().observe(getViewLifecycleOwner(), events -> {
+            if (events != null && !events.isEmpty()) {
+                eventAdapter = new EventListAdapter(events);
+                contentRecyclerView.setAdapter(eventAdapter);
+                eventAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                topEventsTextView.setVisibility(View.VISIBLE);
+                topOfferingsTextView.setVisibility(View.GONE);
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getTopOfferings().observe(getViewLifecycleOwner(), offerings -> {
+            if (offerings != null) {
+                offeringAdapter = new OfferingListAdapter(offerings);
+                contentRecyclerView.setAdapter(offeringAdapter);
+                offeringAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.VISIBLE);
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getPagedEvents().observe(getViewLifecycleOwner(), pagedEvents -> {
+            if (pagedEvents != null && pagedEvents.getContent() != null) {
+                eventAdapter = new EventListAdapter(pagedEvents.getContent());
+                contentRecyclerView.setAdapter(eventAdapter);
+                eventAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                paginationBar.setVisibility(View.VISIBLE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
+                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentEventPage() + 1) +" of "+ homeScreenViewModel.getTotalEventPages()));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfEvents()));
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getPagedOfferings().observe(getViewLifecycleOwner(), pagedOfferings -> {
+            if (pagedOfferings != null && pagedOfferings.getContent() != null) {
+                offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
+                contentRecyclerView.setAdapter(offeringAdapter);
+                offeringAdapter.notifyDataSetChanged();
+                contentRecyclerView.setVisibility(View.VISIBLE);
+                noCardsFoundTextView.setVisibility(View.GONE);
+                paginationBar.setVisibility(View.VISIBLE);
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
+                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentOfferingPage() + 1) +" of "+ homeScreenViewModel.getTotalOfferingPages()));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfOfferings()));
+            } else {
+                handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        homeScreenViewModel.loadTopEvents();
+
         setUpSortSpinners(view);
         setUpFilterButtons(view);
         setUpPaginationButtons(view);
+        setUpSearchBar(view);
+
+        setUpToggleGroup();
     }
 
     private void initializeUIElements(View rootView) {
@@ -99,26 +169,59 @@ public class HomeScreenFragment extends Fragment {
         pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
         totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
 
-        paginationForwardButton.setOnClickListener(v -> loadNextPage());
-        paginationBackButton.setOnClickListener(v -> loadPreviousPage());
+        paginationForwardButton.setOnClickListener(v -> homeScreenViewModel.loadNextPage());
+        paginationBackButton.setOnClickListener(v -> homeScreenViewModel.loadPreviousPage());
     }
+    private void setUpSearchBar(View view) {
+        searchView = view.findViewById(R.id.event_search_text);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                homeScreenViewModel.loadSearchedEvents(0,query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+
+    }
     private void setUpRecyclerView() {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+    private void resetVisibilityForTab(int tabId) {
+        eventSearchBar.setVisibility(View.GONE);
+        offeringSearchBar.setVisibility(View.GONE);
+        paginationBar.setVisibility(View.GONE);
+        contentRecyclerView.setVisibility(View.GONE);
 
+        if (tabId == R.id.tabAllEvents) {
+            eventSearchBar.setVisibility(View.VISIBLE);
+            paginationBar.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        } else if (tabId == R.id.tabAllOfferings) {
+            offeringSearchBar.setVisibility(View.VISIBLE);
+            paginationBar.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            contentRecyclerView.setVisibility(View.VISIBLE);
+        }
+    }
     private void setUpToggleGroup() {
-        showTopEvents();
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
+                resetVisibilityForTab(checkedId);
                 if (checkedId == R.id.tabTopEvents) {
-                    showTopEvents();
+                    homeScreenViewModel.loadTopEvents();
                 } else if (checkedId == R.id.tabAllEvents) {
-                    showAllEvents();
+                    homeScreenViewModel.loadPagedEvents(0);
                 } else if (checkedId == R.id.tabTopOfferings) {
-                    showTopOfferings();
+                    homeScreenViewModel.loadTopOfferings();
                 } else if (checkedId == R.id.tabAllOfferings) {
-                    showAllOfferings();
+                    homeScreenViewModel.loadPagedOfferings(0);
                 }
             }
         });
@@ -131,11 +234,44 @@ public class HomeScreenFragment extends Fragment {
 
     private void setUpEventSortSpinners(View view) {
         Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
-        eventSortBySpinner.setAdapter(createSpinnerAdapter(R.array.event_sort_criteria));
-
         Spinner eventSortDirectionSpinner = view.findViewById(R.id.btn_sort_events_direction);
+
+        eventSortBySpinner.setAdapter(createSpinnerAdapter(R.array.event_sort_criteria));
         eventSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
+
+        Map<String, String> sortCriteriaMapping = new HashMap<>();
+        sortCriteriaMapping.put("Any", null);
+        sortCriteriaMapping.put("Name", "name");
+        sortCriteriaMapping.put("Date", "date");
+        sortCriteriaMapping.put("Average Rating", "averageRating");
+        sortCriteriaMapping.put("City", "location.city");
+
+        Map<String, String> sortDirectionMapping = new HashMap<>();
+        sortDirectionMapping.put("Ascending", "ASC");
+        sortDirectionMapping.put("Descending", "DESC");
+
+        AdapterView.OnItemSelectedListener sortListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSortBy = eventSortBySpinner.getSelectedItem().toString();
+                String selectedSortDirection = eventSortDirectionSpinner.getSelectedItem().toString();
+
+                String sortBy = sortCriteriaMapping.get(selectedSortBy);
+                String sortDirection = sortDirectionMapping.get(selectedSortDirection);
+
+                homeScreenViewModel.loadSortedEvents(0, sortBy, sortDirection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+
+        eventSortBySpinner.setOnItemSelectedListener(sortListener);
+        eventSortDirectionSpinner.setOnItemSelectedListener(sortListener);
     }
+
+
 
     private void setUpOfferingSortSpinners(View view) {
         Spinner offeringsSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
@@ -180,178 +316,90 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
-    private void showTopEvents() {
-        toggleVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetEventDTO>> call = clientUtils.getEventService().getTopEvents();
-        call.enqueue(new Callback<Collection<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null){
-                    Collection<GetEventDTO> topEvents = response.body();
-                    updateRecyclerView(topEvents, new EventListAdapter(topEvents));
-                } else{
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
-                Log.d("REZ", t.getMessage() != null ? t.getMessage() : "error");
-            }
-        });
-    }
     private void handleNoDataFound() {
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
+        paginationBar.setVisibility(View.GONE);
     }
-
-    private void showAllEvents() {
-        toggleVisibility(View.GONE, View.GONE, View.VISIBLE, View.GONE, View.VISIBLE);
-        currentPaginationContext = PaginationContext.EVENTS;
-        Call<PagedResponse<GetEventDTO>> call = clientUtils.getEventService().getEvents(currentEventPage, eventPageSize, null,null,null,null,null,null,null);
-        call.enqueue(new Callback<PagedResponse<GetEventDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateRecyclerView(response.body().getContent(), new EventListAdapter(response.body().getContent()));
-                    totalEventPages = response.body().getTotalPages();
-                    pageNumber.setText("Page "+ (currentEventPage+1)+" of "+totalEventPages);
-                    totalNumberOfElements.setText("Number of results: "+response.body().getTotalElements());
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
-                Log.e("Pagination", "Failed to fetch data: " + t.getMessage());
-            }
-        });
-    }
-
-    private void showTopOfferings() {
-        toggleVisibility(View.GONE, View.VISIBLE, View.GONE, View.GONE, View.GONE);
-        Call<Collection<GetOfferingDTO>> call = clientUtils.getOfferingService().getTopOfferings();
-        call.enqueue(new Callback<Collection<GetOfferingDTO>>() {
-            @Override
-            public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Collection<GetOfferingDTO> topOfferings = response.body();
-                    updateRecyclerView(topOfferings, new OfferingListAdapter(topOfferings));
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Collection<GetOfferingDTO>> call, Throwable t) {
-                Log.d("Offerings", t.getMessage() != null ? t.getMessage() : "error");
-            }
-        });
-    }
-
-
-    private void showAllOfferings() {
-        toggleVisibility(View.GONE, View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
-        currentPaginationContext = PaginationContext.OFFERINGS;
-        Call<PagedResponse<GetOfferingDTO>> call = clientUtils.getOfferingService().getOfferings(currentOfferingPage, offeringPageSize, null, null, null, null, null, null, null, null,null,null,null, null,null);
-        call.enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
-            @Override
-            public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    updateRecyclerView(response.body().getContent(), new OfferingListAdapter(response.body().getContent()));
-                    totalOfferingPages = response.body().getTotalPages();
-                    pageNumber.setText("Page " + (currentOfferingPage + 1) + " of " + totalOfferingPages);
-                    totalNumberOfElements.setText("Number of results: " + response.body().getTotalElements());
-                } else {
-                    handleNoDataFound();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PagedResponse<GetOfferingDTO>> call, Throwable t) {
-                Log.e("OfferingsPagination", "Failed to fetch data: " + t.getMessage());
-            }
-        });
-    }
-
-
-    private void loadNextPage() {
-        switch (currentPaginationContext){
-            case EVENTS:
-                if (currentEventPage+1<totalEventPages) {
-                    currentEventPage++;
-                    showAllEvents();
-                }
-                break;
-            case OFFERINGS:
-                if(currentOfferingPage+1 <totalOfferingPages){
-                    currentOfferingPage++;
-                    showAllOfferings();
-                }
-                break;
-        }
-    }
-
-    private void loadPreviousPage() {
-
-        switch (currentPaginationContext){
-            case EVENTS:
-                if (currentEventPage > 0) {
-                    currentEventPage--;
-                    showAllEvents();
-                }
-                break;
-            case OFFERINGS:
-                if (currentOfferingPage > 0) {
-                    currentOfferingPage--;
-                    showAllOfferings();
-                }
-                break;
-        }
-    }
-
-    private void loadNextOfferingPage() {
-        if (currentOfferingPage + 1 < totalOfferingPages) {
-            currentOfferingPage++;
-            showAllOfferings();
-        }
-    }
-
-    private void loadPreviousOfferingPage() {
-        if (currentOfferingPage > 0) {
-            currentOfferingPage--;
-            showAllOfferings();
-        }
-    }
-
-
-
-    private void toggleVisibility(int topEventsVisibility, int topOfferingsVisibility, int eventSearchVisibility, int offeringSearchVisibility, int paginationVisibility) {
-        topEventsTextView.setVisibility(topEventsVisibility);
-        topOfferingsTextView.setVisibility(topOfferingsVisibility);
-        eventSearchBar.setVisibility(eventSearchVisibility);
-        offeringSearchBar.setVisibility(offeringSearchVisibility);
-        paginationBar.setVisibility(paginationVisibility);
-    }
-
-    private <T> void updateRecyclerView(Collection<T> data, RecyclerView.Adapter<?> adapter) {
-        if (data == null || data.isEmpty()) {
-            noCardsFoundTextView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setVisibility(View.GONE);
-        } else {
-            noCardsFoundTextView.setVisibility(View.GONE);
-            contentRecyclerView.setVisibility(View.VISIBLE);
-            contentRecyclerView.setAdapter(adapter);
-        }
-    }
-
     private void showEventFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         setUpEventFilterDateRangePicker(bottomSheetView);
-        setUpEventTypeSpinner(bottomSheetView);
+
+        homeScreenViewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
+            if (eventTypes != null && !eventTypes.isEmpty()) {
+                setUpEventTypeSpinner(bottomSheetView, eventTypes);
+            }
+        });
+
+        Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
+
+        Button eventFilterSendButton = bottomSheetView.findViewById(R.id.event_filter_send);
+        Button restartEventFilterButton = bottomSheetView.findViewById(R.id.restart_event_filter);
+
+        eventFilterSendButton.setOnClickListener(v -> {
+            GetEventTypeDTO selectedEventType = (GetEventTypeDTO) eventTypeSpinner.getSelectedItem();
+
+            Integer eventTypeId = null;
+            if (selectedEventType != null && selectedEventType.getId() != -1) {
+                eventTypeId = selectedEventType.getId();
+            }
+
+            String location = ((TextInputEditText) bottomSheetView.findViewById(R.id.locationTextField)).getText().toString();
+            if (location.isEmpty()) {
+                location = null;
+            }
+
+            Integer maxParticipants = null;
+            TextInputEditText maxParticipantsEditText = bottomSheetView.findViewById(R.id.max_participants);
+            String maxParticipantsText = maxParticipantsEditText.getText().toString().trim();
+            if (!maxParticipantsText.isEmpty()) {
+                try {
+                    maxParticipants = Integer.parseInt(maxParticipantsText);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Double minRating = (double) ((Slider) bottomSheetView.findViewById(R.id.minPriceSlider)).getValue();
+            if (minRating == 0.0){
+                minRating = null;
+            }
+            TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
+            String dates = selectedDatesTextView.getText().toString().trim();
+            String startDateString = null;
+            String endDateString = null;
+            String[] dateParts = dates.split(" - ");
+            if (dateParts.length == 2) {
+                String startDateStr = dateParts[0].trim();
+                String endDateStr = dateParts[1].trim();
+
+                SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+
+                try {
+                    Date startDate = inputDateFormat.parse(startDateStr);
+                    Date endDate = inputDateFormat.parse(endDateStr);
+
+                    SimpleDateFormat outputDateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+
+                    startDateString = outputDateFormat.format(startDate);
+                    endDateString = outputDateFormat.format(endDate);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            homeScreenViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
+            bottomSheetDialog.dismiss();
+        });
+
+        restartEventFilterButton.setOnClickListener(v->{
+            homeScreenViewModel.resetFilters();
+            bottomSheetDialog.dismiss();
+        });
+
         bottomSheetDialog.show();
     }
 
@@ -359,9 +407,7 @@ public class HomeScreenFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
-        setUpOfferingFilterDateRangePicker(bottomSheetView);
         setUpCategorySpinner(bottomSheetView);
-        setUpEventTypeSpinner(bottomSheetView);
         setUpVisibilityForOfferingType(bottomSheetView, selected);
         bottomSheetDialog.show();
     }
@@ -374,19 +420,57 @@ public class HomeScreenFragment extends Fragment {
         picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
     }
 
-    private void setUpOfferingFilterDateRangePicker(View bottomSheetView) {
-        Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
-        TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
-        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
-        dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
-        picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
-    }
-
-    private void setUpEventTypeSpinner(View bottomSheetView) {
+    private void setUpEventTypeSpinner(View bottomSheetView, List<GetEventTypeDTO> eventTypes) {
         Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
-        eventTypeSpinner.setAdapter(createSpinnerAdapter(R.array.event_types));
-    }
+        if (eventTypeSpinner != null) {
+            List<GetEventTypeDTO> spinnerList = new ArrayList<>();
+            GetEventTypeDTO anyOption = new GetEventTypeDTO();
+            anyOption.setName("Any");
+            anyOption.setId(-1);
+            spinnerList.add(anyOption);
+            spinnerList.addAll(eventTypes);
 
+            ArrayAdapter<GetEventTypeDTO> adapter = new ArrayAdapter<GetEventTypeDTO>(requireContext(), android.R.layout.simple_spinner_item, spinnerList) {
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    TextView textView = (TextView) view;
+                    textView.setText(spinnerList.get(position).getName());
+                    return view;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    TextView textView = (TextView) super.getView(position, convertView, parent);
+                    textView.setText(spinnerList.get(position).getName());
+                    return textView;
+                }
+            };
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            eventTypeSpinner.setAdapter(adapter);
+            eventTypeSpinner.setTag(spinnerList);
+
+            eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (spinnerList != null && !spinnerList.isEmpty()) {
+                        GetEventTypeDTO selectedEventType = spinnerList.get(position);
+                        if (selectedEventType != null && selectedEventType.getId() != -1) {
+                            int selectedEventTypeId = selectedEventType.getId();
+                        } else {
+                        }
+                    }
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        } else {
+            Log.e("HomeScreenFragment", "Event Type Spinner is null.");
+        }
+    }
     private void setUpCategorySpinner(View bottomSheetView) {
         Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
         categorySpinner.setAdapter(createSpinnerAdapter(R.array.categories));
