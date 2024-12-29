@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments;
+package m3.eventplanner.fragments.home;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -42,8 +42,6 @@ import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
-import m3.eventplanner.viewmodel.HomeScreenViewModel;
-import m3.eventplanner.viewmodel.factory.HomeScreenViewModelFactory;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;
@@ -73,6 +71,7 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        homeScreenViewModel.initialize(clientUtils);
 
         homeScreenViewModel.getTopEvents().observe(getViewLifecycleOwner(), events -> {
             if (events != null && !events.isEmpty()) {

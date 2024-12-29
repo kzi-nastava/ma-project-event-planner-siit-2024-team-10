@@ -11,7 +11,7 @@
         android:label="@string/login" />
     <fragment
         android:id="@+id/homeScreenFragment"
-        android:name="m3.eventplanner.fragments.HomeScreenFragment"
+        android:name="m3.eventplanner.fragments.home.HomeScreenFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_homescreen" >
         <action

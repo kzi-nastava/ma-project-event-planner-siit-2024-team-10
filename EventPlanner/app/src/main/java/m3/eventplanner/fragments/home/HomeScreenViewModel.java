@@ -1,4 +1,4 @@
-package m3.eventplanner.viewmodel;
+package m3.eventplanner.fragments.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -19,7 +19,7 @@ import retrofit2.Response;
 
 public class HomeScreenViewModel extends ViewModel {
 
-    private final ClientUtils clientUtils;
+    private ClientUtils clientUtils;
 
     private final MutableLiveData<List<GetEventDTO>> topEvents = new MutableLiveData<>();
     private final MutableLiveData<List<GetOfferingDTO>> topOfferings = new MutableLiveData<>();
@@ -73,6 +73,10 @@ public class HomeScreenViewModel extends ViewModel {
 
     public LiveData<PagedResponse<GetOfferingDTO>> getPagedOfferings() {
         return pagedOfferings;
+    }
+
+    public void initialize(ClientUtils clientUtils) {
+        this.clientUtils = clientUtils;
     }
 
     public void loadTopEvents() {

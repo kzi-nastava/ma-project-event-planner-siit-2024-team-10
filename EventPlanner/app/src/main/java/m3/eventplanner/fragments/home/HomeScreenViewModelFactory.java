@@ -1,11 +1,10 @@
-package m3.eventplanner.viewmodel.factory;
+package m3.eventplanner.fragments.home;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.viewmodel.HomeScreenViewModel;
 
 public class HomeScreenViewModelFactory implements ViewModelProvider.Factory {
     private final ClientUtils clientUtils;
