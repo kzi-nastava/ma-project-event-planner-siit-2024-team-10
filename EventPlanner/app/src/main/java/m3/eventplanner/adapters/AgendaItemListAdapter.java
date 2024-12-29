@@ -10,13 +10,15 @@ import com.google.android.material.card.MaterialCardView;
 import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.models.AgendaItem;
+import m3.eventplanner.models.GetAgendaItemDTO;
+
 import androidx.navigation.Navigation;
 
 public class AgendaItemListAdapter extends RecyclerView.Adapter<AgendaItemListAdapter.AgendaViewHolder> {
 
-    private List<AgendaItem> agendaItemList;
+    private List<GetAgendaItemDTO> agendaItemList;
 
-    public AgendaItemListAdapter(List<AgendaItem> agendaItemList) {
+    public AgendaItemListAdapter(List<GetAgendaItemDTO> agendaItemList) {
         this.agendaItemList = agendaItemList;
     }
 
@@ -49,12 +51,12 @@ public class AgendaItemListAdapter extends RecyclerView.Adapter<AgendaItemListAd
 
     @Override
     public void onBindViewHolder(@NonNull AgendaViewHolder holder, int position) {
-        AgendaItem agendaItem = agendaItemList.get(position);
+        GetAgendaItemDTO agendaItem = agendaItemList.get(position);
 
         holder.nameTextView.setText(agendaItem.getName());
         holder.descriptionTextView.setText(agendaItem.getDescription());
-        holder.startTimeTextView.setText(agendaItem.getStartTime());
-        holder.endTimeTextView.setText(agendaItem.getEndTime());
+        holder.startTimeTextView.setText(agendaItem.getStartTime().substring(0, 5));
+        holder.endTimeTextView.setText(agendaItem.getEndTime().substring(0, 5));
         holder.locationTextView.setText(agendaItem.getLocation());
     }
 

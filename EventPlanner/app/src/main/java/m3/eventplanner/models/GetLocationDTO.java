@@ -99,4 +99,9 @@ public class GetLocationDTO implements Parcelable, Serializable {
     public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
+
+    @Override
+    public String toString() {
+        return street+" "+houseNumber+", "+city+", "+country;
+    }
 }
