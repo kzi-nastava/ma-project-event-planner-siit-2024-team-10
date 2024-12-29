@@ -31,8 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
@@ -225,11 +227,44 @@ public class HomeScreenFragment extends Fragment {
 
     private void setUpEventSortSpinners(View view) {
         Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
-        eventSortBySpinner.setAdapter(createSpinnerAdapter(R.array.event_sort_criteria));
-
         Spinner eventSortDirectionSpinner = view.findViewById(R.id.btn_sort_events_direction);
+
+        eventSortBySpinner.setAdapter(createSpinnerAdapter(R.array.event_sort_criteria));
         eventSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
+
+        Map<String, String> sortCriteriaMapping = new HashMap<>();
+        sortCriteriaMapping.put("Any", null);
+        sortCriteriaMapping.put("Name", "name");
+        sortCriteriaMapping.put("Date", "date");
+        sortCriteriaMapping.put("Average Rating", "averageRating");
+        sortCriteriaMapping.put("City", "location.city");
+
+        Map<String, String> sortDirectionMapping = new HashMap<>();
+        sortDirectionMapping.put("Ascending", "ASC");
+        sortDirectionMapping.put("Descending", "DESC");
+
+        AdapterView.OnItemSelectedListener sortListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSortBy = eventSortBySpinner.getSelectedItem().toString();
+                String selectedSortDirection = eventSortDirectionSpinner.getSelectedItem().toString();
+
+                String sortBy = sortCriteriaMapping.get(selectedSortBy);
+                String sortDirection = sortDirectionMapping.get(selectedSortDirection);
+
+                homeScreenViewModel.loadSortedEvents(0, sortBy, sortDirection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+
+        eventSortBySpinner.setOnItemSelectedListener(sortListener);
+        eventSortDirectionSpinner.setOnItemSelectedListener(sortListener);
     }
+
+
 
     private void setUpOfferingSortSpinners(View view) {
         Spinner offeringsSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);

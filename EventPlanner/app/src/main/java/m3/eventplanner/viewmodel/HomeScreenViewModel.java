@@ -129,6 +129,12 @@ public class HomeScreenViewModel extends ViewModel {
 
         fetchPagedEvents(page);
     }
+    public void loadSortedEvents(int page, String sortBy, String sortDirection){
+        this.sortEventsBy = sortBy;
+        this.sortEventsDirection = sortDirection;
+
+        fetchPagedEvents(page);
+    }
 
     private void fetchPagedEvents(int page){
         currentEventPage = page;
@@ -136,7 +142,7 @@ public class HomeScreenViewModel extends ViewModel {
 
         clientUtils.getEventService().getEvents(currentEventPage, eventPageSize,
                 filterEventTypeId, filterEventLocation, filterEventMaxParticipants, filterEventMinRating, filterEventStartDate, filterEventEndDate,
-                eventSearchQuery, null, null).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
+                eventSearchQuery, sortEventsBy, sortEventsDirection).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getContent() != null) {
