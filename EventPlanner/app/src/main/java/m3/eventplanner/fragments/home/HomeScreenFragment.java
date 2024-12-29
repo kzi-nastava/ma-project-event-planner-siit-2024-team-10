@@ -48,32 +48,33 @@ public class HomeScreenFragment extends Fragment {
     private View eventSearchBar, offeringSearchBar, paginationBar;
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, topEventsTextView, topOfferingsTextView, pageNumber, totalNumberOfElements;
-    private HomeScreenViewModel homeScreenViewModel;
+    private HomeEventsViewModel eventsViewModel;
+    private HomeOfferingViewModel offeringsViewModel;
     private EventListAdapter eventAdapter;
     private OfferingListAdapter offeringAdapter;
     private SearchView searchView;
-
-
     private ClientUtils clientUtils;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
-        homeScreenViewModel = new ViewModelProvider(this, new HomeScreenViewModelFactory(clientUtils)).get(HomeScreenViewModel.class);
+        eventsViewModel = new ViewModelProvider(this).get(HomeEventsViewModel.class);
+        eventsViewModel.initialize(clientUtils);
+        offeringsViewModel = new ViewModelProvider(this).get(HomeOfferingViewModel.class);
+        offeringsViewModel.initialize(clientUtils);
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
         setUpToggleGroup();
-        homeScreenViewModel.fetchEventTypes();
+        eventsViewModel.fetchEventTypes();
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        homeScreenViewModel.initialize(clientUtils);
 
-        homeScreenViewModel.getTopEvents().observe(getViewLifecycleOwner(), events -> {
+        eventsViewModel.getTopData().observe(getViewLifecycleOwner(), events -> {
             if (events != null && !events.isEmpty()) {
                 eventAdapter = new EventListAdapter(events);
                 contentRecyclerView.setAdapter(eventAdapter);
@@ -87,7 +88,7 @@ public class HomeScreenFragment extends Fragment {
             }
         });
 
-        homeScreenViewModel.getTopOfferings().observe(getViewLifecycleOwner(), offerings -> {
+        offeringsViewModel.getTopData().observe(getViewLifecycleOwner(), offerings -> {
             if (offerings != null) {
                 offeringAdapter = new OfferingListAdapter(offerings);
                 contentRecyclerView.setAdapter(offeringAdapter);
@@ -101,7 +102,7 @@ public class HomeScreenFragment extends Fragment {
             }
         });
 
-        homeScreenViewModel.getPagedEvents().observe(getViewLifecycleOwner(), pagedEvents -> {
+        eventsViewModel.getPagedData().observe(getViewLifecycleOwner(), pagedEvents -> {
             if (pagedEvents != null && pagedEvents.getContent() != null) {
                 eventAdapter = new EventListAdapter(pagedEvents.getContent());
                 contentRecyclerView.setAdapter(eventAdapter);
@@ -111,14 +112,14 @@ public class HomeScreenFragment extends Fragment {
                 paginationBar.setVisibility(View.VISIBLE);
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
-                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentEventPage() + 1) +" of "+ homeScreenViewModel.getTotalEventPages()));
-                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfEvents()));
+                pageNumber.setText(String.valueOf("Page "+ (eventsViewModel.currentPage + 1) +" of "+ eventsViewModel.totalPages));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", eventsViewModel.totalElements));
             } else {
                 handleNoDataFound();
             }
         });
 
-        homeScreenViewModel.getPagedOfferings().observe(getViewLifecycleOwner(), pagedOfferings -> {
+        offeringsViewModel.getPagedData().observe(getViewLifecycleOwner(), pagedOfferings -> {
             if (pagedOfferings != null && pagedOfferings.getContent() != null) {
                 offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
                 contentRecyclerView.setAdapter(offeringAdapter);
@@ -128,20 +129,20 @@ public class HomeScreenFragment extends Fragment {
                 paginationBar.setVisibility(View.VISIBLE);
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
-                pageNumber.setText(String.valueOf("Page "+ (homeScreenViewModel.getCurrentOfferingPage() + 1) +" of "+ homeScreenViewModel.getTotalOfferingPages()));
-                totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfOfferings()));
+                pageNumber.setText(String.valueOf("Page "+ (offeringsViewModel.currentPage + 1) +" of "+ offeringsViewModel.totalPages));
+                totalNumberOfElements.setText(String.format("Total Elements: %d", offeringsViewModel.totalElements));
             } else {
                 handleNoDataFound();
             }
         });
 
-        homeScreenViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+        eventsViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
 
-        homeScreenViewModel.loadTopEvents();
+        eventsViewModel.loadTopEvents();
 
         setUpSortSpinners(view);
         setUpFilterButtons(view);
@@ -168,8 +169,21 @@ public class HomeScreenFragment extends Fragment {
         pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
         totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
 
-        paginationForwardButton.setOnClickListener(v -> homeScreenViewModel.loadNextPage());
-        paginationBackButton.setOnClickListener(v -> homeScreenViewModel.loadPreviousPage());
+        paginationForwardButton.setOnClickListener(v -> {
+            if (toggleGroup.getCheckedButtonId() == R.id.tabAllEvents) {
+                eventsViewModel.fetchNextPage();
+            } else if (toggleGroup.getCheckedButtonId() == R.id.tabAllOfferings) {
+                offeringsViewModel.fetchNextPage();
+            }
+        });
+
+        paginationBackButton.setOnClickListener(v -> {
+            if (toggleGroup.getCheckedButtonId() == R.id.tabAllEvents) {
+                eventsViewModel.fetchPreviousPage();
+            } else if (toggleGroup.getCheckedButtonId() == R.id.tabAllOfferings) {
+                offeringsViewModel.fetchPreviousPage();
+            }
+        });
     }
     private void setUpSearchBar(View view) {
         searchView = view.findViewById(R.id.event_search_text);
@@ -177,7 +191,7 @@ public class HomeScreenFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                homeScreenViewModel.loadSearchedEvents(0,query);
+                eventsViewModel.loadSearchedEvents(0,query);
                 return true;
             }
             @Override
@@ -214,13 +228,13 @@ public class HomeScreenFragment extends Fragment {
             if (isChecked) {
                 resetVisibilityForTab(checkedId);
                 if (checkedId == R.id.tabTopEvents) {
-                    homeScreenViewModel.loadTopEvents();
+                    eventsViewModel.loadTopEvents();
                 } else if (checkedId == R.id.tabAllEvents) {
-                    homeScreenViewModel.loadPagedEvents(0);
+                    eventsViewModel.fetchPage(0);
                 } else if (checkedId == R.id.tabTopOfferings) {
-                    homeScreenViewModel.loadTopOfferings();
+                    offeringsViewModel.loadTopOfferings();
                 } else if (checkedId == R.id.tabAllOfferings) {
-                    homeScreenViewModel.loadPagedOfferings(0);
+                    offeringsViewModel.fetchPage(0);
                 }
             }
         });
@@ -258,7 +272,7 @@ public class HomeScreenFragment extends Fragment {
                 String sortBy = sortCriteriaMapping.get(selectedSortBy);
                 String sortDirection = sortDirectionMapping.get(selectedSortDirection);
 
-                homeScreenViewModel.loadSortedEvents(0, sortBy, sortDirection);
+                eventsViewModel.loadSortedEvents(0, sortBy, sortDirection);
             }
 
             @Override
@@ -326,7 +340,7 @@ public class HomeScreenFragment extends Fragment {
         bottomSheetDialog.setContentView(bottomSheetView);
         setUpEventFilterDateRangePicker(bottomSheetView);
 
-        homeScreenViewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
+        eventsViewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             if (eventTypes != null && !eventTypes.isEmpty()) {
                 setUpEventTypeSpinner(bottomSheetView, eventTypes);
             }
@@ -390,12 +404,12 @@ public class HomeScreenFragment extends Fragment {
                 }
             }
 
-            homeScreenViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
+            eventsViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
             bottomSheetDialog.dismiss();
         });
 
         restartEventFilterButton.setOnClickListener(v->{
-            homeScreenViewModel.resetFilters();
+            eventsViewModel.resetFilters();
             bottomSheetDialog.dismiss();
         });
 
