@@ -12,7 +12,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +39,8 @@ import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.viewmodel.HomeScreenViewModel;
+import m3.eventplanner.viewmodel.factory.HomeScreenViewModelFactory;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;

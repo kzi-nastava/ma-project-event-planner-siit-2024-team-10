@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments;
+package m3.eventplanner.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
