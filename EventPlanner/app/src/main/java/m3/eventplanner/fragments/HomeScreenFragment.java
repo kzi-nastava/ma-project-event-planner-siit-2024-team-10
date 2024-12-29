@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -132,6 +133,12 @@ public class HomeScreenFragment extends Fragment {
                 totalNumberOfElements.setText(String.format("Total Elements: %d", homeScreenViewModel.getNumOfOfferings()));
             } else {
                 handleNoDataFound();
+            }
+        });
+
+        homeScreenViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
             }
         });
 

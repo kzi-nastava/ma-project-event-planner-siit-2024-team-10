@@ -28,6 +28,7 @@ public class HomeScreenViewModel extends ViewModel {
     private final MutableLiveData<PagedResponse<GetOfferingDTO>> pagedOfferings = new MutableLiveData<>();
     private final MutableLiveData<List<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
 
+    private final MutableLiveData<String> error = new MutableLiveData<>();
 
     private int currentEventPage = 0;
     private final int eventPageSize = 3;
@@ -78,12 +79,9 @@ public class HomeScreenViewModel extends ViewModel {
         clientUtils.getEventService().getTopEvents().enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body() != null) {
-                    if (response.body().isEmpty()) {
-                        topEvents.setValue(null);
-                    } else {
-                        topEvents.setValue(new ArrayList<>(response.body()));
-                    }
+                if (response.isSuccessful() && response.body() != null) {
+                    topEvents.setValue(new ArrayList<>(response.body()));
+
                 } else {
                     topEvents.setValue(null);
                 }
@@ -92,6 +90,7 @@ public class HomeScreenViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
                 topEvents.setValue(null);
+                error.setValue("Failed to load events");
             }
         });
     }
@@ -102,12 +101,15 @@ public class HomeScreenViewModel extends ViewModel {
             public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     topOfferings.setValue(new ArrayList<>(response.body()));
+                } else{
+                    topOfferings.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<Collection<GetOfferingDTO>> call, Throwable t) {
                 topOfferings.setValue(new ArrayList<>());
+                error.setValue("Failed to load offerings");
             }
         });
     }
@@ -145,13 +147,16 @@ public class HomeScreenViewModel extends ViewModel {
                 eventSearchQuery, sortEventsBy, sortEventsDirection).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getContent() != null) {
-                    if (response.body().getContent().isEmpty()) {
-                        pagedEvents.setValue(null);
+                if (response.isSuccessful() && response.body() != null) {
+                    PagedResponse<GetEventDTO> pagedResponse = response.body();
+                    Collection<GetEventDTO> eventList = pagedResponse.getContent();
+
+                    if (eventList != null && !eventList.isEmpty()) {
+                        pagedEvents.setValue(pagedResponse);
+                        totalEventPages = pagedResponse.getTotalPages();
+                        totalEvents = pagedResponse.getTotalElements();
                     } else {
-                        pagedEvents.setValue(response.body());
-                        totalEventPages = response.body().getTotalPages();
-                        totalEvents = response.body().getTotalElements();
+                        pagedEvents.setValue(null);
                     }
                 } else {
                     pagedEvents.setValue(null);
@@ -161,6 +166,7 @@ public class HomeScreenViewModel extends ViewModel {
             @Override
             public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
                 pagedEvents.setValue(null);
+                error.setValue("Failed to load events");
             }
         });
     }
@@ -182,6 +188,7 @@ public class HomeScreenViewModel extends ViewModel {
             @Override
             public void onFailure(Call<PagedResponse<GetOfferingDTO>> call, Throwable t) {
                 pagedOfferings.setValue(null);
+                error.setValue("Failed to load offerings");
             }
         });
     }
@@ -270,5 +277,9 @@ public class HomeScreenViewModel extends ViewModel {
     }
     public int getNumOfOfferings(){
         return totalOfferings;
+    }
+
+    public LiveData<String> getError() {
+        return error;
     }
 }
