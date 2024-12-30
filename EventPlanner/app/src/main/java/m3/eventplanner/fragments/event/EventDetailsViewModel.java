@@ -126,12 +126,12 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
-    public void toggleFavourite(int accountId, int eventId) {
+    public void toggleFavourite(int accountId) {
         Boolean currentFavStatus = isFavourite.getValue();
         if (currentFavStatus == null) return;
 
         if (currentFavStatus) {
-            clientUtils.getAccountService().removeEventFromFavourites(accountId, eventId).enqueue(new Callback<Void>() {
+            clientUtils.getAccountService().removeEventFromFavourites(accountId, this.event.getValue().getId()).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
@@ -148,7 +148,7 @@ public class EventDetailsViewModel extends ViewModel {
                 }
             });
         } else {
-            clientUtils.getAccountService().addEventToFavourites(accountId, new AddFavouriteEventDTO(eventId)).enqueue(new Callback<Void>() {
+            clientUtils.getAccountService().addEventToFavourites(accountId, new AddFavouriteEventDTO(this.event.getValue().getId())).enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
@@ -167,10 +167,10 @@ public class EventDetailsViewModel extends ViewModel {
         }
     }
 
-    public void submitRating(int eventId, int rating) {
+    public void submitRating(int rating) {
         CreateEventRatingDTO ratingDTO = new CreateEventRatingDTO(rating);
 
-        clientUtils.getEventService().addRating(eventId, ratingDTO).enqueue(new Callback<CreatedEventRatingDTO>() {
+        clientUtils.getEventService().addRating(this.event.getValue().getId(), ratingDTO).enqueue(new Callback<CreatedEventRatingDTO>() {
             @Override
             public void onResponse(Call<CreatedEventRatingDTO> call, Response<CreatedEventRatingDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -192,8 +192,8 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
-    public void addAgendaItem(int eventId, CreateAgendaItemDTO createAgendaItemDTO) {
-        clientUtils.getEventService().addAgendaItem(eventId, createAgendaItemDTO).enqueue(new Callback<CreatedAgendaItemDTO>() {
+    public void addAgendaItem(CreateAgendaItemDTO createAgendaItemDTO) {
+        clientUtils.getEventService().addAgendaItem(this.event.getValue().getId(), createAgendaItemDTO).enqueue(new Callback<CreatedAgendaItemDTO>() {
             @Override
             public void onResponse(Call<CreatedAgendaItemDTO> call, Response<CreatedAgendaItemDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -211,8 +211,8 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
-    public void updateAgendaItem(int eventId, int agendaItemId, UpdateAgendaItemDTO updateAgendaItemDTO) {
-        clientUtils.getEventService().updateAgendaItem(eventId, agendaItemId, updateAgendaItemDTO).enqueue(new Callback<UpdatedAgendaItemDTO>() {
+    public void updateAgendaItem(int agendaItemId, UpdateAgendaItemDTO updateAgendaItemDTO) {
+        clientUtils.getEventService().updateAgendaItem(this.event.getValue().getId(), agendaItemId, updateAgendaItemDTO).enqueue(new Callback<UpdatedAgendaItemDTO>() {
             @Override
             public void onResponse(Call<UpdatedAgendaItemDTO> call, Response<UpdatedAgendaItemDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -230,8 +230,8 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
-    public void deleteAgendaItem(int eventId, int agendaItemId) {
-        clientUtils.getEventService().deleteAgendaItem(eventId, agendaItemId).enqueue(new Callback<Void>() {
+    public void deleteAgendaItem(int agendaItemId) {
+        clientUtils.getEventService().deleteAgendaItem(this.event.getValue().getId(), agendaItemId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
