@@ -38,6 +38,10 @@ public class HomeOfferingViewModel extends ViewModel {
     private String eventSearchQuery;
     private String sortEventsBy;
     private String sortEventsDirection;
+    private MutableLiveData<Double> highestPrice = new MutableLiveData<>();
+    public LiveData<Double> getHighestPrice() {
+        return highestPrice;
+    }
 
     public void initialize(ClientUtils clientUtils) {
         this.clientUtils = clientUtils;
@@ -187,6 +191,23 @@ public class HomeOfferingViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Collection<GetOfferingCategoryDTO>> call, Throwable t) {
                 categories.setValue(new ArrayList<>());
+            }
+        });
+    }
+    public void fetchHighestPrice(Boolean isServiceFilter) {
+        clientUtils.getOfferingService().getHighestPrice(isServiceFilter).enqueue(new Callback<Double>() {
+            @Override
+            public void onResponse(Call<Double> call, Response<Double> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    highestPrice.setValue(response.body());
+                } else {
+                    highestPrice.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Double> call, Throwable t) {
+                highestPrice.setValue(null);
             }
         });
     }

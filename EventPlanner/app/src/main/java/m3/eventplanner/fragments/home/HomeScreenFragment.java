@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -422,14 +423,36 @@ public class HomeScreenFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
+
+        RangeSlider priceRangeSlider = bottomSheetView.findViewById(R.id.price_range_slider);
+
         offeringsViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
                 setUpCategorySpinner(bottomSheetView, categories);
             }
         });
+
+        offeringsViewModel.getHighestPrice().observe(getViewLifecycleOwner(), highestPrice -> {
+            if (highestPrice != null) {
+                priceRangeSlider.setValueTo(highestPrice.floatValue());
+
+                List<Float> currentValues = priceRangeSlider.getValues();
+                List<Float> adjustedValues = new ArrayList<>();
+                for (Float value : currentValues) {
+                    adjustedValues.add(Math.min(value, highestPrice.floatValue()));
+                }
+                priceRangeSlider.setValues(adjustedValues);
+            } else {
+                Log.e("HighestPrice", "Failed to fetch highest price");
+            }
+        });
+        offeringsViewModel.fetchHighestPrice(selected.equals("SERVICE"));
+
         setUpVisibilityForOfferingType(bottomSheetView, selected);
+
         bottomSheetDialog.show();
     }
+
 
     private void setUpEventFilterDateRangePicker(View bottomSheetView) {
         Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
@@ -544,16 +567,10 @@ public class HomeScreenFragment extends Fragment {
 
     private void setUpVisibilityForOfferingType(View bottomSheetView, String selected) {
         View serviceDurationView = bottomSheetView.findViewById(R.id.service_duration);
-        Button dateRangePickerButton = bottomSheetView.findViewById(R.id.date_range_button);
-        TextView dateRangeTextView = bottomSheetView.findViewById(R.id.selected_dates);
         if ("SERVICE".equals(selected)) {
             serviceDurationView.setVisibility(View.VISIBLE);
-            dateRangePickerButton.setVisibility(View.VISIBLE);
-            dateRangeTextView.setVisibility(View.VISIBLE);
         } else {
             serviceDurationView.setVisibility(View.GONE);
-            dateRangePickerButton.setVisibility(View.GONE);
-            dateRangeTextView.setVisibility(View.GONE);
         }
     }
 

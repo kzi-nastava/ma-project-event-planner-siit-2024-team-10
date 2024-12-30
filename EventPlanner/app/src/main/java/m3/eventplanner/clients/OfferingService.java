@@ -46,4 +46,6 @@ public interface OfferingService {
             @Query("startDate") LocalDate startDate,
             @Query("endDate") LocalDate endDate,
             @Query("isAvailable") Boolean isAvailable);
+    @GET("offerings/highest-prices")
+    Call<Double> getHighestPrice(@Query("isService") Boolean isService);
 }
