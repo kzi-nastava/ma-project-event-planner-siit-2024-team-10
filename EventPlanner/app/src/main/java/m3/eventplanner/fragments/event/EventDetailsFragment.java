@@ -1,5 +1,6 @@
 package m3.eventplanner.fragments.event;
 
+import android.media.session.MediaSession;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,18 +30,25 @@ import m3.eventplanner.adapters.AgendaItemListAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
+import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
 import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.CreateAgendaItemDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOrganizerDTO;
+import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventDetailsFragment extends Fragment {
+public class EventDetailsFragment extends Fragment implements AgendaItemFormFragment.OnAgendaItemFormFilledListener {
     private FragmentEventDetailsBinding binding;
     private EventDetailsViewModel viewModel;
     private ClientUtils clientUtils;
+    private GetEventDTO event;
+    private boolean isOwner;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -62,10 +71,12 @@ public class EventDetailsFragment extends Fragment {
         // Load initial data
         if (getArguments() != null) {
             int eventId = getArguments().getInt("selectedEventId");
-            int accountId = new TokenManager(requireContext()).getAccountId();
+            TokenManager tokenManager = new TokenManager(requireContext());
+            int accountId = tokenManager.getAccountId();
+            int userId = tokenManager.getUserId();
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
-            viewModel.loadEventDetails(eventId, accountId);
+            viewModel.loadEventDetails(eventId, accountId, userId);
         }
     }
 
@@ -74,7 +85,7 @@ public class EventDetailsFragment extends Fragment {
 
         viewModel.getAgenda().observe(getViewLifecycleOwner(), agendaItems -> {
             binding.agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.agendaRecyclerView.setAdapter(new AgendaItemListAdapter(agendaItems));
+            binding.agendaRecyclerView.setAdapter(new AgendaItemListAdapter(agendaItems,this,isOwner));
         });
 
         viewModel.getIsFavourite().observe(getViewLifecycleOwner(), isFavourite ->
@@ -85,6 +96,17 @@ public class EventDetailsFragment extends Fragment {
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
         );
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
+        {
+            this.isOwner=isOwner;
+            if(isOwner)
+                binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+        });
     }
 
     private void setupClickListeners() {
@@ -92,7 +114,7 @@ public class EventDetailsFragment extends Fragment {
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");
                 int accountId = new TokenManager(requireContext()).getAccountId();
-                viewModel.toggleFavourite(accountId, eventId);
+                viewModel.toggleFavourite(accountId);
             }
         });
 
@@ -100,15 +122,22 @@ public class EventDetailsFragment extends Fragment {
             int rating = (int) binding.newRating.getRating();
             if (rating > 0) {
                 int eventId = getArguments().getInt("selectedEventId");
-                viewModel.submitRating(eventId, rating);
+                viewModel.submitRating(rating);
                 Toast.makeText(getContext(), "Rating submitted successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
             }
         });
+
+        binding.addAgendaItemButton.setOnClickListener(v->{
+            AgendaItemFormFragment dialog = new AgendaItemFormFragment();
+            dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
+        });
     }
 
     private void populateEventDetails(GetEventDTO event) {
+        this.event=event;
+
         binding.eventName.setText(event.getName());
         binding.eventType.setText(event.getEventType().getName());
         binding.eventDescription.setText(event.getDescription());
@@ -135,5 +164,17 @@ public class EventDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onAgendaItemFormFilled(int id, String name, String description, LocalTime startTime, LocalTime endTime, String location, boolean edit) {
+        if(!edit){
+            CreateAgendaItemDTO agendaItemDTO = new CreateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.addAgendaItem(agendaItemDTO);
+        }
+        else {
+            UpdateAgendaItemDTO agendaItemDTO =new UpdateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.updateAgendaItem(id,agendaItemDTO);
+        }
     }
 }
