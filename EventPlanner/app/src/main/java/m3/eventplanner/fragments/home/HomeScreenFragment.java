@@ -67,7 +67,6 @@ public class HomeScreenFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
         setUpRecyclerView();
-        setUpToggleGroup();
         eventsViewModel.fetchEventTypes();
         offeringsViewModel.fetchCategories();
         return rootView;
@@ -151,8 +150,9 @@ public class HomeScreenFragment extends Fragment {
         setUpFilterButtons(view);
         setUpPaginationButtons(view);
         setUpSearchBar(view);
+        setUpOfferingRadioGroup(view);
 
-        setUpToggleGroup();
+        setUpToggleGroup(view);
     }
 
     private void initializeUIElements(View rootView) {
@@ -226,7 +226,7 @@ public class HomeScreenFragment extends Fragment {
             contentRecyclerView.setVisibility(View.VISIBLE);
         }
     }
-    private void setUpToggleGroup() {
+    private void setUpToggleGroup(View view) {
         toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 resetVisibilityForTab(checkedId);
@@ -237,7 +237,8 @@ public class HomeScreenFragment extends Fragment {
                 } else if (checkedId == R.id.tabTopOfferings) {
                     offeringsViewModel.loadTopOfferings();
                 } else if (checkedId == R.id.tabAllOfferings) {
-                    offeringsViewModel.fetchPage(0);
+                    Boolean isService = getSelectedOfferingType(view);
+                    offeringsViewModel.loadOfferings(0, isService);
                 }
             }
         });
@@ -314,22 +315,34 @@ public class HomeScreenFragment extends Fragment {
 
         Button btnOfferingFilters = view.findViewById(R.id.filter_offerings_button);
         btnOfferingFilters.setOnClickListener(v -> {
-            String selectedText = getSelectedOfferingType(view);
-            if (selectedText != null) {
-                showOfferingFilterBottomSheet(selectedText);
-            }
+            Boolean isService = getSelectedOfferingType(view);
+            showOfferingFilterBottomSheet(isService);
         });
     }
 
-    private String getSelectedOfferingType(View view) {
+    private Boolean getSelectedOfferingType(View view) {
         RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
         int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
         if (selectedId != -1) {
-            return ((RadioButton) view.findViewById(selectedId)).getText().toString();
+            String selectedText = ((RadioButton) view.findViewById(selectedId)).getText().toString();
+            return "Service".equalsIgnoreCase(selectedText);
         } else {
             Log.e("HomeScreenFragment", "No radio button selected.");
             return null;
         }
+    }
+
+    private void setUpOfferingRadioGroup(View view) {
+        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
+
+        offeringRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            Boolean isService = getSelectedOfferingType(view);
+            if (isService != null) {
+                offeringsViewModel.loadOfferings(0, isService);
+            } else {
+                Log.e("HomeScreenFragment", "Invalid offering type selection.");
+            }
+        });
     }
 
     private void handleNoDataFound() {
@@ -419,7 +432,7 @@ public class HomeScreenFragment extends Fragment {
         bottomSheetDialog.show();
     }
 
-    private void showOfferingFilterBottomSheet(String selected) {
+    private void showOfferingFilterBottomSheet(Boolean isService) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
@@ -446,13 +459,12 @@ public class HomeScreenFragment extends Fragment {
                 Log.e("HighestPrice", "Failed to fetch highest price");
             }
         });
-        offeringsViewModel.fetchHighestPrice(selected.equals("SERVICE"));
+        offeringsViewModel.fetchHighestPrice(isService);
 
-        setUpVisibilityForOfferingType(bottomSheetView, selected);
+        setUpVisibilityForOfferingType(bottomSheetView, isService);
 
         bottomSheetDialog.show();
     }
-
 
     private void setUpEventFilterDateRangePicker(View bottomSheetView) {
         Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
@@ -565,9 +577,9 @@ public class HomeScreenFragment extends Fragment {
         }
     }
 
-    private void setUpVisibilityForOfferingType(View bottomSheetView, String selected) {
+    private void setUpVisibilityForOfferingType(View bottomSheetView, Boolean isService) {
         View serviceDurationView = bottomSheetView.findViewById(R.id.service_duration);
-        if ("SERVICE".equals(selected)) {
+        if (isService) {
             serviceDurationView.setVisibility(View.VISIBLE);
         } else {
             serviceDurationView.setVisibility(View.GONE);

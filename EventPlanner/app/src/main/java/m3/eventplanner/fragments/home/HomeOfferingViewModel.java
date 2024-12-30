@@ -29,6 +29,7 @@ public class HomeOfferingViewModel extends ViewModel {
     public final int pageSize = 3;
 
     private final MutableLiveData<List<GetOfferingCategoryDTO>> categories = new MutableLiveData<>();
+    private Boolean isService;
     private Integer filterEventTypeId;
     private String filterEventLocation;
     private Integer filterEventMaxParticipants;
@@ -86,7 +87,7 @@ public class HomeOfferingViewModel extends ViewModel {
         clientUtils.getOfferingService().getOfferings(
                 page,
                 pageSize,
-                null,
+                isService,
                 null,
                 null,
                 null,
@@ -141,8 +142,6 @@ public class HomeOfferingViewModel extends ViewModel {
     // TO-DO: change from event logic to offering logic
     // 1. Move error string to be shared between view models
     // 2. Change the search bar, move the search bar id
-    // 3. Handle service/product toggles
-    // 4. Add categories from backend
 
     public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
         this.filterEventTypeId = eventTypeId;
@@ -162,6 +161,11 @@ public class HomeOfferingViewModel extends ViewModel {
     public void loadSortedEvents(int page, String sortBy, String sortDirection) {
         this.sortEventsBy = sortBy;
         this.sortEventsDirection = sortDirection;
+        fetchPage(page);
+    }
+
+    public void loadOfferings(int page, Boolean isService){
+        this.isService = isService;
         fetchPage(page);
     }
 
