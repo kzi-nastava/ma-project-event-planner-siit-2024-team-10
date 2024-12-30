@@ -90,7 +90,26 @@ public class AgendaItemListAdapter extends RecyclerView.Adapter<AgendaItemListAd
                 dialog.show(eventDetailsFragment.getChildFragmentManager(), "AgendaItemFormFragment");
             });
 
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v->{
+                AlertDialog.Builder builder = new AlertDialog.Builder(eventDetailsFragment.requireContext());
 
+                builder.setTitle("Confirm delete")
+                        .setMessage("Are you sure you want to delete agenda item?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                eventDetailsViewModel.deleteAgendaItem(agendaItem.getId());
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.create().show();
+            });
         }
     }
 
