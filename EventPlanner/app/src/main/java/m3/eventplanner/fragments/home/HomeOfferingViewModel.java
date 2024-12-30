@@ -99,6 +99,7 @@ public class HomeOfferingViewModel extends ViewModel {
                 null,
                 null,
                 null,
+                null,
                 null
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override

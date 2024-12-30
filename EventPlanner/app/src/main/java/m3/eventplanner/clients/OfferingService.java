@@ -35,7 +35,6 @@ public interface OfferingService {
             @Query("size") int size,
             @Query("isServiceFilter") Boolean isServiceFilter,
             @Query("name") String name,
-            @Query("eventTypeId") Integer eventTypeId,
             @Query("categoryId") Integer categoryId,
             @Query("location") String location,
             @Query("minPrice") Integer minPrice,
@@ -45,7 +44,9 @@ public interface OfferingService {
             @Query("minRating") Double minRating,
             @Query("startDate") LocalDate startDate,
             @Query("endDate") LocalDate endDate,
-            @Query("isAvailable") Boolean isAvailable);
+            @Query("isAvailable") Boolean isAvailable,
+            @Query("sortBy") String sortBy,
+            @Query("sortDirection") String sortDirection);
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
 }
