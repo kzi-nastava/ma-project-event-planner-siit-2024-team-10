@@ -11,11 +11,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.timepicker.MaterialTimePicker;
 
 import java.time.LocalTime;
@@ -72,18 +76,12 @@ public class AgendaItemFormFragment extends DialogFragment{
         binding = FragmentAgendaItemFormBinding.inflate(requireActivity().getLayoutInflater());
 
         initializeForm();
+        setupValidation();
 
         builder.setView(binding.getRoot())
                 .setTitle(agendaItem==null?"Create Agenda Item":"Edit Agenda Item")
                 .setPositiveButton("Submit", (dialog, id) -> {
-//                    String name = nameInput.getEditText().getText().toString().trim();
-//                    String description = descriptionInput.getEditText().getText().toString().trim();
-//                    List<Integer> recommendedCategoryIds = recommendedCategories.stream()
-//                            .map(GetOfferingCategoryDTO::getId)
-//                            .collect(Collectors.toList());
-//                    if (isFormValid()) {
-//                        listener.onEventTypeFormFilled(eventType==null?0:eventType.getId(), name, description, recommendedCategoryIds, eventType!=null);
-//                    }
+
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
 
@@ -133,5 +131,113 @@ public class AgendaItemFormFragment extends DialogFragment{
             binding.descriptionInput.getEditText().setText(agendaItem.getDescription());
             binding.locationInput.getEditText().setText(agendaItem.getLocation());
         }
+    }
+
+    private void setupValidation(){
+        binding.nameInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.nameInput);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.descriptionInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.descriptionInput);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.startTimeInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.startTimeInput);
+                validateTimeInputs();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.endTimeInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.endTimeInput);
+                validateTimeInputs();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.locationInput.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.locationInput);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private boolean validateRequiredField(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
+        } else {
+            textInputLayout.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateTimeInputs(){
+        if (startTime==null || endTime==null) {
+            return true;
+        }
+        if(startTime.compareTo(endTime)>0){
+            binding.endTimeInput.setError("End time must be after start time");
+            return false;
+        }
+        binding.endTimeInput.setError(null);
+        return true;
+    }
+
+    private boolean isFormValid(){
+        boolean isValid=true;
+        if(!validateRequiredField(binding.nameInput))
+            isValid = false;
+        if(!validateRequiredField(binding.descriptionInput))
+            isValid = false;
+        if(!validateRequiredField(binding.locationInput))
+            isValid = false;
+        if(!validateRequiredField(binding.startTimeInput))
+            isValid = false;
+        if(!validateRequiredField(binding.endTimeInput))
+            isValid = false;
+        if(!validateTimeInputs())
+            isValid = false;
+        return isValid;
     }
 }
