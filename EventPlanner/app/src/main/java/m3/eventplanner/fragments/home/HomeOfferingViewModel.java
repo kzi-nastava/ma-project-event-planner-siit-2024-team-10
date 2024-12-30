@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
@@ -30,15 +29,17 @@ public class HomeOfferingViewModel extends ViewModel {
 
     private final MutableLiveData<List<GetOfferingCategoryDTO>> categories = new MutableLiveData<>();
     private Boolean isService;
-    private Integer filterEventTypeId;
-    private String filterEventLocation;
-    private Integer filterEventMaxParticipants;
-    private Double filterEventMinRating;
-    private String filterEventStartDate;
-    private String filterEventEndDate;
-    private String eventSearchQuery;
-    private String sortEventsBy;
-    private String sortEventsDirection;
+    private Integer filterCategoryId;
+    private String filterOfferingLocation;
+    private Integer filterMinPrice;
+    private Integer filterMaxPrice;
+    private Integer filterMinDiscount;
+    private Integer filterMinDuration;
+    private Double filterMinRating;
+    private Boolean filterIsAvailable;
+    private String searchQuery;
+    private String sortBy;
+    private String sortDirection;
     private MutableLiveData<Double> highestPrice = new MutableLiveData<>();
     public LiveData<Double> getHighestPrice() {
         return highestPrice;
@@ -98,8 +99,6 @@ public class HomeOfferingViewModel extends ViewModel {
                 null,
                 null,
                 null,
-                null,
-                null,
                 null
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
@@ -140,28 +139,30 @@ public class HomeOfferingViewModel extends ViewModel {
         }
     }
 
-    // TO-DO: change from event logic to offering logic
+    // TO-DO:
     // 1. Move error string to be shared between view models
     // 2. Change the search bar, move the search bar id
 
-    public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
-        this.filterEventTypeId = eventTypeId;
-        this.filterEventLocation = location;
-        this.filterEventMaxParticipants = maxParticipants;
-        this.filterEventMinRating = minRating;
-        this.filterEventStartDate = startDate;
-        this.filterEventEndDate = endDate;
+    public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable) {
+        this.filterCategoryId = categoryId;
+        this.filterOfferingLocation = location;
+        this.filterMinPrice = minPrice;
+        this.filterMaxPrice = maxPrice;
+        this.filterMinDiscount = minDiscount;
+        this.filterMinDuration = minDuration;
+        this.filterMinRating = minRating;
+        this.filterIsAvailable = isAvailable;
         fetchPage(page);
     }
 
-    public void loadSearchedEvents(int page, String query) {
-        this.eventSearchQuery = query;
+    public void loadSearchedOfferings(int page, String query) {
+        this.searchQuery = query;
         fetchPage(page);
     }
 
-    public void loadSortedEvents(int page, String sortBy, String sortDirection) {
-        this.sortEventsBy = sortBy;
-        this.sortEventsDirection = sortDirection;
+    public void loadSortedOfferings(int page, String sortBy, String sortDirection) {
+        this.sortBy = sortBy;
+        this.sortDirection = sortDirection;
         fetchPage(page);
     }
 
@@ -171,15 +172,17 @@ public class HomeOfferingViewModel extends ViewModel {
     }
 
     public void resetFilters() {
-        this.filterEventTypeId = null;
-        this.filterEventLocation = null;
-        this.filterEventMaxParticipants = null;
-        this.filterEventMinRating = null;
-        this.filterEventStartDate = null;
-        this.filterEventEndDate = null;
-        this.eventSearchQuery = null;
-        this.sortEventsBy = null;
-        this.sortEventsDirection = null;
+        this.filterCategoryId = null;
+        this.filterOfferingLocation = null;
+        this.filterMinPrice = null;
+        this.filterMaxPrice = null;
+        this.filterMinDiscount = null;
+        this.filterMinDuration = null;
+        this.filterMinRating = null;
+        this.filterIsAvailable = null;
+        this.searchQuery = null;
+        this.sortBy = null;
+        this.sortDirection = null;
 
         fetchPage(0);
     }

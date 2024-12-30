@@ -42,8 +42,6 @@ public interface OfferingService {
             @Query("minDiscount") Integer minDiscount,
             @Query("duration") Integer duration,
             @Query("minRating") Double minRating,
-            @Query("startDate") LocalDate startDate,
-            @Query("endDate") LocalDate endDate,
             @Query("isAvailable") Boolean isAvailable,
             @Query("sortBy") String sortBy,
             @Query("sortDirection") String sortDirection);
