@@ -36,6 +36,8 @@ import m3.eventplanner.models.CreateAgendaItemDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOrganizerDTO;
+import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,7 +85,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
 
         viewModel.getAgenda().observe(getViewLifecycleOwner(), agendaItems -> {
             binding.agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.agendaRecyclerView.setAdapter(new AgendaItemListAdapter(agendaItems));
+            binding.agendaRecyclerView.setAdapter(new AgendaItemListAdapter(agendaItems,this,isOwner));
         });
 
         viewModel.getIsFavourite().observe(getViewLifecycleOwner(), isFavourite ->
@@ -112,7 +114,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");
                 int accountId = new TokenManager(requireContext()).getAccountId();
-                viewModel.toggleFavourite(accountId, eventId);
+                viewModel.toggleFavourite(accountId);
             }
         });
 
@@ -120,7 +122,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             int rating = (int) binding.newRating.getRating();
             if (rating > 0) {
                 int eventId = getArguments().getInt("selectedEventId");
-                viewModel.submitRating(eventId, rating);
+                viewModel.submitRating(rating);
                 Toast.makeText(getContext(), "Rating submitted successfully", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
@@ -168,7 +170,11 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     public void onAgendaItemFormFilled(int id, String name, String description, LocalTime startTime, LocalTime endTime, String location, boolean edit) {
         if(!edit){
             CreateAgendaItemDTO agendaItemDTO = new CreateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
-            viewModel.addAgendaItem(event.getId(),agendaItemDTO);
+            viewModel.addAgendaItem(agendaItemDTO);
+        }
+        else {
+            UpdateAgendaItemDTO agendaItemDTO =new UpdateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.updateAgendaItem(id,agendaItemDTO);
         }
     }
 }
