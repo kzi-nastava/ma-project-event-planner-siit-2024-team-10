@@ -26,11 +26,11 @@ public class GetAgendaItemDTO {
         return location;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public LocalTime getStartTime() {
+        return LocalTime.of(Integer.parseInt(startTime.split(":")[0]),Integer.parseInt(startTime.split(":")[1]));
     }
 
-    public String getEndTime() {
-        return endTime;
+    public LocalTime getEndTime() {
+        return LocalTime.of(Integer.parseInt(endTime.split(":")[0]),Integer.parseInt(endTime.split(":")[1]));
     }
 }
