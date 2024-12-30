@@ -111,6 +111,10 @@ public class AgendaItemListAdapter extends RecyclerView.Adapter<AgendaItemListAd
                 builder.create().show();
             });
         }
+        else{
+            holder.editButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
