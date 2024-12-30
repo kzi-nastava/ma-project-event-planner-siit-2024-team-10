@@ -1,5 +1,6 @@
 package m3.eventplanner.fragments.event;
 
+import android.media.session.MediaSession;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
 import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
 import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.CreateAgendaItemDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOrganizerDTO;
@@ -42,6 +44,9 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     private FragmentEventDetailsBinding binding;
     private EventDetailsViewModel viewModel;
     private ClientUtils clientUtils;
+    private GetEventDTO event;
+    private boolean isOwner;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -64,10 +69,12 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         // Load initial data
         if (getArguments() != null) {
             int eventId = getArguments().getInt("selectedEventId");
-            int accountId = new TokenManager(requireContext()).getAccountId();
+            TokenManager tokenManager = new TokenManager(requireContext());
+            int accountId = tokenManager.getAccountId();
+            int userId = tokenManager.getUserId();
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
-            viewModel.loadEventDetails(eventId, accountId);
+            viewModel.loadEventDetails(eventId, accountId, userId);
         }
     }
 
@@ -87,14 +94,21 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
         );
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
+        {
+            this.isOwner=isOwner;
+            if(isOwner)
+                binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+        });
     }
 
     private void setupClickListeners() {
         binding.favouriteButton.setOnClickListener(v -> {
-            AgendaItemFormFragment dialog = new AgendaItemFormFragment();
-            dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
-
-
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");
                 int accountId = new TokenManager(requireContext()).getAccountId();
@@ -112,9 +126,16 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                 Toast.makeText(getContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
             }
         });
+
+        binding.addAgendaItemButton.setOnClickListener(v->{
+            AgendaItemFormFragment dialog = new AgendaItemFormFragment();
+            dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
+        });
     }
 
     private void populateEventDetails(GetEventDTO event) {
+        this.event=event;
+
         binding.eventName.setText(event.getName());
         binding.eventType.setText(event.getEventType().getName());
         binding.eventDescription.setText(event.getDescription());
@@ -145,6 +166,9 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
 
     @Override
     public void onAgendaItemFormFilled(int id, String name, String description, LocalTime startTime, LocalTime endTime, String location, boolean edit) {
-
+        if(!edit){
+            CreateAgendaItemDTO agendaItemDTO = new CreateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.addAgendaItem(event.getId(),agendaItemDTO);
+        }
     }
 }

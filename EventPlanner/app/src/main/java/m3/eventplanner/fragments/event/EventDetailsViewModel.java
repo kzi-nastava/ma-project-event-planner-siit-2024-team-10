@@ -32,6 +32,7 @@ public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<GetEventDTO> event = new MutableLiveData<>();
     private final MutableLiveData<List<GetAgendaItemDTO>> agenda = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isFavourite = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isOwner = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
 
@@ -53,6 +54,10 @@ public class EventDetailsViewModel extends ViewModel {
         return isFavourite;
     }
 
+    public LiveData<Boolean> getIsOwner() {
+        return isOwner;
+    }
+
     public LiveData<String> getError() {
         return error;
     }
@@ -61,13 +66,15 @@ public class EventDetailsViewModel extends ViewModel {
         return successMessage;
     }
 
-    public void loadEventDetails(int eventId, int accountId) {
+    public void loadEventDetails(int eventId, int accountId, int userId) {
         // Load event details
         clientUtils.getEventService().getEvent(eventId).enqueue(new Callback<GetEventDTO>() {
             @Override
             public void onResponse(Call<GetEventDTO> call, Response<GetEventDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     event.setValue(response.body());
+                    isOwner.setValue(event.getValue().getOrganizer().getId()==userId);
+                    loadAgenda(eventId);
                 } else {
                     error.setValue("Failed to load event details");
                 }
@@ -78,8 +85,6 @@ public class EventDetailsViewModel extends ViewModel {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading event details");
             }
         });
-
-        loadAgenda(eventId);
 
         if(accountId==0)
             return;
