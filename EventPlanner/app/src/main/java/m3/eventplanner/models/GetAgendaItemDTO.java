@@ -10,6 +10,12 @@ public class GetAgendaItemDTO {
     private String startTime;
     private String endTime;
 
+    private boolean isDeleted;
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
     public int getId() {
         return id;
     }
