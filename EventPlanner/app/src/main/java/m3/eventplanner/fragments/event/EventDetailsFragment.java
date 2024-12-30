@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import m3.eventplanner.adapters.AgendaItemListAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
+import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
@@ -36,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EventDetailsFragment extends Fragment {
+public class EventDetailsFragment extends Fragment implements AgendaItemFormFragment.OnAgendaItemFormFilledListener {
     private FragmentEventDetailsBinding binding;
     private EventDetailsViewModel viewModel;
     private ClientUtils clientUtils;
@@ -89,6 +91,10 @@ public class EventDetailsFragment extends Fragment {
 
     private void setupClickListeners() {
         binding.favouriteButton.setOnClickListener(v -> {
+            AgendaItemFormFragment dialog = new AgendaItemFormFragment();
+            dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
+
+
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");
                 int accountId = new TokenManager(requireContext()).getAccountId();
@@ -135,5 +141,10 @@ public class EventDetailsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onAgendaItemFormFilled(int id, String name, String description, LocalTime startTime, LocalTime endTime, String location, boolean edit) {
+
     }
 }
