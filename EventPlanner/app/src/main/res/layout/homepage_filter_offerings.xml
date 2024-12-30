@@ -45,9 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:text="@string/event_type_spinner"
-            android:tooltipText="@string/event_type_spinner"
-            android:contentDescription="@string/event_type_spinner"
+            android:text="@string/category_spinner_text"
+            android:tooltipText="@string/category_spinner_text"
+            android:contentDescription="@string/category_spinner_text"
             />
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/locationTextField"
@@ -118,22 +118,6 @@
             android:valueFrom="1"
             android:valueTo="5"
             android:stepSize="0.5" />
-
-        <TextView
-            android:id="@+id/selected_dates"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/select_start_end_date"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/date_range_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/select_date_range"
-            android:visibility="gone"/>
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_available"

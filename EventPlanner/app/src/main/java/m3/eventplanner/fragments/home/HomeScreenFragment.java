@@ -42,6 +42,7 @@ import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.GetOfferingCategoryDTO;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;
@@ -67,6 +68,7 @@ public class HomeScreenFragment extends Fragment {
         setUpRecyclerView();
         setUpToggleGroup();
         eventsViewModel.fetchEventTypes();
+        offeringsViewModel.fetchCategories();
         return rootView;
     }
 
@@ -420,7 +422,11 @@ public class HomeScreenFragment extends Fragment {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
         bottomSheetDialog.setContentView(bottomSheetView);
-        setUpCategorySpinner(bottomSheetView);
+        offeringsViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
+            if (categories != null && !categories.isEmpty()) {
+                setUpCategorySpinner(bottomSheetView, categories);
+            }
+        });
         setUpVisibilityForOfferingType(bottomSheetView, selected);
         bottomSheetDialog.show();
     }
@@ -484,9 +490,56 @@ public class HomeScreenFragment extends Fragment {
             Log.e("HomeScreenFragment", "Event Type Spinner is null.");
         }
     }
-    private void setUpCategorySpinner(View bottomSheetView) {
+    private void setUpCategorySpinner(View bottomSheetView, List<GetOfferingCategoryDTO> categories) {
         Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
-        categorySpinner.setAdapter(createSpinnerAdapter(R.array.categories));
+        if (categorySpinner != null) {
+            List<GetOfferingCategoryDTO> spinnerList = new ArrayList<>();
+            GetOfferingCategoryDTO anyOption = new GetOfferingCategoryDTO();
+            anyOption.setName("Any");
+            anyOption.setId(-1);
+            spinnerList.add(anyOption);
+            spinnerList.addAll(categories);
+
+            ArrayAdapter<GetOfferingCategoryDTO> adapter = new ArrayAdapter<GetOfferingCategoryDTO>(requireContext(), android.R.layout.simple_spinner_item, spinnerList) {
+                @Override
+                public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                    View view = super.getDropDownView(position, convertView, parent);
+                    TextView textView = (TextView) view;
+                    textView.setText(spinnerList.get(position).getName());
+                    return view;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    TextView textView = (TextView) super.getView(position, convertView, parent);
+                    textView.setText(spinnerList.get(position).getName());
+                    return textView;
+                }
+            };
+
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySpinner.setAdapter(adapter);
+            categorySpinner.setTag(spinnerList);
+
+            categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (spinnerList != null && !spinnerList.isEmpty()) {
+                        GetOfferingCategoryDTO selectedCategory = spinnerList.get(position);
+                        if (selectedCategory != null && selectedCategory.getId() != -1) {
+                            int selectedCategoryTypeId = selectedCategory.getId();
+                        } else {
+                        }
+                    }
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        } else {
+            Log.e("HomeScreenFragment", "Category Spinner is null.");
+        }
     }
 
     private void setUpVisibilityForOfferingType(View bottomSheetView, String selected) {

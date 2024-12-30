@@ -10,6 +10,7 @@ import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.GetOfferingCategoryDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
@@ -27,7 +28,7 @@ public class HomeOfferingViewModel extends ViewModel {
     public int totalElements = 0;
     public final int pageSize = 3;
 
-    private final MutableLiveData<List<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+    private final MutableLiveData<List<GetOfferingCategoryDTO>> categories = new MutableLiveData<>();
     private Integer filterEventTypeId;
     private String filterEventLocation;
     private Integer filterEventMaxParticipants;
@@ -54,8 +55,8 @@ public class HomeOfferingViewModel extends ViewModel {
         return pagedData;
     }
 
-    public LiveData<List<GetEventTypeDTO>> getEventTypes() {
-        return eventTypes;
+    public LiveData<List<GetOfferingCategoryDTO>> getCategories() {
+        return categories;
     }
 
     public void loadTopOfferings() {
@@ -137,6 +138,7 @@ public class HomeOfferingViewModel extends ViewModel {
     // 1. Move error string to be shared between view models
     // 2. Change the search bar, move the search bar id
     // 3. Handle service/product toggles
+    // 4. Add categories from backend
 
     public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
         this.filterEventTypeId = eventTypeId;
@@ -173,18 +175,18 @@ public class HomeOfferingViewModel extends ViewModel {
         fetchPage(0);
     }
 
-    public void fetchEventTypes() {
-        clientUtils.getEventTypeService().getAllEventTypes().enqueue(new Callback<List<GetEventTypeDTO>>() {
+    public void fetchCategories() {
+        clientUtils.getCategoryService().getCategories().enqueue(new Callback<Collection<GetOfferingCategoryDTO>>() {
             @Override
-            public void onResponse(Call<List<GetEventTypeDTO>> call, Response<List<GetEventTypeDTO>> response) {
+            public void onResponse(Call<Collection<GetOfferingCategoryDTO>> call, Response<Collection<GetOfferingCategoryDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    eventTypes.setValue(response.body());
+                    categories.setValue((List<GetOfferingCategoryDTO>) response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<List<GetEventTypeDTO>> call, Throwable t) {
-                eventTypes.setValue(new ArrayList<>());
+            public void onFailure(Call<Collection<GetOfferingCategoryDTO>> call, Throwable t) {
+                categories.setValue(new ArrayList<>());
             }
         });
     }

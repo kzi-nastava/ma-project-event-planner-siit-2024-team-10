@@ -104,5 +104,6 @@
     <string name="filter_offerings">Filter Offerings</string>
     <string name="filter_events">Filter Events</string>
     <string name="restart_event_filter">Restart Filter</string>
+    <string name="category_spinner_text">Choose Category</string>
 
 </resources>
