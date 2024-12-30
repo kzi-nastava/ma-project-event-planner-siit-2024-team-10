@@ -81,7 +81,11 @@ public class AgendaItemFormFragment extends DialogFragment{
         builder.setView(binding.getRoot())
                 .setTitle(agendaItem==null?"Create Agenda Item":"Edit Agenda Item")
                 .setPositiveButton("Submit", (dialog, id) -> {
-
+                    String name = binding.nameInput.getEditText().getText().toString().trim();
+                    String description = binding.descriptionInput.getEditText().getText().toString().trim();
+                    String location = binding.locationInput.getEditText().getText().toString().trim();
+                    if(isFormValid())
+                        listener.onAgendaItemFormFilled(agendaItem==null? 0 : agendaItem.getId(),name, description, startTime, endTime, location, agendaItem!=null);
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
 
@@ -104,7 +108,8 @@ public class AgendaItemFormFragment extends DialogFragment{
         });
 
         binding.startTimeInput.getEditText().setOnClickListener(v->{
-            startTimePicker.show(getParentFragmentManager(),"startTimePicker");
+            if(!startTimePicker.isAdded())
+                startTimePicker.show(getParentFragmentManager(),"startTimePicker");
         });
 
         timePickerBuilder = new MaterialTimePicker.Builder();
@@ -123,7 +128,8 @@ public class AgendaItemFormFragment extends DialogFragment{
         });
 
         binding.endTimeInput.getEditText().setOnClickListener(v->{
-            endTimePicker.show(getParentFragmentManager(),"startTimePicker");
+            if(!endTimePicker.isAdded())
+                endTimePicker.show(getParentFragmentManager(),"startTimePicker");
         });
 
         if(agendaItem!=null){
