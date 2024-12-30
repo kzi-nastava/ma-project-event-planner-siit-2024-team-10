@@ -71,31 +71,7 @@ public class AgendaItemFormFragment extends DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         binding = FragmentAgendaItemFormBinding.inflate(requireActivity().getLayoutInflater());
 
-        MaterialTimePicker.Builder timePickerBuilder = new MaterialTimePicker.Builder();
-
-        startTimePicker = timePickerBuilder.setTitleText("Start time").build();
-
-        startTimePicker.addOnPositiveButtonClickListener(v -> {
-            startTime=LocalTime.of(startTimePicker.getHour(), startTimePicker.getMinute());
-            binding.startTimeInput.getEditText().setText(startTime.toString());
-        });
-
-        binding.startTimeInput.getEditText().setOnClickListener(v->{
-            startTimePicker.show(getParentFragmentManager(),"startTimePicker");
-        });
-
-        endTimePicker = new MaterialTimePicker.Builder().build();
-
-        endTimePicker.addOnPositiveButtonClickListener(v -> {
-            endTime=LocalTime.of(endTimePicker.getHour(), endTimePicker.getMinute());
-            binding.endTimeInput.getEditText().setText(endTime.toString());
-        });
-
-        binding.endTimeInput.getEditText().setOnClickListener(v->{
-            endTimePicker.show(getParentFragmentManager(),"startTimePicker");
-        });
-
-
+        initializeForm();
 
         builder.setView(binding.getRoot())
                 .setTitle(agendaItem==null?"Create Agenda Item":"Edit Agenda Item")
@@ -112,5 +88,50 @@ public class AgendaItemFormFragment extends DialogFragment{
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
 
         return builder.create();
+    }
+
+    private void initializeForm() {
+        MaterialTimePicker.Builder timePickerBuilder = new MaterialTimePicker.Builder();
+
+        if(agendaItem!=null) {
+            timePickerBuilder.setHour(agendaItem.getStartTime().getHour()).setMinute(agendaItem.getStartTime().getMinute());
+            binding.startTimeInput.getEditText().setText(agendaItem.getStartTime().toString());
+        }
+
+        startTimePicker = timePickerBuilder.setTitleText("Start time").build();
+
+        startTimePicker.addOnPositiveButtonClickListener(v -> {
+            startTime=LocalTime.of(startTimePicker.getHour(), startTimePicker.getMinute());
+            binding.startTimeInput.getEditText().setText(startTime.toString());
+        });
+
+        binding.startTimeInput.getEditText().setOnClickListener(v->{
+            startTimePicker.show(getParentFragmentManager(),"startTimePicker");
+        });
+
+        timePickerBuilder = new MaterialTimePicker.Builder();
+
+        if(agendaItem!=null) {
+            timePickerBuilder.setHour(agendaItem.getEndTime().getHour()).setMinute(agendaItem.getEndTime().getMinute());
+            binding.endTimeInput.getEditText().setText(agendaItem.getEndTime().toString());
+        }
+
+
+        endTimePicker = timePickerBuilder.build();
+
+        endTimePicker.addOnPositiveButtonClickListener(v -> {
+            endTime=LocalTime.of(endTimePicker.getHour(), endTimePicker.getMinute());
+            binding.endTimeInput.getEditText().setText(endTime.toString());
+        });
+
+        binding.endTimeInput.getEditText().setOnClickListener(v->{
+            endTimePicker.show(getParentFragmentManager(),"startTimePicker");
+        });
+
+        if(agendaItem!=null){
+            binding.nameInput.getEditText().setText(agendaItem.getName());
+            binding.descriptionInput.getEditText().setText(agendaItem.getDescription());
+            binding.locationInput.getEditText().setText(agendaItem.getLocation());
+        }
     }
 }
