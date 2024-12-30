@@ -6,13 +6,13 @@ public class CreateAgendaItemDTO {
     private String name;
     private String description;
     private String location;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
 
     public CreateAgendaItemDTO() {
     }
 
-    public CreateAgendaItemDTO(String name, String description, String location, LocalTime startTime, LocalTime endTime) {
+    public CreateAgendaItemDTO(String name, String description, String location, String startTime, String endTime) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -44,19 +44,19 @@ public class CreateAgendaItemDTO {
         this.location = location;
     }
 
-    public LocalTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 }
