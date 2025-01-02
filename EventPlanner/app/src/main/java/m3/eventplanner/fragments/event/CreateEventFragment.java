@@ -16,6 +16,8 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 import java.util.List;
 
 import m3.eventplanner.R;
@@ -31,6 +33,7 @@ public class CreateEventFragment extends Fragment {
     private CreateEventViewModel viewModel;
     private ClientUtils clientUtils;
     private boolean noEventType=false;
+    private boolean isOpen=true;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -71,6 +74,19 @@ public class CreateEventFragment extends Fragment {
                     binding.eventTypeText.setVisibility(View.VISIBLE);
                 }
 
+            }
+        });
+
+        binding.eventPublicityGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+            @Override
+            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+                if (isChecked) {
+                    if (checkedId == R.id.buttonOpen) {
+                        isOpen=true;
+                    } else if (checkedId == R.id.buttonClosed) {
+                        isOpen=false;
+                    }
+                }
             }
         });
     }
