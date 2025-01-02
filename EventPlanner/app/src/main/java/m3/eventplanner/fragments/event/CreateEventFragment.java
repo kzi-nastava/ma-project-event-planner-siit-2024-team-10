@@ -17,8 +17,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 
 import m3.eventplanner.R;
 import m3.eventplanner.clients.ClientUtils;
@@ -34,6 +43,7 @@ public class CreateEventFragment extends Fragment {
     private ClientUtils clientUtils;
     private boolean noEventType=false;
     private boolean isOpen=true;
+    private LocalDate eventDate;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -87,6 +97,33 @@ public class CreateEventFragment extends Fragment {
                         isOpen=false;
                     }
                 }
+            }
+        });
+
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select event date")
+                .setCalendarConstraints(new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(System.currentTimeMillis())).build())
+                .build();
+
+        binding.eventDateEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!datePicker.isAdded())
+                    datePicker.show(getParentFragmentManager(), "event_date_picker");
+            }
+        });
+
+        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                eventDate = Instant.ofEpochMilli(selection)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                String date = dateFormat.format(selection);
+                binding.eventDateEditText.setText(date);
             }
         });
     }

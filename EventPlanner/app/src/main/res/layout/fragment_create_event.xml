@@ -135,6 +135,25 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/event_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/date"
+            app:startIconDrawable="@drawable/ic_calendar"
+            app:startIconContentDescription="@string/date">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/event_date_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/eventPublicityGroup"
             android:layout_width="wrap_content"
@@ -159,7 +178,6 @@
                 style="?attr/materialButtonOutlinedStyle"/>
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
-<!--        TODO add date-->
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
