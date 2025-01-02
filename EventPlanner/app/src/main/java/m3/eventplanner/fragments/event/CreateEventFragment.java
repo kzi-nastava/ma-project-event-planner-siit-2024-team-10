@@ -30,9 +30,12 @@ import java.util.List;
 import java.util.Locale;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateEventBinding;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
+import m3.eventplanner.models.CreateEventDTO;
+import m3.eventplanner.models.CreateLocationDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 
@@ -43,7 +46,7 @@ public class CreateEventFragment extends Fragment {
     private ClientUtils clientUtils;
     private boolean noEventType=false;
     private boolean isOpen=true;
-    private LocalDate eventDate;
+    private String eventDate;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -117,14 +120,25 @@ public class CreateEventFragment extends Fragment {
         datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                eventDate = Instant.ofEpochMilli(selection)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate();
+                eventDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selection);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
                 String date = dateFormat.format(selection);
                 binding.eventDateEditText.setText(date);
             }
+        });
+
+        binding.submit.setOnClickListener(v->{
+            String name=binding.name.getEditText().getText().toString().trim();
+            String description=binding.description.getEditText().getText().toString().trim();
+            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
+            String country=binding.country.getEditText().getText().toString().trim();
+            String city=binding.city.getEditText().getText().toString().trim();
+            String street=binding.street.getEditText().getText().toString().trim();
+            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
+            int organizerId=new TokenManager(requireContext()).getUserId();
+            CreateEventDTO eventDTO = new CreateEventDTO(eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
+            this.viewModel.createEvent(eventDTO);
         });
     }
 
