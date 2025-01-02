@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class CreateEventFragment extends Fragment {
     private GetEventTypeDTO eventType;
     private CreateEventViewModel viewModel;
     private ClientUtils clientUtils;
+    private boolean noEventType=false;
 
     public CreateEventFragment() {
         // Required empty public constructor
@@ -55,6 +57,22 @@ public class CreateEventFragment extends Fragment {
 
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), this::setUpEventTypeSpinner);
         viewModel.loadEventTypes();
+
+        binding.noEventTypeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                noEventType=isChecked;
+                if(isChecked){
+                    binding.eventTypeSpinner.setVisibility(View.GONE);
+                    binding.eventTypeText.setVisibility(View.GONE);
+                }
+                else{
+                    binding.eventTypeSpinner.setVisibility(View.VISIBLE);
+                    binding.eventTypeText.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
     }
 
     private void setUpEventTypeSpinner(List<GetEventTypeDTO> eventTypes) {

@@ -27,6 +27,7 @@
             android:layout_gravity="center"/>
 
         <TextView
+            android:id="@+id/event_type_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
