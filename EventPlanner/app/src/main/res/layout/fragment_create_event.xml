@@ -26,6 +26,12 @@
             android:text="@string/no_event_types_apply"
             android:layout_gravity="center"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:text="@string/event_type"/>
+
         <Spinner
             android:id="@+id/event_type_spinner"
             android:layout_width="match_parent"
@@ -129,24 +135,28 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggleGroupEventPublicity"
+            android:id="@+id/eventPublicityGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleSelection="true">
+            android:layout_margin="12dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@id/buttonOpen">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonOpen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/open"
-                android:tag="open" />
+                style="?attr/materialButtonOutlinedStyle"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonClosed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/closed"
-                android:tag="closed" />
+                style="?attr/materialButtonOutlinedStyle"/>
+
         </com.google.android.material.button.MaterialButtonToggleGroup>
 <!--        TODO add date-->
         <Button
