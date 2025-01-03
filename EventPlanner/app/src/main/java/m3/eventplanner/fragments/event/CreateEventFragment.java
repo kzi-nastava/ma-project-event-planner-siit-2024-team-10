@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.datepicker.CalendarConstraints;
@@ -38,6 +41,7 @@ import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateEventBinding;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
+import m3.eventplanner.fragments.LoginFragment;
 import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateLocationDTO;
 import m3.eventplanner.models.GetEventDTO;
@@ -75,9 +79,71 @@ public class CreateEventFragment extends Fragment {
         clientUtils = new ClientUtils(requireContext());
         viewModel.initialize(clientUtils);
 
+        setupObservers();
+        setupListeners();
+        setupDatePicker();
+        setupValidation();
+
+        binding.submit.setOnClickListener(v->{
+            if(!isFormValid())
+                return;
+            String name=binding.name.getEditText().getText().toString().trim();
+            String description=binding.description.getEditText().getText().toString().trim();
+            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
+            String country=binding.country.getEditText().getText().toString().trim();
+            String city=binding.city.getEditText().getText().toString().trim();
+            String street=binding.street.getEditText().getText().toString().trim();
+            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
+            int organizerId=new TokenManager(requireContext()).getUserId();
+            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
+            this.viewModel.createEvent(eventDTO);
+        });
+    }
+
+    private void setupObservers() {
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), this::setUpEventTypeSpinner);
         viewModel.loadEventTypes();
 
+        viewModel.getError().observe(getViewLifecycleOwner(), error ->
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    NavController navController = NavHostFragment.findNavController(CreateEventFragment.this);
+                    navController.navigate(R.id.homeScreenFragment);
+                }
+        );
+    }
+
+    private void setupDatePicker() {
+        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select event date")
+                .setCalendarConstraints(new CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(System.currentTimeMillis())).build())
+                .build();
+
+        binding.eventDateEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!datePicker.isAdded())
+                    datePicker.show(getParentFragmentManager(), "event_date_picker");
+            }
+        });
+
+        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
+            @Override
+            public void onPositiveButtonClick(Long selection) {
+                eventDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selection);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                String date = dateFormat.format(selection);
+                binding.eventDateEditText.setText(date);
+            }
+        });
+    }
+
+    private void setupListeners() {
         binding.noEventTypeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -105,48 +171,6 @@ public class CreateEventFragment extends Fragment {
                     }
                 }
             }
-        });
-
-        MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select event date")
-                .setCalendarConstraints(new CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(System.currentTimeMillis())).build())
-                .build();
-
-        binding.eventDateEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!datePicker.isAdded())
-                    datePicker.show(getParentFragmentManager(), "event_date_picker");
-            }
-        });
-
-        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                eventDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selection);
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                String date = dateFormat.format(selection);
-                binding.eventDateEditText.setText(date);
-            }
-        });
-
-        setupValidation();
-
-        binding.submit.setOnClickListener(v->{
-            if(!isFormValid())
-                return;
-            String name=binding.name.getEditText().getText().toString().trim();
-            String description=binding.description.getEditText().getText().toString().trim();
-            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
-            String country=binding.country.getEditText().getText().toString().trim();
-            String city=binding.city.getEditText().getText().toString().trim();
-            String street=binding.street.getEditText().getText().toString().trim();
-            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
-            int organizerId=new TokenManager(requireContext()).getUserId();
-            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
-            this.viewModel.createEvent(eventDTO);
         });
     }
 
