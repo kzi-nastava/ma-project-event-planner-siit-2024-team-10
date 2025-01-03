@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -128,7 +132,11 @@ public class CreateEventFragment extends Fragment {
             }
         });
 
+        setupValidation();
+
         binding.submit.setOnClickListener(v->{
+            if(!isFormValid())
+                return;
             String name=binding.name.getEditText().getText().toString().trim();
             String description=binding.description.getEditText().getText().toString().trim();
             int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
@@ -137,12 +145,16 @@ public class CreateEventFragment extends Fragment {
             String street=binding.street.getEditText().getText().toString().trim();
             String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
             int organizerId=new TokenManager(requireContext()).getUserId();
-            CreateEventDTO eventDTO = new CreateEventDTO(eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
+            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
             this.viewModel.createEvent(eventDTO);
         });
     }
 
     private void setUpEventTypeSpinner(List<GetEventTypeDTO> eventTypes) {
+        GetEventTypeDTO defaultOption=new GetEventTypeDTO();
+        defaultOption.setId(-1);
+        defaultOption.setName("Select event type");
+        eventTypes.add(0,defaultOption);
         Spinner eventTypeSpinner = binding.eventTypeSpinner;
         ArrayAdapter<GetEventTypeDTO> adapter = getGetEventTypeDTOArrayAdapter(eventTypes);
         eventTypeSpinner.setAdapter(adapter);
@@ -155,7 +167,6 @@ public class CreateEventFragment extends Fragment {
                     GetEventTypeDTO selectedEventType = eventTypes.get(position);
                     if (selectedEventType != null) {
                         eventType=selectedEventType;
-                    } else {
                     }
                 }
             }
@@ -188,5 +199,157 @@ public class CreateEventFragment extends Fragment {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
+    }
+
+    private boolean isFormValid(){
+        boolean isValid=true;
+        if(!validateRequiredField(binding.name))
+            isValid=false;
+        if(!validateRequiredField(binding.description))
+            isValid=false;
+        if(!validateRequiredField(binding.maxParticipants))
+            isValid=false;
+        if(!validateRequiredField(binding.country))
+            isValid=false;
+        if(!validateRequiredField(binding.city))
+            isValid=false;
+        if(!validateRequiredField(binding.street))
+            isValid=false;
+        if(!validateRequiredField(binding.houseNumber))
+            isValid=false;
+        if(!validateRequiredField(binding.eventDate))
+            isValid=false;
+        if(!validateEventType())
+            isValid=false;
+        return isValid;
+    }
+
+    private void setupValidation(){
+        binding.name.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.name);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.description.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.description);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.maxParticipants.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.maxParticipants);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.country.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.country);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.city.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.city);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.street.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.street);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.houseNumber.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.houseNumber);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.eventDate.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.eventDate);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private boolean validateRequiredField(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
+        } else {
+            textInputLayout.setError(null);
+            return true;
+        }
+    }
+
+    private boolean validateEventType(){
+        if(noEventType)
+            return true;
+        if(eventType.getId()==-1){
+            binding.eventTypeError.setVisibility(View.VISIBLE);
+            return false;
+        }
+        else{
+            binding.eventTypeError.setVisibility(View.GONE);
+            return true;
+        }
     }
 }

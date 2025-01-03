@@ -114,5 +114,6 @@
     <string name="no_event_types_apply">No event types apply</string>
     <string name="open">Open</string>
     <string name="closed">Closed</string>
+    <string name="select_event_type">Select event type</string>
 
 </resources>

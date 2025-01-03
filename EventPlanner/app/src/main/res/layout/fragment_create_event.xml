@@ -42,6 +42,15 @@
             android:tooltipText="@string/event_type_spinner"
             android:contentDescription="@string/event_type_spinner" />
 
+        <TextView
+            android:id="@+id/event_type_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:textColor="@color/vibrant_red"
+            android:text="@string/select_event_type"
+            android:visibility="gone"/>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name"
