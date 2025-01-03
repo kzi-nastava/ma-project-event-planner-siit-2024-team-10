@@ -139,7 +139,12 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         this.event=event;
 
         binding.eventName.setText(event.getName());
-        binding.eventType.setText(event.getEventType().getName());
+        if(event.getEventType()!=null)
+            binding.eventType.setText(event.getEventType().getName());
+        else {
+            binding.eventTypeTitle.setVisibility(View.GONE);
+            binding.eventType.setVisibility(View.GONE);
+        }
         binding.eventDescription.setText(event.getDescription());
         binding.eventLocation.setText(event.getLocation().toString());
         binding.eventDate.setText(event.getDate());
