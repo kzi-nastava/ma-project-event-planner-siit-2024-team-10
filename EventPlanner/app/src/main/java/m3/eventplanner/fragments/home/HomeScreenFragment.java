@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -28,6 +29,8 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -303,8 +306,6 @@ public class HomeScreenFragment extends Fragment {
         eventSortDirectionSpinner.setOnItemSelectedListener(sortListener);
     }
 
-
-
     private void setUpOfferingSortSpinners(View view) {
         Spinner offeringSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
         Spinner offeringSortDirectionSpinner = view.findViewById(R.id.btn_sort_offering_direction);
@@ -410,13 +411,15 @@ public class HomeScreenFragment extends Fragment {
         eventsViewModel.getEventTypes().observe(getViewLifecycleOwner(), eventTypes -> {
             if (eventTypes != null && !eventTypes.isEmpty()) {
                 setUpEventTypeSpinner(bottomSheetView, eventTypes);
+            } else {
+                Toast.makeText(getContext(),"Failed to fetch event types.", Toast.LENGTH_SHORT);
             }
         });
 
         Spinner eventTypeSpinner = bottomSheetView.findViewById(R.id.event_type_spinner);
 
         Button eventFilterSendButton = bottomSheetView.findViewById(R.id.event_filter_send);
-        Button restartEventFilterButton = bottomSheetView.findViewById(R.id.restart_event_filter);
+        Button resetFiltersButton = bottomSheetView.findViewById(R.id.restart_event_filter);
 
         eventFilterSendButton.setOnClickListener(v -> {
             GetEventTypeDTO selectedEventType = (GetEventTypeDTO) eventTypeSpinner.getSelectedItem();
@@ -426,7 +429,7 @@ public class HomeScreenFragment extends Fragment {
                 eventTypeId = selectedEventType.getId();
             }
 
-            String location = ((TextInputEditText) bottomSheetView.findViewById(R.id.locationTextField)).getText().toString();
+            String location = ((TextInputEditText) bottomSheetView.findViewById(R.id.location_text_field)).getText().toString();
             if (location.isEmpty()) {
                 location = null;
             }
@@ -438,11 +441,11 @@ public class HomeScreenFragment extends Fragment {
                 try {
                     maxParticipants = Integer.parseInt(maxParticipantsText);
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
                 }
             }
 
-            Double minRating = (double) ((Slider) bottomSheetView.findViewById(R.id.minPriceSlider)).getValue();
+            Double minRating = (double) ((Slider) bottomSheetView.findViewById(R.id.min_rating_slider)).getValue();
             if (minRating == 0.0){
                 minRating = null;
             }
@@ -475,7 +478,7 @@ public class HomeScreenFragment extends Fragment {
             bottomSheetDialog.dismiss();
         });
 
-        restartEventFilterButton.setOnClickListener(v->{
+        resetFiltersButton.setOnClickListener(v->{
             eventsViewModel.resetFilters();
             bottomSheetDialog.dismiss();
         });
@@ -493,6 +496,8 @@ public class HomeScreenFragment extends Fragment {
         offeringsViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
                 setUpCategorySpinner(bottomSheetView, categories);
+            } else {
+                Toast.makeText(getContext(),"Failed to fetch categories.", Toast.LENGTH_SHORT);
             }
         });
 
@@ -513,6 +518,63 @@ public class HomeScreenFragment extends Fragment {
         offeringsViewModel.fetchHighestPrice(isService);
 
         setUpVisibilityForOfferingType(bottomSheetView, isService);
+
+        Spinner categorySpinner = bottomSheetView.findViewById(R.id.category_spinner);
+
+        Button offeringFilterSendButton = bottomSheetView.findViewById(R.id.send_offering_filter);
+        Button resetFiltersButton = bottomSheetView.findViewById(R.id.restart_offering_filter);
+
+        offeringFilterSendButton.setOnClickListener(v ->{
+            GetOfferingCategoryDTO selectedCategory = (GetOfferingCategoryDTO) categorySpinner.getSelectedItem();
+
+            Integer categoryId = null;
+            if (selectedCategory != null && selectedCategory.getId() != -1){
+                categoryId = selectedCategory.getId();
+            }
+
+            String location = ((TextInputEditText) bottomSheetView.findViewById(R.id.offering_location_text_field)).getText().toString();
+            if (location.isEmpty()){
+                location = null;
+            }
+
+            Integer duration = null;
+            if (isService){
+                TextInputEditText durationEditText = bottomSheetView.findViewById(R.id.service_duration);
+                String durationText = durationEditText.getText().toString();
+                if (!durationText.isEmpty()){
+                    try{
+                        duration = Integer.parseInt(durationText);
+                    }catch (NumberFormatException e){
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
+                    }
+                }
+            }
+
+            Double minRating = (double) ((Slider) bottomSheetView.findViewById(R.id.min_rating_slider)).getValue();
+            if (minRating == 0.0){
+                minRating = null;
+            }
+            Integer minDiscount = (int) ((Slider) bottomSheetView.findViewById(R.id.min_discount_slider)).getValue();
+            if (minDiscount == 0.0){
+                minDiscount = null;
+            }
+
+            List<Float> rangeValues = priceRangeSlider.getValues();
+            Integer priceFrom = rangeValues.size() > 0 ? rangeValues.get(0).intValue() : null;
+            Integer priceTo = rangeValues.size() > 1 ? rangeValues.get(1).intValue() : null;
+
+            SwitchCompat switchAvailable = bottomSheetView.findViewById(R.id.switch_available);
+            Boolean isAvailable = switchAvailable.isChecked() ? true : null;
+
+            offeringsViewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable);
+
+            bottomSheetDialog.dismiss();
+        });
+
+        resetFiltersButton.setOnClickListener(v->{
+            offeringsViewModel.resetFilters();
+            bottomSheetDialog.dismiss();
+        });
 
         bottomSheetDialog.show();
     }

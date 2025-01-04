@@ -50,30 +50,27 @@
             android:contentDescription="@string/category_spinner_text"
             />
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/locationTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:hint="@string/location">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/offering_location_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/service_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/service_duration"
             android:visibility="gone">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/service_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
@@ -130,6 +127,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <Button
+                android:id="@+id/send_offering_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/filter_offerings">
