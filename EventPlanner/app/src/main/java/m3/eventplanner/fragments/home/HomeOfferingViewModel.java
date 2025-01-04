@@ -89,7 +89,7 @@ public class HomeOfferingViewModel extends ViewModel {
                 page,
                 pageSize,
                 isService,
-                null,
+                searchQuery,
                 null,
                 null,
                 null,

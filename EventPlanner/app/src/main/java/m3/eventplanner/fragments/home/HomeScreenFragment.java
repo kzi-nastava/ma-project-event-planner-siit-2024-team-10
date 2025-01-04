@@ -54,7 +54,7 @@ public class HomeScreenFragment extends Fragment {
     private HomeOfferingViewModel offeringsViewModel;
     private EventListAdapter eventAdapter;
     private OfferingListAdapter offeringAdapter;
-    private SearchView searchView;
+    private SearchView searchEventView, searchOfferingView;
     private ClientUtils clientUtils;
 
     @Override
@@ -189,12 +189,27 @@ public class HomeScreenFragment extends Fragment {
         });
     }
     private void setUpSearchBar(View view) {
-        searchView = view.findViewById(R.id.event_search_text);
+        searchEventView = view.findViewById(R.id.event_search_text);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchEventView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 eventsViewModel.loadSearchedEvents(0,query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+
+        searchOfferingView = view.findViewById(R.id.offering_search_text);
+
+        searchOfferingView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                offeringsViewModel.loadSearchedOfferings(0,query);
                 return true;
             }
             @Override
