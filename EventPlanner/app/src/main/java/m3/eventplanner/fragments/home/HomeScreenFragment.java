@@ -86,7 +86,7 @@ public class HomeScreenFragment extends Fragment {
                 topEventsTextView.setVisibility(View.VISIBLE);
                 topOfferingsTextView.setVisibility(View.GONE);
             } else {
-                handleNoDataFound();
+                handleNoDataFound(true);
             }
         });
 
@@ -100,12 +100,12 @@ public class HomeScreenFragment extends Fragment {
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.VISIBLE);
             } else {
-                handleNoDataFound();
+                handleNoDataFound(false);
             }
         });
 
         eventsViewModel.getPagedData().observe(getViewLifecycleOwner(), pagedEvents -> {
-            if (pagedEvents != null && pagedEvents.getContent() != null) {
+            if (pagedEvents != null && !pagedEvents.getContent().equals(new ArrayList<>())) {
                 eventAdapter = new EventListAdapter(pagedEvents.getContent());
                 contentRecyclerView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();
@@ -117,12 +117,12 @@ public class HomeScreenFragment extends Fragment {
                 pageNumber.setText(String.valueOf("Page "+ (eventsViewModel.currentPage + 1) +" of "+ eventsViewModel.totalPages));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", eventsViewModel.totalElements));
             } else {
-                handleNoDataFound();
+                handleNoDataFound(true);
             }
         });
 
         offeringsViewModel.getPagedData().observe(getViewLifecycleOwner(), pagedOfferings -> {
-            if (pagedOfferings != null && pagedOfferings.getContent() != null) {
+            if (pagedOfferings != null && !pagedOfferings.getContent().equals(new ArrayList<>())) {
                 offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
                 contentRecyclerView.setAdapter(offeringAdapter);
                 offeringAdapter.notifyDataSetChanged();
@@ -134,7 +134,7 @@ public class HomeScreenFragment extends Fragment {
                 pageNumber.setText(String.valueOf("Page "+ (offeringsViewModel.currentPage + 1) +" of "+ offeringsViewModel.totalPages));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", offeringsViewModel.totalElements));
             } else {
-                handleNoDataFound();
+                handleNoDataFound(false);
             }
         });
 
@@ -360,7 +360,12 @@ public class HomeScreenFragment extends Fragment {
         });
     }
 
-    private void handleNoDataFound() {
+    private void handleNoDataFound(Boolean isEvent) {
+        if (isEvent){
+            noCardsFoundTextView.setText("No Events Found");
+        }else{
+            noCardsFoundTextView.setText("No Offerings Found");
+        }
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
         paginationBar.setVisibility(View.GONE);
