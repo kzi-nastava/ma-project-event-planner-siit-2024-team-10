@@ -139,9 +139,6 @@ public class HomeOfferingViewModel extends ViewModel {
         }
     }
 
-    // TO-DO:
-    // 1. Move error string to be shared between view models
-
     public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable) {
         this.filterCategoryId = categoryId;
         this.filterOfferingLocation = location;

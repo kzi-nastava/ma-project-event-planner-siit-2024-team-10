@@ -29,9 +29,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +66,7 @@ public class HomeScreenFragment extends Fragment {
         offeringsViewModel.initialize(clientUtils);
         View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
         initializeUIElements(rootView);
-        setUpRecyclerView();
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsViewModel.fetchEventTypes();
         offeringsViewModel.fetchCategories();
         return rootView;
@@ -143,13 +140,19 @@ public class HomeScreenFragment extends Fragment {
 
         eventsViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
-                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+        offeringsViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+            if(errorMessage != null && !errorMessage.isEmpty()){
+                Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
         eventsViewModel.loadTopEvents();
 
-        setUpSortSpinners(view);
+        setUpEventSortSpinners(view);
+        setUpOfferingSortSpinners(view);
         setUpFilterButtons(view);
         setUpPaginationButtons(view);
         setUpSearchBar(view);
@@ -223,9 +226,7 @@ public class HomeScreenFragment extends Fragment {
         });
 
     }
-    private void setUpRecyclerView() {
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
+
     private void resetVisibilityForTab(int tabId) {
         eventSearchBar.setVisibility(View.GONE);
         offeringSearchBar.setVisibility(View.GONE);
@@ -261,12 +262,6 @@ public class HomeScreenFragment extends Fragment {
             }
         });
     }
-
-    private void setUpSortSpinners(View view) {
-        setUpEventSortSpinners(view);
-        setUpOfferingSortSpinners(view);
-    }
-
     private void setUpEventSortSpinners(View view) {
         Spinner eventSortBySpinner = view.findViewById(R.id.btn_sort_events_by);
         Spinner eventSortDirectionSpinner = view.findViewById(R.id.btn_sort_events_direction);
@@ -395,9 +390,9 @@ public class HomeScreenFragment extends Fragment {
 
     private void handleNoDataFound(Boolean isEvent) {
         if (isEvent){
-            noCardsFoundTextView.setText("No Events Found");
+            noCardsFoundTextView.setText(R.string.no_events);
         }else{
-            noCardsFoundTextView.setText("No Offerings Found");
+            noCardsFoundTextView.setText(R.string.no_offerings);
         }
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
@@ -405,7 +400,7 @@ public class HomeScreenFragment extends Fragment {
     }
     private void showEventFilterBottomSheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.filter_events, null);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.homescreen_event_filter, null);
         bottomSheetDialog.setContentView(bottomSheetView);
         setUpEventFilterDateRangePicker(bottomSheetView);
 
@@ -413,7 +408,7 @@ public class HomeScreenFragment extends Fragment {
             if (eventTypes != null && !eventTypes.isEmpty()) {
                 setUpEventTypeSpinner(bottomSheetView, eventTypes);
             } else {
-                Toast.makeText(getContext(),"Failed to fetch event types.", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(),R.string.event_type_error, Toast.LENGTH_SHORT);
             }
         });
 
@@ -489,7 +484,7 @@ public class HomeScreenFragment extends Fragment {
 
     private void showOfferingFilterBottomSheet(Boolean isService) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.homepage_filter_offerings, null);
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.homescreen_offering_filter, null);
         bottomSheetDialog.setContentView(bottomSheetView);
 
         RangeSlider priceRangeSlider = bottomSheetView.findViewById(R.id.price_range_slider);
@@ -498,7 +493,7 @@ public class HomeScreenFragment extends Fragment {
             if (categories != null && !categories.isEmpty()) {
                 setUpCategorySpinner(bottomSheetView, categories);
             } else {
-                Toast.makeText(getContext(),"Failed to fetch categories.", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(),R.string.category_error, Toast.LENGTH_SHORT);
             }
         });
 
@@ -513,7 +508,7 @@ public class HomeScreenFragment extends Fragment {
                 }
                 priceRangeSlider.setValues(priceRangeSlider.getValueFrom(), highestPrice.floatValue());
             } else {
-                Toast.makeText(getContext(), "Failed to fetch highest value.", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), R.string.highest_price_error, Toast.LENGTH_SHORT);
             }
         });
         offeringsViewModel.fetchHighestPrice(isService);
@@ -587,7 +582,7 @@ public class HomeScreenFragment extends Fragment {
     private void setUpEventFilterDateRangePicker(View bottomSheetView) {
         Button dateRangeButton = bottomSheetView.findViewById(R.id.date_range_button);
         TextView selectedDatesTextView = bottomSheetView.findViewById(R.id.selected_dates);
-        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Select Date Range").build();
+        MaterialDatePicker<Pair<Long, Long>> picker = MaterialDatePicker.Builder.dateRangePicker().setTitleText(R.string.select_date_range).build();
         dateRangeButton.setOnClickListener(v -> picker.show(getParentFragmentManager(), "DATE_PICKER"));
         picker.addOnPositiveButtonClickListener(selection -> updateSelectedDateRange(selection, selectedDatesTextView));
     }
@@ -622,25 +617,8 @@ public class HomeScreenFragment extends Fragment {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             eventTypeSpinner.setAdapter(adapter);
             eventTypeSpinner.setTag(spinnerList);
-
-            eventTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (spinnerList != null && !spinnerList.isEmpty()) {
-                        GetEventTypeDTO selectedEventType = spinnerList.get(position);
-                        if (selectedEventType != null && selectedEventType.getId() != -1) {
-                            int selectedEventTypeId = selectedEventType.getId();
-                        } else {
-                        }
-                    }
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
         } else {
-            Log.e("HomeScreenFragment", "Event Type Spinner is null.");
+            Log.e("HomeScreenFragment", String.valueOf(R.string.spinner_initialization_error));
         }
     }
     private void setUpCategorySpinner(View bottomSheetView, List<GetOfferingCategoryDTO> categories) {
@@ -673,25 +651,8 @@ public class HomeScreenFragment extends Fragment {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             categorySpinner.setAdapter(adapter);
             categorySpinner.setTag(spinnerList);
-
-            categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (spinnerList != null && !spinnerList.isEmpty()) {
-                        GetOfferingCategoryDTO selectedCategory = spinnerList.get(position);
-                        if (selectedCategory != null && selectedCategory.getId() != -1) {
-                            int selectedCategoryTypeId = selectedCategory.getId();
-                        } else {
-                        }
-                    }
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
         } else {
-            Log.e("HomeScreenFragment", "Category Spinner is null.");
+            Log.e("HomeScreenFragment", String.valueOf(R.string.spinner_initialization_error));
         }
     }
 
