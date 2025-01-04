@@ -24,7 +24,6 @@
         <item>Name</item>
         <item>Average Rating</item>
         <item>Price</item>
-        <item>Discount</item>
         <item>City</item>
     </array>
     <array name="event_sort_criteria">

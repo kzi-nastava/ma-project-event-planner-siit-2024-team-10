@@ -306,11 +306,42 @@ public class HomeScreenFragment extends Fragment {
 
 
     private void setUpOfferingSortSpinners(View view) {
-        Spinner offeringsSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
-        offeringsSortBySpinner.setAdapter(createSpinnerAdapter(R.array.offering_sort_criteria));
-
+        Spinner offeringSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
         Spinner offeringSortDirectionSpinner = view.findViewById(R.id.btn_sort_offering_direction);
+
+        offeringSortBySpinner.setAdapter(createSpinnerAdapter(R.array.offering_sort_criteria));
         offeringSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
+
+        Map<String, String> sortCriteriaMapping = new HashMap<>();
+        sortCriteriaMapping.put("Any", null);
+        sortCriteriaMapping.put("Name", "name");
+        sortCriteriaMapping.put("Price", "price");
+        sortCriteriaMapping.put("Average Rating", "averageRating");
+        sortCriteriaMapping.put("City", "location.city");
+
+        Map<String, String> sortDirectionMapping = new HashMap<>();
+        sortDirectionMapping.put("Ascending", "ASC");
+        sortDirectionMapping.put("Descending", "DESC");
+
+        AdapterView.OnItemSelectedListener sortListener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedSortBy = offeringSortBySpinner.getSelectedItem().toString();
+                String selectedSortDirection = offeringSortDirectionSpinner.getSelectedItem().toString();
+
+                String sortBy = sortCriteriaMapping.get(selectedSortBy);
+                String sortDirection = sortDirectionMapping.get(selectedSortDirection);
+
+                offeringsViewModel.loadSortedOfferings(0, sortBy, sortDirection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        };
+
+        offeringSortBySpinner.setOnItemSelectedListener(sortListener);
+        offeringSortDirectionSpinner.setOnItemSelectedListener(sortListener);
     }
 
     private ArrayAdapter<String> createSpinnerAdapter(int arrayResId) {
