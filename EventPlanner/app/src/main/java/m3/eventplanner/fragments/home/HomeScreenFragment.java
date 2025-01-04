@@ -386,6 +386,7 @@ public class HomeScreenFragment extends Fragment {
             Boolean isService = getSelectedOfferingType(view);
             if (isService != null) {
                 offeringsViewModel.loadOfferings(0, isService);
+                offeringsViewModel.resetFilters();
             } else {
                 Log.e("HomeScreenFragment", "Invalid offering type selection.");
             }
@@ -510,9 +511,9 @@ public class HomeScreenFragment extends Fragment {
                 for (Float value : currentValues) {
                     adjustedValues.add(Math.min(value, highestPrice.floatValue()));
                 }
-                priceRangeSlider.setValues(adjustedValues);
+                priceRangeSlider.setValues(priceRangeSlider.getValueFrom(), highestPrice.floatValue());
             } else {
-                Log.e("HighestPrice", "Failed to fetch highest price");
+                Toast.makeText(getContext(), "Failed to fetch highest value.", Toast.LENGTH_SHORT);
             }
         });
         offeringsViewModel.fetchHighestPrice(isService);
@@ -562,6 +563,10 @@ public class HomeScreenFragment extends Fragment {
             List<Float> rangeValues = priceRangeSlider.getValues();
             Integer priceFrom = rangeValues.size() > 0 ? rangeValues.get(0).intValue() : null;
             Integer priceTo = rangeValues.size() > 1 ? rangeValues.get(1).intValue() : null;
+
+            if(priceTo == 0){
+                priceTo = null;
+            }
 
             SwitchCompat switchAvailable = bottomSheetView.findViewById(R.id.switch_available);
             Boolean isAvailable = switchAvailable.isChecked() ? true : null;
