@@ -72,4 +72,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.1")
     implementation("androidx.lifecycle:lifecycle-livedata:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }
