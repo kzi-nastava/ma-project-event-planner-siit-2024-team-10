@@ -14,6 +14,7 @@ import m3.eventplanner.models.CreatedEventRatingDTO;
 import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetEventStatsDTO;
 import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
@@ -92,10 +93,14 @@ public interface EventService {
     @DELETE("events/{eventId}/agenda/{agendaItemId}")
     Call<Void> deleteAgendaItem(@Path("eventId") int eventId, @Path("agendaItemId") int agendaItemId);
 
+    @GET("events/{eventId}/stats")
+    Call<GetEventStatsDTO> getEventStats(@Path("eventId") int eventId);
+
     @GET("events/{eventId}/reports/open-event")
     @Headers({
             "Accept: application/pdf"
     })
     @Streaming
     Call<ResponseBody> getOpenEventReport(@Path("eventId") int eventId);
+
 }
