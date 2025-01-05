@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ClientUtils {
     private static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
@@ -39,6 +40,7 @@ public class ClientUtils {
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(SERVICE_API_PATH)
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(clientBuilder.build())
                 .build();
