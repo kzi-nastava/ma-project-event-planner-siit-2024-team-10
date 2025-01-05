@@ -82,7 +82,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             TokenManager tokenManager = new TokenManager(requireContext());
             int accountId = tokenManager.getAccountId();
             int userId = tokenManager.getUserId();
-            isAdmin = tokenManager.getRole().equals("ADMIN");
+            isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
             viewModel.loadEventDetails(eventId, accountId, userId);
@@ -117,7 +117,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
             }
 
-            if(isOwner||isAdmin) {
+            if( (isOwner||isAdmin) && event.isOpen()) {
                 binding.openEventReportButton.setVisibility(View.VISIBLE);
             }
             else {

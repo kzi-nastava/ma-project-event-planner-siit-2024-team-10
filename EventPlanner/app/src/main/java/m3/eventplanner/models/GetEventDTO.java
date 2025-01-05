@@ -28,7 +28,7 @@ public class GetEventDTO implements Parcelable, Serializable {
     @SerializedName("maxParticipants")
     private int maxParticipants;
 
-    @SerializedName("isOpen")
+    @SerializedName("open")
     private boolean isOpen;
 
     @SerializedName("date")
