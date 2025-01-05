@@ -17,6 +17,7 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -26,6 +27,7 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
 
 public interface EventService {
     @Headers({
@@ -89,4 +91,11 @@ public interface EventService {
 
     @DELETE("events/{eventId}/agenda/{agendaItemId}")
     Call<Void> deleteAgendaItem(@Path("eventId") int eventId, @Path("agendaItemId") int agendaItemId);
+
+    @GET("events/{eventId}/reports/open-event")
+    @Headers({
+            "Accept: application/pdf"
+    })
+    @Streaming
+    Call<ResponseBody> getOpenEventReport(@Path("eventId") int eventId);
 }
