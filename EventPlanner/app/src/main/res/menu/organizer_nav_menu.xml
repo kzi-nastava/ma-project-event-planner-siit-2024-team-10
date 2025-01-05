@@ -10,6 +10,11 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_home"/>
             <item
+                android:id="@+id/createEventFragment"
+                android:title="@string/create_event"
+                android:checkable="true"
+                android:icon="@drawable/ic_add"/>
+            <item
                 android:id="@+id/notificationFragment"
                 android:title="@string/notifications"
                 android:checkable="true"

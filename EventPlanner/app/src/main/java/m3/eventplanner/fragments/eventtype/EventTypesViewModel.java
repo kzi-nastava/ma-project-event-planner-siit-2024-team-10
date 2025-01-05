@@ -1,0 +1,137 @@
+package m3.eventplanner.fragments.eventtype;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import java.util.Collection;
+import java.util.List;
+
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.CreateEventTypeDTO;
+import m3.eventplanner.models.CreatedEventTypeDTO;
+import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.UpdateEventTypeDTO;
+import m3.eventplanner.models.UpdatedEventTypeDTO;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class EventTypesViewModel extends ViewModel {
+    private final MutableLiveData<List<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+    private final MutableLiveData<String> error = new MutableLiveData<>();
+    private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+
+    private ClientUtils clientUtils;
+    public void initialize(ClientUtils clientUtils){
+        this.clientUtils = clientUtils;
+    }
+
+    public LiveData<List<GetEventTypeDTO>> getEventTypes(){
+        return eventTypes;
+    }
+
+    public LiveData<String> getError() {
+        return error;
+    }
+
+    public LiveData<String> getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void loadEventTypes() {
+        clientUtils.getEventTypeService().getEventTypes().enqueue(new Callback<Collection<GetEventTypeDTO>>() {
+            @Override
+            public void onResponse(Call<Collection<GetEventTypeDTO>> call, Response<Collection<GetEventTypeDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    eventTypes.setValue((List<GetEventTypeDTO>) response.body());
+                } else {
+                    error.setValue("Failed to load event details");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection<GetEventTypeDTO>> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading event details");
+            }
+        });
+    }
+
+    public void activateEventType(int id) {
+        clientUtils.getEventTypeService().activateEventType(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event type activated successfully");
+                    loadEventTypes();
+                } else {
+                    error.setValue("Failed to activate event type");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error activating event type");
+            }
+        });
+    }
+
+    public void deactivateEventType(int id) {
+        clientUtils.getEventTypeService().deactivateEventType(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event type deactivated successfully");
+                    loadEventTypes();
+                } else {
+                    error.setValue("Failed to deactivate event type");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error deactivating event type");
+            }
+        });
+    }
+
+    public void createEventType(String name, String description, List<Integer> recommendedCategoryIds) {
+        CreateEventTypeDTO eventType= new CreateEventTypeDTO(name,description,recommendedCategoryIds);
+        clientUtils.getEventTypeService().addEventType(eventType).enqueue(new Callback<CreatedEventTypeDTO>() {
+            @Override
+            public void onResponse(Call<CreatedEventTypeDTO> call, Response<CreatedEventTypeDTO> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event type created successfully");
+                    loadEventTypes();
+                } else {
+                    error.setValue("Failed to create event type");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedEventTypeDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error creating event type");
+            }
+        });
+    }
+
+    public void editEventType(int id, String description, List<Integer> recommendedCategoryIds) {
+        UpdateEventTypeDTO eventType = new UpdateEventTypeDTO(description,recommendedCategoryIds);
+        clientUtils.getEventTypeService().editEventType(id,eventType).enqueue(new Callback<UpdatedEventTypeDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedEventTypeDTO> call, Response<UpdatedEventTypeDTO> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event type edited successfully");
+                    loadEventTypes();
+                } else {
+                    error.setValue("Failed to edit event type");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedEventTypeDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error editing event type");
+            }
+        });
+    }
+}

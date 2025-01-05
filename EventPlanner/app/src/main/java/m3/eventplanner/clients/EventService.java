@@ -4,16 +4,26 @@ import java.time.LocalDate;
 import java.util.Collection;
 
 import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.CreateAgendaItemDTO;
+import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateEventRatingDTO;
+import m3.eventplanner.models.CreateEventTypeDTO;
+import m3.eventplanner.models.CreatedAgendaItemDTO;
+import m3.eventplanner.models.CreatedEventDTO;
 import m3.eventplanner.models.CreatedEventRatingDTO;
+import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.PagedResponse;
+import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdatedAgendaItemDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -65,6 +75,18 @@ public interface EventService {
     @GET("events/{eventId}/agenda")
     Call<Collection<GetAgendaItemDTO>> getEventAgenda(@Path("eventId") int eventId);
 
+    @POST("events")
+    Call<CreatedEventDTO> addEvent(@Body CreateEventDTO event);
+
     @POST("events/{eventId}/ratings")
     Call<CreatedEventRatingDTO> addRating(@Path("eventId") int eventId, @Body CreateEventRatingDTO createEventRatingDTO);
+
+    @POST("events/{eventId}/agenda")
+    Call<CreatedAgendaItemDTO> addAgendaItem(@Path("eventId") int eventId, @Body CreateAgendaItemDTO createAgendaItemDTO);
+
+    @PUT("events/{eventId}/agenda/{agendaItemId}")
+    Call<UpdatedAgendaItemDTO> updateAgendaItem(@Path("eventId") int eventId, @Path("agendaItemId") int agendaItemId, @Body UpdateAgendaItemDTO updateAgendaItemDTO);
+
+    @DELETE("events/{eventId}/agenda/{agendaItemId}")
+    Call<Void> deleteAgendaItem(@Path("eventId") int eventId, @Path("agendaItemId") int agendaItemId);
 }

@@ -101,9 +101,19 @@
     <string name="number_of_results">Number of results: 10</string>
     <string name="log_out">Log out</string>
     <string name="incorrect_credentials">Incorrect email or password</string>
+    <string name="event_types">Event types</string>
+    <string name="recommended_categories">Recommended categories</string>
     <string name="filter_offerings">Filter Offerings</string>
     <string name="filter_events">Filter Events</string>
     <string name="restart_event_filter">Restart Filter</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="create_event">Create event</string>
+    <string name="no_event_types_apply">No event types apply</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
+    <string name="select_event_type">Select event type</string>
+
     <string name="category_spinner_text">Choose Category</string>
     <string name="event_type_error">Failed to fetch event types</string>
     <string name="category_error">Failed to fetch categories</string>
