@@ -12,9 +12,6 @@ import java.util.Collection;
 
 import m3.eventplanner.R;
 import m3.eventplanner.models.GetOfferingDTO;
-import m3.eventplanner.models.Offering;
-import m3.eventplanner.models.Product;
-import m3.eventplanner.models.Service;
 
 public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapter.OfferingViewHolder> {
 
@@ -62,6 +59,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             rating.setText(offering.getAverageRating() + "★");
             price.setText(offering.getPrice() + "€");
             provider.setText(offering.getProvider().getCompany().getName());
+            category.setText(offering.getCategory().getName().toUpperCase());
 
             if (offering.isProduct()) {
                 type.setText("PRODUCT");

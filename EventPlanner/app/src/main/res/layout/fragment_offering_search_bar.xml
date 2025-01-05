@@ -16,11 +16,15 @@
         android:textSize="20sp"
         android:textColor="@color/chocolate_brown"/>
 
-    <com.google.android.material.search.SearchBar
-        android:id="@+id/search_bar"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/offering_search_text"
+        app:queryHint="Search"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_offering" />
+        android:layout_height="match_parent"
+        android:background="@drawable/border_background"
+        />
 
     <RadioGroup
         android:id="@+id/offering_radio_group"

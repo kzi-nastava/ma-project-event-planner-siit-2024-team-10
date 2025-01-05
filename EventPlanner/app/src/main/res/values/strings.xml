@@ -114,4 +114,9 @@
     <string name="closed">Closed</string>
     <string name="select_event_type">Select event type</string>
 
+    <string name="category_spinner_text">Choose Category</string>
+    <string name="event_type_error">Failed to fetch event types</string>
+    <string name="category_error">Failed to fetch categories</string>
+    <string name="highest_price_error">Failed to fetch highest price</string>
+    <string name="spinner_initialization_error">Failed to initialize spinner</string>
 </resources>
