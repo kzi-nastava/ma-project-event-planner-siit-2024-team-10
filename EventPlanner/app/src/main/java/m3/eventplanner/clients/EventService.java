@@ -5,9 +5,13 @@ import java.util.Collection;
 
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.CreateAgendaItemDTO;
+import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateEventRatingDTO;
+import m3.eventplanner.models.CreateEventTypeDTO;
 import m3.eventplanner.models.CreatedAgendaItemDTO;
+import m3.eventplanner.models.CreatedEventDTO;
 import m3.eventplanner.models.CreatedEventRatingDTO;
+import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.PagedResponse;
@@ -70,6 +74,9 @@ public interface EventService {
 
     @GET("events/{eventId}/agenda")
     Call<Collection<GetAgendaItemDTO>> getEventAgenda(@Path("eventId") int eventId);
+
+    @POST("events")
+    Call<CreatedEventDTO> addEvent(@Body CreateEventDTO event);
 
     @POST("events/{eventId}/ratings")
     Call<CreatedEventRatingDTO> addRating(@Path("eventId") int eventId, @Body CreateEventRatingDTO createEventRatingDTO);

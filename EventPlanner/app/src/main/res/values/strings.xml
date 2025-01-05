@@ -108,5 +108,10 @@
     <string name="restart_event_filter">Restart Filter</string>
     <string name="start_time">Start time</string>
     <string name="end_time">End time</string>
+    <string name="create_event">Create event</string>
+    <string name="no_event_types_apply">No event types apply</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
+    <string name="select_event_type">Select event type</string>
 
 </resources>
