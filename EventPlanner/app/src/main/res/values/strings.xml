@@ -114,5 +114,7 @@
     <string name="closed">Closed</string>
     <string name="select_event_type">Select event type</string>
     <string name="open_event_report">Open event report</string>
+    <string name="participants_count">Participants count:</string>
+    <string name="average_rating">Average rating:</string>
 
 </resources>

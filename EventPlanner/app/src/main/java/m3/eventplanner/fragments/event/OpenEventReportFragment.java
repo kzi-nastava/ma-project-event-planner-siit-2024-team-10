@@ -72,6 +72,10 @@ public class OpenEventReportFragment extends Fragment {
 
 
     private void populateChart(GetEventStatsDTO eventStats){
+        binding.eventNameTextView.setText(eventStats.getEventName());
+        binding.participantsCountTextView.setText(" "+String.valueOf(eventStats.getParticipantsCount()));
+        binding.averageRatingTextView.setText(" "+String.valueOf(eventStats.getAverageRating()));
+
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(1,eventStats.getOneStarCount()));
         barEntries.add(new BarEntry(2,eventStats.getTwoStarCount()));
