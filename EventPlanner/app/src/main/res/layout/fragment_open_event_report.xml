@@ -4,12 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.event.OpenEventReportFragment">
-
-    <Button
-        android:id="@+id/export_to_pdf_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/export_to_pdf"
-        android:padding="12dp"/>
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/export_to_pdf_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/export_to_pdf"
+            android:padding="12dp"/>
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="500dp">
+
+        </com.github.mikephil.charting.charts.BarChart>
+    </LinearLayout>
+
+
 
 </FrameLayout>
