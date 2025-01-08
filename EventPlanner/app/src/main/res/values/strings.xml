@@ -116,5 +116,8 @@
     <string name="open_event_report">Open event report</string>
     <string name="participants_count">Participants count:</string>
     <string name="average_rating">Average rating:</string>
+    <string name="participants">Participants</string>
+    <string name="people_going">people going</string>
+    <string name="attend_event">I Want to Attend</string>
 
 </resources>

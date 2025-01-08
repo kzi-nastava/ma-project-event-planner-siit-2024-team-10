@@ -172,6 +172,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         binding.eventLocation.setText(event.getLocation().toString());
         binding.eventDate.setText(event.getDate());
         binding.averageRating.setText("★ "+event.getAverageRating());
+        binding.participantsCount.setText(String.valueOf(event.getParticipantsCount()));
 
         // Populate organizer details
         GetOrganizerDTO organizer = event.getOrganizer();
@@ -185,6 +186,11 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         if (organizer.getProfilePhoto() != null) {
             Picasso.get().load(organizer.getProfilePhoto())
                     .into(binding.eventOrganizerProfilePhoto);
+        }
+
+        if(!event.isOpen()){
+            binding.participantsTitle.setVisibility(View.GONE);
+            binding.participantsSection.setVisibility(View.GONE);
         }
     }
 
