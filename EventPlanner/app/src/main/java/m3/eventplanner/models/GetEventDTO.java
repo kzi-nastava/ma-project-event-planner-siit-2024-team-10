@@ -194,4 +194,8 @@ public class GetEventDTO implements Parcelable, Serializable {
     public int getParticipantsCount() {
         return participantsCount;
     }
+
+    public void setParticipantsCount(int participantsCount) {
+        this.participantsCount = participantsCount;
+    }
 }

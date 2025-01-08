@@ -124,6 +124,12 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                 binding.openEventReportButton.setVisibility(View.GONE);
             }
         });
+
+        viewModel.getIsParticipating().observe(getViewLifecycleOwner(), isParticipating->
+        {
+            binding.attendButton.setText("You're going!");
+            binding.attendButton.setEnabled(false);
+        });
     }
 
     private void setupClickListeners() {
@@ -155,6 +161,10 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             Bundle bundle = new Bundle();
             bundle.putInt("selectedEventId", event.getId());
             Navigation.findNavController(v).navigate(R.id.openEventReportFragment, bundle);
+        });
+
+        binding.attendButton.setOnClickListener(v->{
+            viewModel.addParticipant();
         });
     }
 
