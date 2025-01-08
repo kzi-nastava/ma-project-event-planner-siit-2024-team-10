@@ -96,6 +96,9 @@ public interface EventService {
     @GET("events/{eventId}/stats")
     Call<GetEventStatsDTO> getEventStats(@Path("eventId") int eventId);
 
+    @POST("events/{eventId}/stats/participants")
+    Call<GetEventStatsDTO> addParticipant(@Path("eventId") int eventId);
+
     @GET("events/{eventId}/reports/open-event")
     @Headers({
             "Accept: application/pdf"
