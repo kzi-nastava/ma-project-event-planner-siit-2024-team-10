@@ -83,7 +83,7 @@ public class OpenEventReportFragment extends Fragment {
         barEntries.add(new BarEntry(4,eventStats.getFourStarCount()));
         barEntries.add(new BarEntry(5,eventStats.getFiveStarCount()));
         BarDataSet dataSet = new BarDataSet(barEntries,"Ratings");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        dataSet.setColors(Color.parseColor("#bebce6"));
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setValueTextSize(16f);
         BarData barData = new BarData(dataSet);
