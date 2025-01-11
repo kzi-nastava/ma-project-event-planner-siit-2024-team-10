@@ -2,9 +2,12 @@ package m3.eventplanner.clients;
 
 import java.util.Collection;
 
+import m3.eventplanner.models.CreateCategoryDTO;
+import m3.eventplanner.models.CreatedCategoryDTO;
 import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 import m3.eventplanner.models.UpdateCategoryDTO;
+import m3.eventplanner.models.UpdatedCategoryDTO;
 import m3.eventplanner.models.UpdatedEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,10 +26,10 @@ public interface CategoryService {
     @GET("categories")
     Call<Collection<GetOfferingCategoryDTO>> getCategories();
     @POST("categories")
-    Call<CreatedEventTypeDTO> addCategory(@Body CreateCategoryDTO categoryDTO);
+    Call<CreatedCategoryDTO> addCategory(@Body CreateCategoryDTO categoryDTO);
 
     @PUT("categories/{id}")
-    Call<UpdatedEventTypeDTO> editCategory(@Path("id") int id, @Body UpdateCategoryDTO categoryDTO);
+    Call<UpdatedCategoryDTO> editCategory(@Path("id") int id, @Body UpdateCategoryDTO categoryDTO);
 
     @DELETE("categories/{id}")
     Call<Void> deleteCategory(@Path("id") int id);
