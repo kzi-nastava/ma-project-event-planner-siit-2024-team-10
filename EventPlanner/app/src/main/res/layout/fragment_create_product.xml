@@ -20,21 +20,21 @@
             android:textColor="?attr/colorPrimary" />
 
         <CheckBox
-            android:id="@+id/no_event_type_checkbox"
+            android:id="@+id/create_category_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_new_category"
             android:layout_gravity="center"/>
 
         <TextView
-            android:id="@+id/event_type_text"
+            android:id="@+id/category_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:text="@string/category"/>
 
         <Spinner
-            android:id="@+id/categpry_spinner"
+            android:id="@+id/category_spinner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
@@ -137,19 +137,6 @@
                 android:inputType="number"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/country"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/country">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/productAvailabilityGroup"
@@ -162,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/available"
-                style="?attr/materialButtonOutlinedStyle"/>
+                style="?attr/materialButtonOutlinedStyle" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonVisible"

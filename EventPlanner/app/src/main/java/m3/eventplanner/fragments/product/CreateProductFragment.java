@@ -2,65 +2,300 @@ package m3.eventplanner.fragments.product;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.List;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.databinding.FragmentCreateEventBinding;
+import m3.eventplanner.databinding.FragmentCreateProductBinding;
+import m3.eventplanner.fragments.event.CreateEventFragment;
+import m3.eventplanner.fragments.event.CreateEventViewModel;
+import m3.eventplanner.models.CreateEventDTO;
+import m3.eventplanner.models.CreateLocationDTO;
+import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.GetOfferingCategoryDTO;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CreateProductFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CreateProductFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FragmentCreateProductBinding binding;
+    private ClientUtils clientUtils;
+    private CreateProductViewModel viewModel;
+    private boolean createCategory=false;
+    private GetOfferingCategoryDTO category;
 
     public CreateProductFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateProductFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CreateProductFragment newInstance(String param1, String param2) {
-        CreateProductFragment fragment = new CreateProductFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentCreateProductBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(CreateProductViewModel.class);
+        clientUtils = new ClientUtils(requireContext());
+        viewModel.initialize(clientUtils);
+
+        setupObservers();
+        setupListeners();
+        setupValidation();
+
+        binding.submit.setOnClickListener(v->{
+            if(!isFormValid())
+                return;
+//            String name=binding.name.getEditText().getText().toString().trim();
+//            String description=binding.description.getEditText().getText().toString().trim();
+//            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
+//            String country=binding.country.getEditText().getText().toString().trim();
+//            String city=binding.city.getEditText().getText().toString().trim();
+//            String street=binding.street.getEditText().getText().toString().trim();
+//            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
+//            int organizerId=new TokenManager(requireContext()).getUserId();
+//            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
+//            this.viewModel.createEvent(eventDTO);
+        });
+    }
+
+    private void setupListeners(){
+        binding.createCategoryCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                createCategory=isChecked;
+                if(isChecked){
+                    binding.categorySpinner.setVisibility(View.GONE);
+                    binding.categoryError.setVisibility(View.GONE);
+                    binding.categoryText.setVisibility(View.GONE);
+                    binding.categoryName.setVisibility(View.VISIBLE);
+                    binding.categoryDescription.setVisibility(View.VISIBLE);
+                }
+                else{
+                    binding.categorySpinner.setVisibility(View.VISIBLE);
+                    binding.categoryText.setVisibility(View.VISIBLE);
+                    binding.categoryName.setVisibility(View.GONE);
+                    binding.categoryDescription.setVisibility(View.GONE);
+                }
+
+            }
+        });
+    }
+
+    private void setupObservers(){
+        viewModel.getCategories().observe(getViewLifecycleOwner(), this::setUpCategorySpinner);
+        viewModel.loadCategories();
+
+        viewModel.getError().observe(getViewLifecycleOwner(), error ->
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    NavController navController = NavHostFragment.findNavController(CreateProductFragment.this);
+                    navController.navigate(R.id.homeScreenFragment);
+                }
+        );
+    }
+
+    private void setUpCategorySpinner(List<GetOfferingCategoryDTO> categories) {
+        GetOfferingCategoryDTO defaultOption=new GetOfferingCategoryDTO();
+        defaultOption.setId(-1);
+        defaultOption.setName("Select category");
+        categories.add(0,defaultOption);
+        Spinner categorySpinner = binding.categorySpinner;
+        ArrayAdapter<GetOfferingCategoryDTO> adapter = getGetOfferingCategoryDTOArrayAdapter(categories);
+        categorySpinner.setAdapter(adapter);
+        categorySpinner.setTag(categories);
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!categories.isEmpty()) {
+                    GetOfferingCategoryDTO selectedCategory = categories.get(position);
+                    if (selectedCategory != null) {
+                        category=selectedCategory;
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    @NonNull
+    private ArrayAdapter<GetOfferingCategoryDTO> getGetOfferingCategoryDTOArrayAdapter(List<GetOfferingCategoryDTO> categories) {
+        ArrayAdapter<GetOfferingCategoryDTO> adapter = new ArrayAdapter<GetOfferingCategoryDTO>(requireContext(), android.R.layout.simple_spinner_item, categories) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView textView = (TextView) view;
+                textView.setText(categories.get(position).getName());
+                return view;
+            }
+
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView textView = (TextView) super.getView(position, convertView, parent);
+                textView.setText(categories.get(position).getName());
+                return textView;
+            }
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        return adapter;
+    }
+
+    private boolean isFormValid(){
+        boolean isValid=true;
+        if(!validateRequiredField(binding.name))
+            isValid=false;
+        if(!validateRequiredField(binding.description))
+            isValid=false;
+        if(!validateRequiredField(binding.price))
+            isValid=false;
+        if(!validateRequiredField(binding.discount))
+            isValid=false;
+        if(createCategory){
+            if(!validateRequiredField(binding.categoryName))
+                isValid=false;
+            if(!validateRequiredField(binding.categoryDescription))
+                isValid=false;
+        }
+        else{
+            if(!validateCategory())
+                isValid=false;
+        }
+        return isValid;
+    }
+
+    private void setupValidation(){
+        binding.categoryName.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.categoryName);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.categoryDescription.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.categoryDescription);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.name.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.name);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.description.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.description);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.price.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.price);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+
+        binding.discount.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                validateRequiredField(binding.discount);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
+    }
+
+    private boolean validateRequiredField(TextInputLayout textInputLayout) {
+        if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
+            textInputLayout.setError("Required field");
+            return false;
+        } else {
+            textInputLayout.setError(null);
+            return true;
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_product, container, false);
+    private boolean validateCategory(){
+        if(createCategory)
+            return true;
+        if(category.getId()==-1){
+            binding.categoryError.setVisibility(View.VISIBLE);
+            return false;
+        }
+        else{
+            binding.categoryError.setVisibility(View.GONE);
+            return true;
+        }
     }
 }
