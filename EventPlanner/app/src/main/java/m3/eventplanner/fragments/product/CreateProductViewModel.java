@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.CreateEventDTO;
+import m3.eventplanner.models.CreateProductDTO;
+import m3.eventplanner.models.CreatedEventDTO;
+import m3.eventplanner.models.CreatedProductDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 import retrofit2.Call;
@@ -53,6 +57,24 @@ public class CreateProductViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Collection<GetOfferingCategoryDTO>> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading categories");
+            }
+        });
+    }
+
+    public void createProduct(CreateProductDTO product) {
+        clientUtils.getProductService().addProduct(product).enqueue(new Callback<CreatedProductDTO>() {
+            @Override
+            public void onResponse(Call<CreatedProductDTO> call, Response<CreatedProductDTO> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Product created successfully");
+                } else {
+                    error.setValue("Failed to create product");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedProductDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error creating product");
             }
         });
     }

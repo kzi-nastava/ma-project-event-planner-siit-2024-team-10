@@ -22,8 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import m3.eventplanner.R;
@@ -35,6 +37,7 @@ import m3.eventplanner.fragments.event.CreateEventFragment;
 import m3.eventplanner.fragments.event.CreateEventViewModel;
 import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateLocationDTO;
+import m3.eventplanner.models.CreateProductDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 
@@ -43,6 +46,8 @@ public class CreateProductFragment extends Fragment {
     private ClientUtils clientUtils;
     private CreateProductViewModel viewModel;
     private boolean createCategory=false;
+    private boolean isAvailable = false;
+    private boolean isVisible = false;
     private GetOfferingCategoryDTO category;
 
     public CreateProductFragment() {
@@ -70,16 +75,16 @@ public class CreateProductFragment extends Fragment {
         binding.submit.setOnClickListener(v->{
             if(!isFormValid())
                 return;
-//            String name=binding.name.getEditText().getText().toString().trim();
-//            String description=binding.description.getEditText().getText().toString().trim();
-//            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
-//            String country=binding.country.getEditText().getText().toString().trim();
-//            String city=binding.city.getEditText().getText().toString().trim();
-//            String street=binding.street.getEditText().getText().toString().trim();
-//            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
-//            int organizerId=new TokenManager(requireContext()).getUserId();
-//            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
-//            this.viewModel.createEvent(eventDTO);
+            String name = binding.name.getEditText().getText().toString().trim();
+            String description = binding.description.getEditText().getText().toString().trim();
+            String categoryName = createCategory ? binding.name.getEditText().getText().toString().trim() : null;
+            String categoryDescription = createCategory ? binding.description.getEditText().getText().toString().trim() : null;
+            double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
+            double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
+            int providerId=new TokenManager(requireContext()).getUserId();
+            //TODO: implement photo upload
+            CreateProductDTO product = new CreateProductDTO(createCategory?0:category.getId(),categoryName,categoryDescription,providerId,name,description,price,discount, new ArrayList<String>(),isVisible,isAvailable);
+            viewModel.createProduct(product);
         });
     }
 
@@ -102,6 +107,17 @@ public class CreateProductFragment extends Fragment {
                     binding.categoryDescription.setVisibility(View.GONE);
                 }
 
+            }
+        });
+
+        binding.productAvailabilityGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
+            @Override
+            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
+                if (checkedId == R.id.buttonAvailable) {
+                    isAvailable=isChecked;
+                } else if (checkedId == R.id.buttonVisible) {
+                    isVisible=isChecked;
+                }
             }
         });
     }

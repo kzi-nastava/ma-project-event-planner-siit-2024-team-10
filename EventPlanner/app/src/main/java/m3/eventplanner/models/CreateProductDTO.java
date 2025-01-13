@@ -12,8 +12,8 @@ public class CreateProductDTO {
     private double price;
     private double discount;
     private List<String> photos;
-    private boolean isVisible;
-    private boolean isAvailable;
+    private boolean visible;
+    private boolean available;
 
     public CreateProductDTO(int categoryId, String categoryProposalName, String categoryProposalDescription, int providerID, String name, String description, double price, double discount, List<String> photos, boolean isVisible, boolean isAvailable) {
         this.categoryId = categoryId;
@@ -25,8 +25,8 @@ public class CreateProductDTO {
         this.price = price;
         this.discount = discount;
         this.photos = photos;
-        this.isVisible = isVisible;
-        this.isAvailable = isAvailable;
+        this.visible = isVisible;
+        this.available = isAvailable;
     }
 
     public int getCategoryId() {
@@ -102,18 +102,18 @@ public class CreateProductDTO {
     }
 
     public boolean isVisible() {
-        return isVisible;
+        return visible;
     }
 
     public void setVisible(boolean visible) {
-        isVisible = visible;
+        this.visible = visible;
     }
 
     public boolean isAvailable() {
-        return isAvailable;
+        return available;
     }
 
     public void setAvailable(boolean available) {
-        isAvailable = available;
+        this.available = available;
     }
 }
