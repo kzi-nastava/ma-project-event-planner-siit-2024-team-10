@@ -77,8 +77,8 @@ public class CreateProductFragment extends Fragment {
                 return;
             String name = binding.name.getEditText().getText().toString().trim();
             String description = binding.description.getEditText().getText().toString().trim();
-            String categoryName = createCategory ? binding.name.getEditText().getText().toString().trim() : null;
-            String categoryDescription = createCategory ? binding.description.getEditText().getText().toString().trim() : null;
+            String categoryName = createCategory ? binding.categoryName.getEditText().getText().toString().trim() : null;
+            String categoryDescription = createCategory ? binding.categoryDescription.getEditText().getText().toString().trim() : null;
             double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
             double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
             int providerId=new TokenManager(requireContext()).getUserId();
