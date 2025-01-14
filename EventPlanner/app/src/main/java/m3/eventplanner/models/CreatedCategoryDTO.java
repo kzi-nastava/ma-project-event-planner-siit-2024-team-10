@@ -1,6 +1,6 @@
 package m3.eventplanner.models;
 
-public class CreatedCategoryeDTO {
+public class CreatedCategoryDTO {
     private int id;
     private String name;
     private String description;

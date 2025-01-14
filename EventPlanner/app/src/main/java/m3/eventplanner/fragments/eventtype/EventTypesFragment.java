@@ -15,11 +15,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventTypeListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentEventTypesBinding;
-import m3.eventplanner.models.GetEventTypeDTO;
 
 
 public class EventTypesFragment extends Fragment implements EventTypeFormFragment.OnEventTypeFormFilledListener {

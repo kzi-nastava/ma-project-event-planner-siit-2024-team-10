@@ -9,7 +9,7 @@ public class CreateCategoryDTO {
     public CreateCategoryDTO() {
     }
 
-    public CreateCategoryDTO(String name, String description, List<Integer> recommendedCategoryIds) {
+    public CreateCategoryDTO(String name, String description) {
         this.name = name;
         this.description = description;
     }
