@@ -24,6 +24,11 @@
                 android:title="@string/event_types"
                 android:checkable="true"
                 android:icon="@drawable/ic_event"/>
+            <item
+                android:id="@+id/categoryFragment"
+                android:title="@string/categories"
+                android:checkable="true"
+                android:icon="@drawable/ic_categories"/>
         </menu>
     </item>
 </menu>

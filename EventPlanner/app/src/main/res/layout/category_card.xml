@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:id="@+id/categoryDescription"
-                android:text="Event type description"
+                android:text="Category description"
                 android:textSize="16sp" />
 
         </LinearLayout>

@@ -77,5 +77,8 @@
         android:id="@+id/createEventFragment"
         android:name="m3.eventplanner.fragments.event.CreateEventFragment"
         android:label="@string/create_event" />
-
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="m3.eventplanner.fragments.category.CategoryFragment"
+        android:label="@string/categories" />
 </navigation>
