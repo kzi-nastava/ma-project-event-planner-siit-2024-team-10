@@ -46,11 +46,11 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         public CategoryViewHolder(View view) {
             super(view);
             eventTypeCard = view.findViewById(R.id.categoryCard);
-            nameTextView = view.findViewById(R.id.eventTypeName);
-            descriptionTextView = view.findViewById(R.id.eventTypeDescription);
-            editButton = view.findViewById(R.id.edit_event_type_button);
-            approveButton = view.findViewById(R.id.activate_event_type_button);
-            deleteButton = view.findViewById(R.id.deactivate_event_type_button);
+            nameTextView = view.findViewById(R.id.categoryName);
+            descriptionTextView = view.findViewById(R.id.categoryDescription);
+            editButton = view.findViewById(R.id.edit_category_button);
+            approveButton = view.findViewById(R.id.approve_category_button);
+            deleteButton = view.findViewById(R.id.delete_category_button);
         }
     }
 
@@ -58,7 +58,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.event_type_card, parent, false);
+                .inflate(R.layout.category_card, parent, false);
         return new CategoryViewHolder(view);
     }
 
