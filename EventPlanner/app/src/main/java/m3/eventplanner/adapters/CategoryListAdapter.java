@@ -38,14 +38,14 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
     }
 
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
-        public MaterialCardView eventTypeCard;
+        public MaterialCardView categoryCard;
         public TextView nameTextView;
         public TextView descriptionTextView;
         public ImageButton editButton, approveButton, deleteButton;
 
         public CategoryViewHolder(View view) {
             super(view);
-            eventTypeCard = view.findViewById(R.id.categoryCard);
+            categoryCard = view.findViewById(R.id.categoryCard);
             nameTextView = view.findViewById(R.id.categoryName);
             descriptionTextView = view.findViewById(R.id.categoryDescription);
             editButton = view.findViewById(R.id.edit_category_button);

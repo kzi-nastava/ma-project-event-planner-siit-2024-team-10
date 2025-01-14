@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.List;
-
 import m3.eventplanner.adapters.CategoryListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCategoryBinding;

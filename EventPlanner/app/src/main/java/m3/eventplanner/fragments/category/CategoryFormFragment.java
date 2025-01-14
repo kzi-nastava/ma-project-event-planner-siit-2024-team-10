@@ -33,7 +33,6 @@ public class CategoryFormFragment extends DialogFragment {
     private OnCategoryFormFilledListener listener;
     private GetOfferingCategoryDTO category;
     private ClientUtils clientUtils;
-    private CategoryFormViewModel viewModel;
     private View view;
 
     public interface OnCategoryFormFilledListener {
@@ -57,9 +56,7 @@ public class CategoryFormFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(this).get(CategoryFormViewModel.class);
         clientUtils = new ClientUtils(requireContext());
-        viewModel.initialize(clientUtils);
 
         if (getArguments() != null) {
             category = getArguments().getParcelable("selectedCategory");
