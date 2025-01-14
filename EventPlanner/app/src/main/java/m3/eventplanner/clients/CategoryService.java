@@ -4,11 +4,9 @@ import java.util.Collection;
 
 import m3.eventplanner.models.CreateCategoryDTO;
 import m3.eventplanner.models.CreatedCategoryDTO;
-import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 import m3.eventplanner.models.UpdateCategoryDTO;
 import m3.eventplanner.models.UpdatedCategoryDTO;
-import m3.eventplanner.models.UpdatedEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
