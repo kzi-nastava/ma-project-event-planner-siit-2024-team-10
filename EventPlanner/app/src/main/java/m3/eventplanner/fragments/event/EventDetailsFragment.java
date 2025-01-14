@@ -7,9 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +43,8 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOrganizerDTO;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdateEventTypeDTO;
+import m3.eventplanner.utils.PdfUtils;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +55,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     private ClientUtils clientUtils;
     private GetEventDTO event;
     private boolean isOwner;
+    private boolean isAdmin;
 
 
     @Override
@@ -74,6 +82,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             TokenManager tokenManager = new TokenManager(requireContext());
             int accountId = tokenManager.getAccountId();
             int userId = tokenManager.getUserId();
+            isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
             viewModel.loadEventDetails(eventId, accountId, userId);
@@ -104,8 +113,22 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
         {
             this.isOwner=isOwner;
-            if(isOwner)
+            if(isOwner){
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+            }
+
+            if( (isOwner||isAdmin) && event.isOpen()) {
+                binding.openEventReportButton.setVisibility(View.VISIBLE);
+            }
+            else {
+                binding.openEventReportButton.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.getIsParticipating().observe(getViewLifecycleOwner(), isParticipating->
+        {
+            binding.attendButton.setText("You're going!");
+            binding.attendButton.setEnabled(false);
         });
     }
 
@@ -133,6 +156,16 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             AgendaItemFormFragment dialog = new AgendaItemFormFragment();
             dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
         });
+
+        binding.openEventReportButton.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", event.getId());
+            Navigation.findNavController(v).navigate(R.id.openEventReportFragment, bundle);
+        });
+
+        binding.attendButton.setOnClickListener(v->{
+            viewModel.addParticipant();
+        });
     }
 
     private void populateEventDetails(GetEventDTO event) {
@@ -149,6 +182,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         binding.eventLocation.setText(event.getLocation().toString());
         binding.eventDate.setText(event.getDate());
         binding.averageRating.setText("★ "+event.getAverageRating());
+        binding.participantsCount.setText(String.valueOf(event.getParticipantsCount()));
 
         // Populate organizer details
         GetOrganizerDTO organizer = event.getOrganizer();
@@ -162,6 +196,11 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         if (organizer.getProfilePhoto() != null) {
             Picasso.get().load(organizer.getProfilePhoto())
                     .into(binding.eventOrganizerProfilePhoto);
+        }
+
+        if(!event.isOpen()){
+            binding.participantsTitle.setVisibility(View.GONE);
+            binding.participantsSection.setVisibility(View.GONE);
         }
     }
 

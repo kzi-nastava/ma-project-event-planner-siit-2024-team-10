@@ -20,6 +20,7 @@ import m3.eventplanner.models.CreatedAgendaItemDTO;
 import m3.eventplanner.models.CreatedEventRatingDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetEventStatsDTO;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
 import retrofit2.Call;
@@ -35,6 +36,7 @@ public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isOwner = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isParticipating = new MutableLiveData<>();
 
     private ClientUtils clientUtils;
 
@@ -64,6 +66,10 @@ public class EventDetailsViewModel extends ViewModel {
 
     public LiveData<String> getSuccessMessage() {
         return successMessage;
+    }
+
+    public LiveData<Boolean> getIsParticipating() {
+        return isParticipating;
     }
 
     public void loadEventDetails(int eventId, int accountId, int userId) {
@@ -245,6 +251,30 @@ public class EventDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting agenda item");
+            }
+        });
+    }
+
+    public void addParticipant(){
+        clientUtils.getEventService().addParticipant(this.event.getValue().getId()).enqueue(new Callback<GetEventStatsDTO>() {
+            @Override
+            public void onResponse(Call<GetEventStatsDTO> call, Response<GetEventStatsDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    GetEventDTO currentEvent = event.getValue();
+                    if (currentEvent != null) {
+                        currentEvent.setParticipantsCount(response.body().getParticipantsCount());
+                        event.setValue(currentEvent);
+                        isParticipating.setValue(true);
+                        successMessage.setValue("Participation submitted successfully");
+                    }
+                } else {
+                    error.setValue("Failed to submit participation");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetEventStatsDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error submitting participation");
             }
         });
     }
