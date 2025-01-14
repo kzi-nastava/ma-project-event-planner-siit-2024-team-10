@@ -28,7 +28,7 @@ public class GetEventDTO implements Parcelable, Serializable {
     @SerializedName("maxParticipants")
     private int maxParticipants;
 
-    @SerializedName("isOpen")
+    @SerializedName("open")
     private boolean isOpen;
 
     @SerializedName("date")
@@ -39,6 +39,9 @@ public class GetEventDTO implements Parcelable, Serializable {
 
     @SerializedName("averageRating")
     private double averageRating;
+
+    @SerializedName("participantsCount")
+    private int participantsCount;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
 
@@ -186,5 +189,13 @@ public class GetEventDTO implements Parcelable, Serializable {
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public int getParticipantsCount() {
+        return participantsCount;
+    }
+
+    public void setParticipantsCount(int participantsCount) {
+        this.participantsCount = participantsCount;
     }
 }
