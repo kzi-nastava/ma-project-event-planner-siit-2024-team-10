@@ -78,6 +78,11 @@
         android:name="m3.eventplanner.fragments.event.CreateEventFragment"
         android:label="@string/create_event" />
     <fragment
+        android:id="@+id/openEventReportFragment"
+        android:name="m3.eventplanner.fragments.event.OpenEventReportFragment"
+        android:label="@string/open_event_report"
+        tools:layout="@layout/fragment_open_event_report" />
+    <fragment
         android:id="@+id/categoryFragment"
         android:name="m3.eventplanner.fragments.category.CategoryFragment"
         android:label="@string/categories" />

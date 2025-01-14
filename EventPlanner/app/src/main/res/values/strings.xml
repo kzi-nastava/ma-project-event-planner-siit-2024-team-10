@@ -113,6 +113,12 @@
     <string name="open">Open</string>
     <string name="closed">Closed</string>
     <string name="select_event_type">Select event type</string>
+    <string name="open_event_report">Open event report</string>
+    <string name="participants_count">Participants count:</string>
+    <string name="average_rating">Average rating:</string>
+    <string name="participants">Participants</string>
+    <string name="people_going">people going</string>
+    <string name="attend_event">I Want to Attend</string>
 
     <string name="category_spinner_text">Choose Category</string>
     <string name="event_type_error">Failed to fetch event types</string>
