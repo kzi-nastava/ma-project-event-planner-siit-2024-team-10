@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.CreateCategoryDTO;
@@ -44,7 +45,12 @@ public class CategoryViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Collection<GetOfferingCategoryDTO>> call, Response<Collection<GetOfferingCategoryDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    categories.setValue((List<GetOfferingCategoryDTO>) response.body());
+                    // Filter out deleted categories
+                    List<GetOfferingCategoryDTO> activeCategories = ((List<GetOfferingCategoryDTO>) response.body())
+                            .stream()
+                            .filter(category -> !category.isDeleted())
+                            .collect(Collectors.toList());
+                    categories.setValue(activeCategories);
                 } else {
                     error.setValue("Failed to load category");
                 }
@@ -56,9 +62,8 @@ public class CategoryViewModel extends ViewModel {
             }
         });
     }
-
-    public void approveCategory(int id) {
-        clientUtils.getCategoryService().approve(id).enqueue(new Callback<Void>() {
+    public void approveCategory(int categoryId) {
+        clientUtils.getCategoryService().approve(categoryId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -71,13 +76,13 @@ public class CategoryViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error approving category");
+                error.setValue("Network error: " + t.getMessage());
             }
         });
     }
 
-    public void deleteCategory(int id) {
-        clientUtils.getCategoryService().deleteCategory(id).enqueue(new Callback<Void>() {
+    public void deleteCategory(int categoryId) {
+        clientUtils.getCategoryService().deleteCategory(categoryId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -90,9 +95,10 @@ public class CategoryViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting category");
+                error.setValue("Network error: " + t.getMessage());
             }
         });
+        loadCategories();
     }
 
     public void createCategory(String name, String description) {

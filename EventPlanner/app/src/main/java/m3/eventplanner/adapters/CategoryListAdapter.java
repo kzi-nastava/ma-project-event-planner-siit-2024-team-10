@@ -71,8 +71,6 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
 
         if(!category.isPending())
             holder.approveButton.setVisibility(View.GONE);
-        else
-            holder.deleteButton.setVisibility(View.GONE);
 
         holder.approveButton.setOnClickListener(v -> {
             categoryViewModel.approveCategory(category.getId());
