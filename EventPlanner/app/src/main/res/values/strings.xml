@@ -125,6 +125,12 @@
     <string name="category_error">Failed to fetch categories</string>
     <string name="highest_price_error">Failed to fetch highest price</string>
     <string name="spinner_initialization_error">Failed to initialize spinner</string>
+    <string name="create_product">Create product</string>
+    <string name="create_new_category">Create new category</string>
+    <string name="choose_category">Choose category</string>
+    <string name="category_name">Category Name</string>
+    <string name="category_description">Category Description</string>
+    <string name="visible">Visible</string>
     <string name="categories">Categories</string>
     <string name="category_name">Category Name</string>
 </resources>
