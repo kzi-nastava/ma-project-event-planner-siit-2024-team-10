@@ -90,4 +90,8 @@
         android:id="@+id/categoryFragment"
         android:name="m3.eventplanner.fragments.category.CategoryFragment"
         android:label="@string/categories" />
+    <fragment
+        android:id="@+id/userDetailsFragment"
+        android:name="m3.eventplanner.fragments.user.UserDetailsFragment"
+        android:label="@string/account_details" />
 </navigation>
