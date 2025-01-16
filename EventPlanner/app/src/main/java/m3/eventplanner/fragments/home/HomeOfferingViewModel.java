@@ -40,6 +40,8 @@ public class HomeOfferingViewModel extends ViewModel {
     private String searchQuery;
     private String sortBy;
     private String sortDirection;
+    private Boolean initLoad;
+    private Integer accountId;
     private MutableLiveData<Double> highestPrice = new MutableLiveData<>();
     public LiveData<Double> getHighestPrice() {
         return highestPrice;
@@ -65,8 +67,8 @@ public class HomeOfferingViewModel extends ViewModel {
         return categories;
     }
 
-    public void loadTopOfferings() {
-        clientUtils.getOfferingService().getTopOfferings().enqueue(new Callback<Collection<GetOfferingDTO>>() {
+    public void loadTopOfferings(Integer loggedInId) {
+        clientUtils.getOfferingService().getTopOfferings(loggedInId).enqueue(new Callback<Collection<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -85,6 +87,9 @@ public class HomeOfferingViewModel extends ViewModel {
     }
 
     public void fetchPage(int page) {
+        if(!initLoad && this.filterOfferingLocation != null){
+            accountId=null;
+        }
         clientUtils.getOfferingService().getOfferings(
                 page,
                 pageSize,
@@ -99,7 +104,8 @@ public class HomeOfferingViewModel extends ViewModel {
                 filterMinRating,
                 filterIsAvailable,
                 sortBy,
-                sortDirection
+                sortDirection,
+                accountId
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
@@ -139,7 +145,7 @@ public class HomeOfferingViewModel extends ViewModel {
         }
     }
 
-    public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable) {
+    public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable, Boolean initialLoad, Integer accountId) {
         this.filterCategoryId = categoryId;
         this.filterOfferingLocation = location;
         this.filterMinPrice = minPrice;
@@ -148,6 +154,12 @@ public class HomeOfferingViewModel extends ViewModel {
         this.filterMinDuration = minDuration;
         this.filterMinRating = minRating;
         this.filterIsAvailable = isAvailable;
+        this.initLoad = initialLoad;
+        if (!initialLoad && this.filterOfferingLocation!=null){
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
         fetchPage(page);
     }
 
@@ -159,11 +171,18 @@ public class HomeOfferingViewModel extends ViewModel {
     public void loadSortedOfferings(int page, String sortBy, String sortDirection) {
         this.sortBy = sortBy;
         this.sortDirection = sortDirection;
+
         fetchPage(page);
     }
 
-    public void loadOfferings(int page, Boolean isService){
+    public void loadOfferings(int page, Boolean isService, Boolean initialLoad, Integer accountId){
         this.isService = isService;
+        this.initLoad = initialLoad;
+        if (!initialLoad && this.filterOfferingLocation!=null){
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
         fetchPage(page);
     }
 

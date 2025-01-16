@@ -11,24 +11,9 @@ import retrofit2.http.Query;
 
 public interface OfferingService {
     @GET("offerings/top")
-    Call<Collection<GetOfferingDTO>> getTopOfferings();
-
-    @GET("offerings/all")
-    Call<Collection<GetOfferingDTO>> getOfferings(
-            @Query("isServiceFilter") Boolean isServiceFilter,
-            @Query("name") String name,
-            @Query("eventTypeId") Integer eventTypeId,
-            @Query("categoryId") Integer categoryId,
-            @Query("location") String location,
-            @Query("minPrice") Integer minPrice,
-            @Query("maxPrice") Integer maxPrice,
-            @Query("minDiscount") Integer minDiscount,
-            @Query("duration") Integer duration,
-            @Query("minRating") Double minRating,
-            @Query("startDate") LocalDate startDate,
-            @Query("endDate") LocalDate endDate,
-            @Query("isAvailable") Boolean isAvailable);
-
+    Call<Collection<GetOfferingDTO>> getTopOfferings(
+            @Query("accountId") Integer accountId
+    );
     @GET("offerings")
     Call<PagedResponse<GetOfferingDTO>> getOfferings(
             @Query("page") int page,
@@ -44,7 +29,9 @@ public interface OfferingService {
             @Query("minRating") Double minRating,
             @Query("isAvailable") Boolean isAvailable,
             @Query("sortBy") String sortBy,
-            @Query("sortDirection") String sortDirection);
+            @Query("sortDirection") String sortDirection,
+            @Query("accountId") Integer accountId
+            );
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
 }
