@@ -29,6 +29,11 @@
                 android:title="@string/categories"
                 android:checkable="true"
                 android:icon="@drawable/ic_categories"/>
+            <item
+                android:id="@+id/userDetailsFragment"
+                android:title="@string/account_details"
+                android:checkable="true"
+                android:icon="@drawable/ic_profile"/>
         </menu>
     </item>
 </menu>

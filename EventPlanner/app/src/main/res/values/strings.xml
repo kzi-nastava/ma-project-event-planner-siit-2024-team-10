@@ -136,4 +136,5 @@
     <string name="company_info">Company info</string>
     <string name="company_photos">Company photos</string>
     <string name="account_details">Account details</string>
+    <string name="your_email">Your email:</string>
 </resources>

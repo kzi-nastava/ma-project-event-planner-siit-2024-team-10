@@ -69,7 +69,14 @@ public class UserDetailsFragment extends Fragment {
     }
 
     private void populateUserDetails(GetUserDTO user){
+        if(Objects.equals(user.getRole(), "ADMIN") || Objects.equals(user.getRole(), "AUTHENTICATED_USER")){
+            binding.noPersonalDetailsEmail.setVisibility(View.VISIBLE);
+            binding.noPersonalDetailsEmail.setText(binding.noPersonalDetailsEmail.getText()+user.getEmail());
+        }
+
         if(Objects.equals(user.getRole(), "EVENT_ORGANIZER") || Objects.equals(user.getRole(), "PROVIDER")) {
+            binding.userHeader.setVisibility(View.VISIBLE);
+            binding.personalDetailsCard.setVisibility(View.VISIBLE);
             binding.userName.setText(user.getFirstName()+" "+user.getLastName());
             binding.userEmail.setText(user.getEmail());
             binding.userPhone.setText(user.getPhoneNumber());
@@ -79,6 +86,8 @@ public class UserDetailsFragment extends Fragment {
                         .into(binding.profilePhoto);
         }
         if(Objects.equals(user.getRole(), "PROVIDER")) {
+            binding.companyDetailsCard.setVisibility(View.VISIBLE);
+            binding.companyImagesCard.setVisibility(View.VISIBLE);
             binding.companyName.setText(user.getCompany().getName());
             binding.companyDescription.setText(user.getCompany().getDescription());
             binding.companyLocation.setText(user.getCompany().getLocation().toString());
