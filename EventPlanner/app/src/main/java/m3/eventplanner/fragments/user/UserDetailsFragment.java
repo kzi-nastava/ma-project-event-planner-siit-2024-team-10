@@ -11,10 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import m3.eventplanner.BuildConfig;
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.ImagePagerAdapter;
 import m3.eventplanner.auth.TokenManager;
@@ -52,13 +56,7 @@ public class UserDetailsFragment extends Fragment {
         viewModel.loadUser();
     }
 
-    private void setupImageViewPager() {
-        // Sample image URLs - replace with your actual image URLs
-        List<String> imageUrls = Arrays.asList(
-                "http://192.168.54.139:8080/api/images/company1.jpg",
-                "http://192.168.54.139:8080/api/images/company3.jpg"
-        );
-
+    private void setupImageViewPager(List<String> imageUrls) {
         imagePagerAdapter = new ImagePagerAdapter(imageUrls);
         binding.imageViewPager.setAdapter(imagePagerAdapter);
 
@@ -76,12 +74,34 @@ public class UserDetailsFragment extends Fragment {
             binding.userEmail.setText(user.getEmail());
             binding.userPhone.setText(user.getPhoneNumber());
             binding.userLocation.setText(user.getLocation().toString());
+            if(user.getProfilePhoto()!=null){
+                String fileName = user.getProfilePhoto();
+                if (user.getProfilePhoto().contains("\\")) {
+                    fileName = user.getProfilePhoto().substring(user.getProfilePhoto().lastIndexOf("\\") + 1);
+                }
+                if (fileName.contains("/")) {
+                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                }
+                Picasso.get().load("http://"+BuildConfig.IP_ADDR + ":8080/api/images/" + fileName)
+                        .into(binding.profilePhoto);
+            }
         }
         if(Objects.equals(user.getRole(), "PROVIDER")) {
             binding.companyName.setText(user.getCompany().getName());
             binding.companyDescription.setText(user.getCompany().getDescription());
             binding.companyLocation.setText(user.getCompany().getLocation().toString());
-            setupImageViewPager();
+            setupImageViewPager(user.getCompany().getPhotos().stream()
+                    .map(photo -> {
+                        String fileName = photo;
+                        if (photo.contains("\\")) {
+                            fileName = photo.substring(photo.lastIndexOf("\\") + 1);
+                        }
+                        if (fileName.contains("/")) {
+                            fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+                        }
+                        return "http://"+BuildConfig.IP_ADDR + ":8080/api/images/" + fileName;
+                    })
+                    .collect(Collectors.toList()));
         }
     }
 }
