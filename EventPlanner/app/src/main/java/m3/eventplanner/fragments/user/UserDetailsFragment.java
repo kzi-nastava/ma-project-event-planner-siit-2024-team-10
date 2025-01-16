@@ -74,34 +74,28 @@ public class UserDetailsFragment extends Fragment {
             binding.userEmail.setText(user.getEmail());
             binding.userPhone.setText(user.getPhoneNumber());
             binding.userLocation.setText(user.getLocation().toString());
-            if(user.getProfilePhoto()!=null){
-                String fileName = user.getProfilePhoto();
-                if (user.getProfilePhoto().contains("\\")) {
-                    fileName = user.getProfilePhoto().substring(user.getProfilePhoto().lastIndexOf("\\") + 1);
-                }
-                if (fileName.contains("/")) {
-                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-                }
-                Picasso.get().load("http://"+BuildConfig.IP_ADDR + ":8080/api/images/" + fileName)
+            if(user.getProfilePhoto()!=null)
+                Picasso.get().load(parsePhotoFilename(user.getProfilePhoto()))
                         .into(binding.profilePhoto);
-            }
         }
         if(Objects.equals(user.getRole(), "PROVIDER")) {
             binding.companyName.setText(user.getCompany().getName());
             binding.companyDescription.setText(user.getCompany().getDescription());
             binding.companyLocation.setText(user.getCompany().getLocation().toString());
             setupImageViewPager(user.getCompany().getPhotos().stream()
-                    .map(photo -> {
-                        String fileName = photo;
-                        if (photo.contains("\\")) {
-                            fileName = photo.substring(photo.lastIndexOf("\\") + 1);
-                        }
-                        if (fileName.contains("/")) {
-                            fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-                        }
-                        return "http://"+BuildConfig.IP_ADDR + ":8080/api/images/" + fileName;
-                    })
+                    .map(this::parsePhotoFilename)
                     .collect(Collectors.toList()));
         }
+    }
+
+    private String parsePhotoFilename(String photo){
+        String fileName = photo;
+        if (photo.contains("\\")) {
+            fileName = photo.substring(photo.lastIndexOf("\\") + 1);
+        }
+        if (fileName.contains("/")) {
+            fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+        }
+        return "http://"+BuildConfig.IP_ADDR + ":8080/api/images/" + fileName;
     }
 }
