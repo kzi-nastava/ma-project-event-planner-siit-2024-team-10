@@ -155,68 +155,84 @@
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
-
                 <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
+                    android:padding="15dp">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="@string/company_info"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical"
+                        android:padding="16dp"
+                        android:layout_weight="1">
 
-                    <!-- Company Name -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text="@string/name"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/company_info"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/companyName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:textSize="16sp" />
+                        <!-- Company Name -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/name"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                    <!-- Company Description -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text="@string/description"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/companyName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/companyDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:textSize="16sp" />
+                        <!-- Company Description -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/description"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
-                    <!-- Company Location -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:text="@string/location"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/companyDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:textSize="16sp" />
 
-                    <TextView
-                        android:id="@+id/companyLocation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        android:textSize="16sp" />
+                        <!-- Company Location -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/location"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/companyLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/edit_company_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="TODO"
+                        android:padding="4dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_edit"
+                        android:visibility="visible"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

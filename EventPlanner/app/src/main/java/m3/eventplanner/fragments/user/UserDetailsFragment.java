@@ -61,6 +61,11 @@ public class UserDetailsFragment extends Fragment {
             NavController navController = NavHostFragment.findNavController(UserDetailsFragment.this);
             navController.navigate(R.id.editPersonalFragment);
         });
+
+        binding.editCompanyButton.setOnClickListener(v->{
+            NavController navController = NavHostFragment.findNavController(UserDetailsFragment.this);
+            navController.navigate(R.id.editCompanyFragment);
+        });
     }
 
     private void setupImageViewPager(List<String> imageUrls) {
