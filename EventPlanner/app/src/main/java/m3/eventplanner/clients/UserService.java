@@ -2,9 +2,15 @@ package m3.eventplanner.clients;
 
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetUserDTO;
+import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateUserDTO;
+import m3.eventplanner.models.UpdatedAgendaItemDTO;
+import m3.eventplanner.models.UpdatedUserDTO;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface UserService {
@@ -15,4 +21,8 @@ public interface UserService {
 
     @GET("users/{accountId}")
     Call<GetUserDTO> getUser(@Path("accountId") int accountId);
+
+    @PUT("users/{accountId}")
+    Call<UpdatedUserDTO> updateUser(@Path("accountId") int accountId, @Body UpdateUserDTO updateUserDTO);
+
 }
