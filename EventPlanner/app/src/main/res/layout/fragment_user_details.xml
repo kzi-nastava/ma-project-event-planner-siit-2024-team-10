@@ -207,6 +207,22 @@
                             android:layout_marginBottom="16dp"
                             android:textSize="16sp" />
 
+                        <!-- Company Phone -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:text="@string/phone"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/companyPhone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:textSize="16sp" />
+
                         <!-- Company Location -->
                         <TextView
                             android:layout_width="match_parent"

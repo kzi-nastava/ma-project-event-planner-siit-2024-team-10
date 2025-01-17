@@ -102,6 +102,7 @@ public class UserDetailsFragment extends Fragment {
             binding.companyImagesCard.setVisibility(View.VISIBLE);
             binding.companyName.setText(user.getCompany().getName());
             binding.companyDescription.setText(user.getCompany().getDescription());
+            binding.companyPhone.setText(user.getCompany().getPhoneNumber());
             binding.companyLocation.setText(user.getCompany().getLocation().toString());
             setupImageViewPager(user.getCompany().getPhotos().stream()
                     .map(this::parsePhotoFilename)
