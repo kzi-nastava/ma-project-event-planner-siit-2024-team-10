@@ -79,7 +79,7 @@ public class EditPersonalFragment extends Fragment {
             String city=binding.city.getEditText().getText().toString().trim();
             String street=binding.street.getEditText().getText().toString().trim();
             String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
-            UpdateUserDTO updateUserDTO=new UpdateUserDTO(firstName,lastName,phone,new CreateLocationDTO(country,city,street,houseNumber));
+            UpdateUserDTO updateUserDTO=new UpdateUserDTO(firstName,lastName,phone,new CreateLocationDTO(city,country,street,houseNumber));
             viewModel.updateUser(updateUserDTO);
         });
     }
@@ -88,10 +88,10 @@ public class EditPersonalFragment extends Fragment {
         binding.firstName.getEditText().setText(user.getFirstName());
         binding.lastName.getEditText().setText(user.getLastName());
         binding.phone.getEditText().setText(user.getPhoneNumber());
-        binding.country.getEditText().setText(user.getCompany().getLocation().getCountry());
-        binding.city.getEditText().setText(user.getCompany().getLocation().getCity());
-        binding.street.getEditText().setText(user.getCompany().getLocation().getStreet());
-        binding.houseNumber.getEditText().setText(user.getCompany().getLocation().getHouseNumber());
+        binding.country.getEditText().setText(user.getLocation().getCountry());
+        binding.city.getEditText().setText(user.getLocation().getCity());
+        binding.street.getEditText().setText(user.getLocation().getStreet());
+        binding.houseNumber.getEditText().setText(user.getLocation().getHouseNumber());
     }
 
     private boolean isFormValid(){
