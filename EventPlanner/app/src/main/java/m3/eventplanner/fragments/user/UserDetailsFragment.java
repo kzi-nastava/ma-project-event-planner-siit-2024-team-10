@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +56,11 @@ public class UserDetailsFragment extends Fragment {
 
         viewModel.getUser().observe(getViewLifecycleOwner(), this::populateUserDetails);
         viewModel.loadUser();
+
+        binding.editPersonalButton.setOnClickListener(v->{
+            NavController navController = NavHostFragment.findNavController(UserDetailsFragment.this);
+            navController.navigate(R.id.editPersonalFragment);
+        });
     }
 
     private void setupImageViewPager(List<String> imageUrls) {
