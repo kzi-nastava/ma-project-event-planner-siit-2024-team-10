@@ -3,8 +3,10 @@ package m3.eventplanner.clients;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetUserDTO;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateCompanyDTO;
 import m3.eventplanner.models.UpdateUserDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
+import m3.eventplanner.models.UpdatedCompanyDTO;
 import m3.eventplanner.models.UpdatedUserDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -24,5 +26,8 @@ public interface UserService {
 
     @PUT("users/{accountId}")
     Call<UpdatedUserDTO> updateUser(@Path("accountId") int accountId, @Body UpdateUserDTO updateUserDTO);
+
+    @PUT("users/{accountId}/company")
+    Call<UpdatedCompanyDTO> updateCompany(@Path("accountId") int accountId, @Body UpdateCompanyDTO updateCompanyDTO);
 
 }
