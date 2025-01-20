@@ -5,14 +5,20 @@ import java.util.Collection;
 
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
+import m3.eventplanner.models.UpdateEventTypeDTO;
+import m3.eventplanner.models.UpdatedEventTypeDTO;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface OfferingService {
     @GET("offerings/top")
     Call<Collection<GetOfferingDTO>> getTopOfferings();
-
+    @GET("offerings/{providerId}")
+    Call<Collection<GetOfferingDTO>> getProvidersOfferings(@Path("providerId") int providerId);
     @GET("offerings/all")
     Call<Collection<GetOfferingDTO>> getOfferings(
             @Query("isServiceFilter") Boolean isServiceFilter,
