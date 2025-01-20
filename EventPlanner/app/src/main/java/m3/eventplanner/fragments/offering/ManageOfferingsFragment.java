@@ -122,6 +122,8 @@ public class ManageOfferingsFragment extends Fragment {
         offeringSearchBar.setVisibility(View.VISIBLE);
         paginationBar.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.VISIBLE);
+        MaterialButtonToggleGroup toggleGroup = rootView.findViewById(R.id.toggleButton);
+        toggleGroup.setVisibility(View.GONE);
     }
 
     private void setUpPaginationButtons(View rootView) {
