@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="8dp"
-        android:text="@string/all_offerings"
+        android:text="@string/your_offerings"
         android:textStyle="bold"
         android:textSize="20sp"
         android:textColor="@color/chocolate_brown"/>

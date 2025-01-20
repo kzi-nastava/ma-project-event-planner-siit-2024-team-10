@@ -17,11 +17,11 @@ import m3.eventplanner.adapters.CategoryListAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCategoryBinding;
 
-public class CategoryFragment extends Fragment implements CategoryFormFragment.OnCategoryFormFilledListener {
+public class CategoriesFragment extends Fragment implements CategoryFormFragment.OnCategoryFormFilledListener {
     private CategoryViewModel viewModel;
     private ClientUtils clientUtils;
     private FragmentCategoryBinding binding;
-    public CategoryFragment() {
+    public CategoriesFragment() {
     }
 
     @Override

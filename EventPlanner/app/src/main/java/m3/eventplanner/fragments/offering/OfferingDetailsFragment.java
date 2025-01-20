@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments;
+package m3.eventplanner.fragments.offering;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
