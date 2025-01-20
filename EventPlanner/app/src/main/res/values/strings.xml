@@ -132,5 +132,5 @@
     <string name="category_description">Category Description</string>
     <string name="visible">Visible</string>
     <string name="categories">Categories</string>
-    <string name="category_name">Category Name</string>
+    <string name="no_offerings_found">No offerings found</string>
 </resources>
