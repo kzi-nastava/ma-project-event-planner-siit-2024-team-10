@@ -46,7 +46,7 @@
 
     <fragment
         android:id="@+id/createOfferingFragment"
-        android:name="m3.eventplanner.fragments.CreateServiceFragment"
+        android:name="m3.eventplanner.fragments.service.CreateServiceFragment"
         android:label="Create Offering" />
     <fragment
         android:id="@+id/editOfferingFragment"
