@@ -61,13 +61,14 @@ public class ManageOfferingsFragment extends Fragment {
     private OfferingListAdapter offeringAdapter;
     private SearchView searchOfferingView;
     private ClientUtils clientUtils;
+    private FloatingActionButton fab;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
         offeringsViewModel = new ViewModelProvider(this).get(ManageOfferingsViewModel.class);
         offeringsViewModel.initialize(clientUtils);
-        View rootView = inflater.inflate(R.layout.fragment_homescreen, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_manage_offerings, container, false);
         initializeUIElements(rootView);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         offeringsViewModel.fetchCategories();
@@ -118,12 +119,17 @@ public class ManageOfferingsFragment extends Fragment {
         pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
         totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
 
+        fab = rootView.findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
+        fab.setOnClickListener(view -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_manageOfferingsFragment_to_createOfferingFragment);
+        });
+
         // Show offerings-related views
         offeringSearchBar.setVisibility(View.VISIBLE);
         paginationBar.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.VISIBLE);
-        MaterialButtonToggleGroup toggleGroup = rootView.findViewById(R.id.toggleButton);
-        toggleGroup.setVisibility(View.GONE);
     }
 
     private void setUpPaginationButtons(View rootView) {
