@@ -208,29 +208,6 @@ public class CreateServiceFragment extends Fragment {
         return adapter;
     }
 
-    private boolean isFormValid(){
-        boolean isValid=true;
-        if(!validateRequiredField(binding.name))
-            isValid=false;
-        if(!validateRequiredField(binding.description))
-            isValid=false;
-        if(!validateRequiredField(binding.price))
-            isValid=false;
-        if(!validateRequiredField(binding.discount))
-            isValid=false;
-        if(createCategory){
-            if(!validateRequiredField(binding.categoryName))
-                isValid=false;
-            if(!validateRequiredField(binding.categoryDescription))
-                isValid=false;
-        }
-        else{
-            if(!validateCategory())
-                isValid=false;
-        }
-        return isValid;
-    }
-
     private void setupValidation(){
         binding.categoryName.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
@@ -311,6 +288,98 @@ public class CreateServiceFragment extends Fragment {
         });
     }
 
+    private boolean validateDuration() {
+        if (binding.fixedDurationCheckbox.isChecked()) {
+            if (!validateRequiredField(binding.fixedDuration)) return false;
+
+            try {
+                int duration = Integer.parseInt(binding.fixedDuration.getEditText().getText().toString().trim());
+                if (duration <= 0) {
+                    binding.fixedDuration.setError("Duration must be greater than 0");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                binding.fixedDuration.setError("Please enter a valid number");
+                return false;
+            }
+        } else {
+            if (!validateRequiredField(binding.minDuration) || !validateRequiredField(binding.maxDuration))
+                return false;
+
+            try {
+                int minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
+                int maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
+
+                if (minDuration <= 0) {
+                    binding.minDuration.setError("Minimum duration must be greater than 0");
+                    return false;
+                }
+                if (maxDuration <= 0) {
+                    binding.maxDuration.setError("Maximum duration must be greater than 0");
+                    return false;
+                }
+                if (minDuration > maxDuration) {
+                    binding.minDuration.setError("Minimum duration cannot be greater than maximum duration");
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                binding.minDuration.setError("Please enter valid numbers");
+                binding.maxDuration.setError("Please enter valid numbers");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean validateDeadlines() {
+        if (!validateRequiredField(binding.reservationDeadline) ||
+                !validateRequiredField(binding.cancellationDeadline))
+            return false;
+
+        try {
+            int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
+            int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
+
+            if (reservationDeadline < 0) {
+                binding.reservationDeadline.setError("Reservation deadline must be non-negative");
+                return false;
+            }
+            if (cancellationDeadline < 0) {
+                binding.cancellationDeadline.setError("Cancellation deadline must be non-negative");
+                return false;
+            }
+            if (cancellationDeadline > reservationDeadline) {
+                binding.cancellationDeadline.setError("Cancellation deadline cannot be after reservation deadline");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            binding.reservationDeadline.setError("Please enter valid numbers");
+            binding.cancellationDeadline.setError("Please enter valid numbers");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isFormValid() {
+        boolean isValid = true;
+
+        if (!validateRequiredField(binding.name)) isValid = false;
+        if (!validateRequiredField(binding.description)) isValid = false;
+        if (!validateRequiredField(binding.price)) isValid = false;
+        if (!validateRequiredField(binding.discount)) isValid = false;
+
+        if (createCategory) {
+            if (!validateRequiredField(binding.categoryName)) isValid = false;
+            if (!validateRequiredField(binding.categoryDescription)) isValid = false;
+        } else {
+            if (!validateCategory()) isValid = false;
+        }
+
+        if (!validateDuration()) isValid = false;
+        if (!validateDeadlines()) isValid = false;
+
+        return isValid;
+    }
     private boolean validateRequiredField(TextInputLayout textInputLayout) {
         if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
             textInputLayout.setError("Required field");
