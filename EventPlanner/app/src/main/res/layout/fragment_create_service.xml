@@ -88,6 +88,18 @@
                     android:minLines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/description"
@@ -155,80 +167,88 @@
                 android:layout_margin="12dp"
                 android:text="@string/add_photo" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Type of event:"/>
             <CheckBox
+                android:id="@+id/fixed_duration_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fixed duration"
+                android:layout_gravity="center"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fixed_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Type1"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Type2"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Type3"/>
-            <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Type4"/>
+                android:hint="Duration (minutes)"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
+                android:id="@+id/min_max_duration_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/set_time"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/min_duration"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:text="Pick set time" />
+                    android:hint="Minimum duration (minutes)">
 
-                <Button
-                    android:id="@+id/min_max_time"
-                    android:layout_width="wrap_content"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/max_duration"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="8dp"
-                    android:text="Pick min and max time" />
+                    android:hint="Maximum duration (minutes)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/reservation_deadline"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:id="@+id/reservationDeadline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/reservation_deadline">
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView2"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    />
+                    android:layout_margin="12dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/cancellation_deadline"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:id="@+id/cancellationDeadline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/cancellation_deadline">
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView3"
+                <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    />
+                    android:layout_margin="12dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -249,28 +269,27 @@
                     android:text="@string/manual"/>
             </RadioGroup>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/productAvailabilityGroup"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="16dp">
+                android:layout_margin="12dp">
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_visible"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Visible"
-                    android:layout_marginEnd="16dp"
-                    android:checked="true" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_available"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonAvailable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/available"
-                    android:checked="false" />
-            </LinearLayout>
+                    style="?attr/materialButtonOutlinedStyle" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonVisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/visible"
+                    style="?attr/materialButtonOutlinedStyle"/>
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <Button
                 android:id="@+id/submit"
