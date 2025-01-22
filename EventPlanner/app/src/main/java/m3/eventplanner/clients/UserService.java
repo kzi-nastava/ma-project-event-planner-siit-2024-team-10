@@ -33,4 +33,7 @@ public interface UserService {
 
     @PUT("users/{accountId}/password")
     Call<Void> changePassword(@Path("accountId") int accountId, @Body ChangePasswordDTO changePasswordDTO);
+
+    @PUT("users/{accountId}/deactivate")
+    Call<Void> deactivateAccount(@Path("accountId") int accountId);
 }
