@@ -1,5 +1,6 @@
 package m3.eventplanner.clients;
 
+import m3.eventplanner.models.ChangePasswordDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetUserDTO;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
@@ -30,4 +31,6 @@ public interface UserService {
     @PUT("users/{accountId}/company")
     Call<UpdatedCompanyDTO> updateCompany(@Path("accountId") int accountId, @Body UpdateCompanyDTO updateCompanyDTO);
 
+    @PUT("users/{accountId}/password")
+    Call<Void> changePassword(@Path("accountId") int accountId, @Body ChangePasswordDTO changePasswordDTO);
 }
