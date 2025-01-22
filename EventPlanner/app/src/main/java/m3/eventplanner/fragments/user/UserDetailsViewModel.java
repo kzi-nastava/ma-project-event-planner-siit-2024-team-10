@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import m3.eventplanner.auth.TokenManager;
@@ -52,6 +53,28 @@ public class UserDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<GetUserDTO> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error fetching user details");
+            }
+        });
+    }
+
+    public void deactivateAccount(){
+        clientUtils.getUserService().deactivateAccount(tokenManager.getAccountId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Account deactivated successfully!");
+                } else {
+                    try {
+                        error.setValue(response.errorBody().string());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue(t.getMessage());
             }
         });
     }
