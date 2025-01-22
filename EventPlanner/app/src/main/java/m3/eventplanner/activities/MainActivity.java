@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 
-    private void logout(){
+    public void logout(){
         TokenManager tokenManager=new TokenManager(this);
         tokenManager.clearToken();
         MenuInflater inflater = getMenuInflater();

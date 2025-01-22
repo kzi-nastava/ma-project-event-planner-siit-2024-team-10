@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputLayout;
 
 import m3.eventplanner.R;
+import m3.eventplanner.activities.MainActivity;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentChangePasswordBinding;
@@ -81,8 +82,7 @@ public class ChangePasswordFragment extends DialogFragment {
         viewModel.getSuccessMessage().observe(this, message ->{
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
-//                    NavController navController = NavHostFragment.findNavController(ChangePasswordFragment.this);
-//                    navController.navigate(R.id.homeScreenFragment);
+                    ((MainActivity)requireActivity()).logout();
                 }
         );
 
