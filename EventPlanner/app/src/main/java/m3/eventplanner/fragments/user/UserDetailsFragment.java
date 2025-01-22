@@ -26,6 +26,7 @@ import m3.eventplanner.adapters.ImagePagerAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentUserDetailsBinding;
+import m3.eventplanner.fragments.event.AgendaItemFormFragment;
 import m3.eventplanner.fragments.event.EventDetailsViewModel;
 import m3.eventplanner.models.GetUserDTO;
 
@@ -65,6 +66,11 @@ public class UserDetailsFragment extends Fragment {
         binding.editCompanyButton.setOnClickListener(v->{
             NavController navController = NavHostFragment.findNavController(UserDetailsFragment.this);
             navController.navigate(R.id.editCompanyFragment);
+        });
+
+        binding.changePasswordButton.setOnClickListener(v->{
+            ChangePasswordFragment dialog = new ChangePasswordFragment();
+            dialog.show(getChildFragmentManager(), "ChangePasswordFragment");
         });
     }
 
