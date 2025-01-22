@@ -84,10 +84,18 @@ public class UserDetailsFragment extends Fragment {
             navController.navigate(R.id.editCompanyFragment);
         });
 
+
         binding.changePasswordButton.setOnClickListener(v->{
             ChangePasswordFragment dialog = new ChangePasswordFragment();
             dialog.show(getChildFragmentManager(), "ChangePasswordFragment");
         });
+
+        binding.noPersonalDetailsChangePasswordButton.setOnClickListener(v->{
+            ChangePasswordFragment dialog = new ChangePasswordFragment();
+            dialog.show(getChildFragmentManager(), "ChangePasswordFragment");
+        });
+
+        binding.noPersonalDetailsDeacitvateAccountButton.setOnClickListener(v->deactivateAccount());
 
         binding.deacitvateAccountButton.setOnClickListener(v->deactivateAccount());
     }
@@ -106,7 +114,7 @@ public class UserDetailsFragment extends Fragment {
 
     private void populateUserDetails(GetUserDTO user){
         if(Objects.equals(user.getRole(), "ADMIN") || Objects.equals(user.getRole(), "AUTHENTICATED_USER")){
-            binding.noPersonalDetailsEmail.setVisibility(View.VISIBLE);
+            binding.noPersonalDetailsLayout.setVisibility(View.VISIBLE);
             binding.noPersonalDetailsEmail.setText(binding.noPersonalDetailsEmail.getText()+user.getEmail());
         }
 

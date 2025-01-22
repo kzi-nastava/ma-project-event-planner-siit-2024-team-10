@@ -14,15 +14,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
-            <TextView
-                android:id="@+id/noPersonalDetailsEmail"
+            <LinearLayout
+                android:id="@+id/noPersonalDetailsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#2d3748"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:text="@string/your_email"
-                android:visibility="gone"/>
+                android:orientation="vertical"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/noPersonalDetailsEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#2d3748"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:text="@string/your_email" />
+                <Button
+                    android:id="@+id/no_personal_details_change_password_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/change_password"
+                    android:padding="12dp"
+                    android:layout_gravity="center"/>
+                <Button
+                    android:id="@+id/no_personal_details_deacitvate_account_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/deactivate_account"
+                    android:padding="12dp"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
 
             <!-- User Header Section -->
             <LinearLayout
