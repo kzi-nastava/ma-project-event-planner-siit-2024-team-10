@@ -36,22 +36,14 @@ public interface EventService {
             "Content-Type:application/json"
     })
     @GET("events/top")
-    Call<Collection<GetEventDTO>> getTopEvents();
+    Call<Collection<GetEventDTO>> getTopEvents(
+            @Query("accountId") Integer accountId
+    );
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type: application/json"
     })
-    @GET("events/all")
-    Call<Collection<GetEventDTO>> getEvents(
-            @Query("eventTypeId") Integer eventTypeId,
-            @Query("location") String location,
-            @Query("maxParticipants") Integer maxParticipants,
-            @Query("minRating") Double minRating,
-            @Query("startDate") String startDate,
-            @Query("endDate") String endDate,
-            @Query("name") String name
-    );
     @GET("events")
     Call<PagedResponse<GetEventDTO>> getEvents(
             @Query("page") int page,
@@ -64,7 +56,8 @@ public interface EventService {
             @Query("endDate") String endDate,
             @Query("name") String name,
             @Query("sortBy") String sortBy,
-            @Query("sortDirection") String sortDirection
+            @Query("sortDirection") String sortDirection,
+            @Query("accountId") Integer accountId
     );
 
     @Headers({
