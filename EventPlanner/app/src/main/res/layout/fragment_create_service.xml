@@ -115,7 +115,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/street"
+                android:id="@+id/specification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/specification">
@@ -126,12 +126,6 @@
                     android:layout_margin="12dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/specification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/specification"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/price"
@@ -199,7 +193,7 @@
                     android:id="@+id/min_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Minimum duration (minutes)">
+                    android:hint="Minimum duration">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -213,7 +207,7 @@
                     android:id="@+id/max_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Maximum duration (minutes)">
+                    android:hint="Maximum duration">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -270,7 +264,7 @@
             </RadioGroup>
 
             <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/productAvailabilityGroup"
+                android:id="@+id/serviceAvailabilityGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp">
