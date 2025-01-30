@@ -6,7 +6,7 @@ public class CreateServiceDTO {
     private int categoryId;
     private String categoryProposalName;
     private String categoryProposalDescription;
-    private int providerID;
+    private int provider;
     private String name;
     private String description;
     private String specification;
@@ -21,13 +21,14 @@ public class CreateServiceDTO {
     private int reservationPeriod;
     private boolean autoConfirm;
 
-    public CreateServiceDTO(int categoryId, String categoryProposalName, String categoryProposalDescription, int providerID, String name, String description, double price, double discount, List<String> photos, boolean isVisible, boolean isAvailable, int maxDuration, int minDuration, int cancellationPeriod, int reservationPeriod, boolean autoConfirm) {
+    public CreateServiceDTO(int categoryId, String categoryProposalName, String categoryProposalDescription, int providerID, String name, String description, String specification, double price, double discount, List<String> photos, boolean isVisible, boolean isAvailable, int maxDuration, int minDuration, int cancellationPeriod, int reservationPeriod, boolean autoConfirm) {
         this.categoryId = categoryId;
         this.categoryProposalName = categoryProposalName;
         this.categoryProposalDescription = categoryProposalDescription;
-        this.providerID = providerID;
+        this.provider = providerID;
         this.name = name;
         this.description = description;
+        this.specification = specification;
         this.price = price;
         this.discount = discount;
         this.photos = photos;
@@ -64,12 +65,12 @@ public class CreateServiceDTO {
         this.categoryProposalDescription = categoryProposalDescription;
     }
 
-    public int getProviderID() {
-        return providerID;
+    public int getProvider() {
+        return provider;
     }
 
-    public void setProviderID(int providerID) {
-        this.providerID = providerID;
+    public void setProvider(int providerID) {
+        this.provider = providerID;
     }
 
     public String getName() {
@@ -166,5 +167,13 @@ public class CreateServiceDTO {
 
     public void setAutoConfirm(boolean autoConfirm) {
         this.autoConfirm = autoConfirm;
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(String specification) {
+        this.specification = specification;
     }
 }

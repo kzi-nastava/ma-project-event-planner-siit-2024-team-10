@@ -6,9 +6,10 @@ public class CreatedServiceDTO {
     private int id;
     private int categoryId;
     private boolean pending;
-    private int providerID;
+    private int provider;
     private String name;
     private String description;
+    private String specification;
     private double price;
     private double discount;
     private List<String> photos;
@@ -44,12 +45,12 @@ public class CreatedServiceDTO {
         this.pending = pending;
     }
 
-    public int getProviderID() {
-        return providerID;
+    public int getProvider() {
+        return provider;
     }
 
-    public void setProviderID(int providerID) {
-        this.providerID = providerID;
+    public void setProvider(int providerID) {
+        this.provider = provider;
     }
 
     public String getName() {
@@ -146,5 +147,13 @@ public class CreatedServiceDTO {
 
     public void setAutoConfirm(boolean autoConfirm) {
         this.autoConfirm = autoConfirm;
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(String specification) {
+        this.specification = specification;
     }
 }
