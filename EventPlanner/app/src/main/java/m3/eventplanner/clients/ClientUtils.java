@@ -26,6 +26,7 @@ public class ClientUtils {
     private CategoryService categoryService;
     private ProductService productService;
     private ServiceService serviceService;
+    private ImageUploadService imageUploadService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -55,6 +56,7 @@ public class ClientUtils {
         categoryService = retrofit.create(CategoryService.class);
         productService = retrofit.create(ProductService.class);
         serviceService = retrofit.create(ServiceService.class);
+        imageUploadService = retrofit.create(ImageUploadService.class);
     }
 
     public EventService getEventService() {
@@ -81,4 +83,5 @@ public class ClientUtils {
     public ServiceService getServiceService() {
         return serviceService;
     }
+    public ImageUploadService getImageUploadService() { return imageUploadService; }
 }
