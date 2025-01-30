@@ -4,6 +4,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
@@ -58,7 +62,12 @@ public class CreateReservationViewModel extends ViewModel {
                 if (response.isSuccessful()){
                     successMessage.setValue("Reservation created successfully. Email confirmation has been sent.");
                 } else {
-                    error.setValue("Failed to create reservation");
+                    try {
+                        String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        error.setValue(errorMessage);
+                    } catch (IOException e) {
+                        error.setValue("Error parsing server response");
+                    }
                 }
             }
 

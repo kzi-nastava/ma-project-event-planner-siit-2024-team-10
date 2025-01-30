@@ -1,29 +1,35 @@
 package m3.eventplanner.models;
 
-import java.time.LocalTime;
 
 public class CreateReservationDTO {
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
     private int event;
     private int service;
 
     public CreateReservationDTO() {
     }
 
-    public LocalTime getStartTime() {
+    public CreateReservationDTO(String startTime, String endTime, int event, int service) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.event = event;
+        this.service = service;
+    }
+
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 

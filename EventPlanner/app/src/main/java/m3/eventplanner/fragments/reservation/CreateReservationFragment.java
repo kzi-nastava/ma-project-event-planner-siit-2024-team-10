@@ -1,5 +1,7 @@
 package m3.eventplanner.fragments.reservation;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,22 +9,30 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateReservationBinding;
+import m3.eventplanner.fragments.event.CreateEventFragment;
+import m3.eventplanner.models.CreateReservationDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetServiceDTO;
@@ -35,7 +45,7 @@ public class CreateReservationFragment extends Fragment {
     private int minDuration = 0;
     private int maxDuration = 0;
     private GetServiceDTO service;
-    private int organizerId;
+    private int organizerId, eventId;
     private ArrayAdapter<GetEventDTO> eventAdapter;
 
 
@@ -61,12 +71,37 @@ public class CreateReservationFragment extends Fragment {
             TokenManager tokenManager = new TokenManager(requireContext());
             organizerId = tokenManager.getAccountId();
             viewModel.getServiceById(serviceId);
-
-
         }
 
         binding.selectStartTimeButton.setOnClickListener(v -> showTimePicker(true));
         binding.selectEndTimeButton.setOnClickListener(v -> showTimePicker(false));
+
+        binding.submit.setOnClickListener(v->{
+            String startTime = binding.selectedStartTime.getText().toString();
+            String endTime = binding.selectedEndTime.getText().toString();
+            CreateReservationDTO reservationDTO = new CreateReservationDTO(startTime, endTime, eventId, service.getId());
+            viewModel.createReservation(reservationDTO);
+        });
+        binding.cancel.setOnClickListener(v->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+            builder.setTitle("Close the form")
+                    .setMessage("Are you sure you want to close the reservation form? You'll lose all your progress.")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NavController navController = Navigation.findNavController(requireView());
+                            navController.navigateUp();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
+        });
     }
     private void setupObservers() {
         viewModel.getService().observe(getViewLifecycleOwner(), serviceDTO -> {
@@ -81,6 +116,17 @@ public class CreateReservationFragment extends Fragment {
                 setupEventSpinner();
             }
         });
+        viewModel.getError().observe(getViewLifecycleOwner(), error -> {
+            binding.error.setText(error);
+            binding.error.setVisibility(View.VISIBLE);
+        });
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
+            binding.error.setVisibility(View.GONE);
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    NavController navController = NavHostFragment.findNavController(CreateReservationFragment.this);
+                    navController.navigate(R.id.homeScreenFragment);
+                }
+        );
 
     }
         private void setupEventSpinner() {
@@ -122,6 +168,7 @@ public class CreateReservationFragment extends Fragment {
                 GetEventDTO selectedEvent = (GetEventDTO) parent.getItemAtPosition(position);
                 binding.eventDate.setVisibility(View.VISIBLE);
                 binding.eventDate.setText("Event Date: " + selectedEvent.getDate());
+                eventId = selectedEvent.getId();
             }
 
             @Override
@@ -150,7 +197,7 @@ public class CreateReservationFragment extends Fragment {
     }
     private void setupServiceData(){
         binding.reservationPeriod.setText("Reservation period: "+service.getReservationPeriod()+" hours before the event");
-        binding.serviceName.setText("Booking the service: "+service.getName());
+        binding.serviceName.setText("Booking the service "+service.getName());
     }
 
     private void showTimePicker(boolean isStartTime) {

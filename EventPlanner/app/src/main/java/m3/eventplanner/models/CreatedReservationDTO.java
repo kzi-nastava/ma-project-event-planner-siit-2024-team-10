@@ -1,16 +1,13 @@
 package m3.eventplanner.models;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public class CreatedReservationDTO {
     private int id;
-    private LocalTime startTime;
-    private LocalTime endTime;
+    private String startTime;
+    private String endTime;
     private Status status;
     private int eventId;
     private int serviceId;
-    private LocalDateTime timestamp;
+    private String timestamp;
 
     public CreatedReservationDTO() {
     }
@@ -23,19 +20,19 @@ public class CreatedReservationDTO {
         this.id = id;
     }
 
-    public LocalTime getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
 
@@ -63,11 +60,11 @@ public class CreatedReservationDTO {
         this.serviceId = serviceId;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 }
