@@ -8,8 +8,13 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Collection;
+import com.bumptech.glide.Glide;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+
+import m3.eventplanner.BuildConfig;
 import m3.eventplanner.R;
 import m3.eventplanner.models.GetOfferingDTO;
 
@@ -61,12 +66,16 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             provider.setText(offering.getProvider().getCompany().getName());
             category.setText(offering.getCategory().getName().toUpperCase());
 
-            if (offering.isProduct()) {
-                type.setText("PRODUCT");
-                picture.setImageResource(R.drawable.flowers);
+            List<String> photos = offering.getPhotos();
+            if (photos != null && !photos.isEmpty()) {
+                String imageUrl = "http://" + BuildConfig.IP_ADDR + ":8080/api/images/" + photos.get(0).substring(photos.get(0).lastIndexOf(File.separator) + 1);                Glide.with(itemView.getContext())
+                        .load(imageUrl)
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.placeholder)
+                        .into(picture);
+                System.out.println(imageUrl);
             } else {
-                type.setText("SERVICE");
-                picture.setImageResource(R.drawable.makeup);
+                picture.setImageResource(R.drawable.placeholder);
             }
         }
     }

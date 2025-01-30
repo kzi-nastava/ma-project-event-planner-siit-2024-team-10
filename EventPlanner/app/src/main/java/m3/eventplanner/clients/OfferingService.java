@@ -2,6 +2,7 @@ package m3.eventplanner.clients;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;

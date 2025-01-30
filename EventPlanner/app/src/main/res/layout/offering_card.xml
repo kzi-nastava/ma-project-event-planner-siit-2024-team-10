@@ -30,7 +30,6 @@
                 android:id="@+id/offering_card_image"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:contentDescription="TODO"
                 android:scaleType="centerCrop"
                 android:src="@drawable/makeup"
                 app:layout_constraintTop_toTopOf="parent"

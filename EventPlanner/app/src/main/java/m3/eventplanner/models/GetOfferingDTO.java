@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetOfferingDTO implements Parcelable, Serializable {
     @SerializedName("id")
@@ -30,11 +32,12 @@ public class GetOfferingDTO implements Parcelable, Serializable {
     private double averageRating;
     @SerializedName("isProduct")
     private boolean isProduct;
-
+    @SerializedName("photos")
+    private List<String> photos;
     public GetOfferingDTO() {
     }
 
-    public GetOfferingDTO(int id, GetOfferingCategoryDTO category, GetProviderDTO provider, String name, String description, String specification, GetLocationDTO location, double price, double discount, double averageRating, boolean isProduct) {
+    public GetOfferingDTO(int id, GetOfferingCategoryDTO category, GetProviderDTO provider, String name, String description, String specification, GetLocationDTO location, double price, double discount, double averageRating, boolean isProduct,List<String> photos) {
         this.id = id;
         this.category = category;
         this.provider = provider;
@@ -46,6 +49,7 @@ public class GetOfferingDTO implements Parcelable, Serializable {
         this.discount = discount;
         this.averageRating = averageRating;
         this.isProduct = isProduct;
+        this.photos=photos;
     }
 
     @Override
@@ -61,6 +65,7 @@ public class GetOfferingDTO implements Parcelable, Serializable {
         dest.writeDouble(averageRating);
         dest.writeParcelable(location, flags);
         dest.writeBoolean(isProduct);
+        dest.writeStringList(photos);
     }
     public static final Creator<GetOfferingDTO> CREATOR = new Creator<GetOfferingDTO>() {
         @Override
@@ -91,6 +96,8 @@ public class GetOfferingDTO implements Parcelable, Serializable {
         discount = in.readDouble();
         averageRating = in.readDouble();
         isProduct = in.readBoolean();
+        photos = new ArrayList<>();
+        in.readStringList(photos);
     }
 
 
@@ -180,5 +187,13 @@ public class GetOfferingDTO implements Parcelable, Serializable {
 
     public void setProduct(boolean product) {
         isProduct = product;
+    }
+
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
     }
 }
