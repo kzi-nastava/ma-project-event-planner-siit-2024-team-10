@@ -132,4 +132,7 @@
     <string name="category_description">Category Description</string>
     <string name="visible">Visible</string>
     <string name="categories">Categories</string>
+    <string name="reserve_a_service">Book A Service</string>
+    <string name="choose_event">Choose Event To Book For</string>
+    <string name="event_date">Selected event date: </string>
 </resources>
