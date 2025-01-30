@@ -96,7 +96,7 @@
     <fragment
         android:id="@+id/createReservationFragment"
         android:name="m3.eventplanner.fragments.reservation.CreateReservationFragment"
-        android:label="fragment_create_reservation"
+        android:label="@string/reservation"
         tools:layout="@layout/fragment_create_reservation" >
     </fragment>
 </navigation>

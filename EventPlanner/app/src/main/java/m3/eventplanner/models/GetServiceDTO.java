@@ -25,6 +25,150 @@ public class GetServiceDTO implements Parcelable {
     private boolean autoConfirm;
     private boolean deleted;
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isAutoConfirm() {
+        return autoConfirm;
+    }
+
+    public void setAutoConfirm(boolean autoConfirm) {
+        this.autoConfirm = autoConfirm;
+    }
+
+    public int getReservationPeriod() {
+        return reservationPeriod;
+    }
+
+    public void setReservationPeriod(int reservationPeriod) {
+        this.reservationPeriod = reservationPeriod;
+    }
+
+    public int getCancellationPeriod() {
+        return cancellationPeriod;
+    }
+
+    public void setCancellationPeriod(int cancellationPeriod) {
+        this.cancellationPeriod = cancellationPeriod;
+    }
+
+    public int getMinDuration() {
+        return minDuration;
+    }
+
+    public void setMinDuration(int minDuration) {
+        this.minDuration = minDuration;
+    }
+
+    public int getMaxDuration() {
+        return maxDuration;
+    }
+
+    public void setMaxDuration(int maxDuration) {
+        this.maxDuration = maxDuration;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    public List<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<String> photos) {
+        this.photos = photos;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getSpecification() {
+        return specification;
+    }
+
+    public void setSpecification(String specification) {
+        this.specification = specification;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public GetProviderDTO getProvider() {
+        return provider;
+    }
+
+    public void setProvider(GetProviderDTO provider) {
+        this.provider = provider;
+    }
+
+    public boolean isPending() {
+        return pending;
+    }
+
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
+    public GetOfferingCategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(GetOfferingCategoryDTO category) {
+        this.category = category;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public GetServiceDTO() {
     }
 

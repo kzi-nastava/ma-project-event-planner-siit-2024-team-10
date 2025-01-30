@@ -135,4 +135,5 @@
     <string name="reserve_a_service">Book A Service</string>
     <string name="choose_event">Choose Event To Book For</string>
     <string name="event_date">Selected event date: </string>
+    <string name = "reservation">Reservation</string>
 </resources>

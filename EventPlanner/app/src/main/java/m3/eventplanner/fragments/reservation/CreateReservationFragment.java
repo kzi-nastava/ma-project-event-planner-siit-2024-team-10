@@ -4,23 +4,40 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateReservationBinding;
+import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.GetServiceDTO;
 
 public class CreateReservationFragment extends Fragment {
     private FragmentCreateReservationBinding binding;
+    private ClientUtils clientUtils;
+    private CreateReservationViewModel viewModel;
     private boolean isFixedDuration = false;
     private int minDuration = 0;
     private int maxDuration = 0;
+    private GetServiceDTO service;
+    private int organizerId;
+    private ArrayAdapter<GetEventDTO> eventAdapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,33 +49,114 @@ public class CreateReservationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(this).get(CreateReservationViewModel.class);
+        clientUtils = new ClientUtils(requireContext());
+        viewModel.initialize(clientUtils);
+
+        setupObservers();
+
         Bundle args = getArguments();
         if (args != null) {
-            isFixedDuration = args.getBoolean("isFixedDuration", false);
-            minDuration = args.getInt("minDuration", 0);
-            maxDuration = args.getInt("maxDuration", 0);
+            int serviceId = args.getInt("selectedServiceId");
+            TokenManager tokenManager = new TokenManager(requireContext());
+            organizerId = tokenManager.getAccountId();
+            viewModel.getServiceById(serviceId);
 
-            setupTimeSelection();
+
         }
 
         binding.selectStartTimeButton.setOnClickListener(v -> showTimePicker(true));
         binding.selectEndTimeButton.setOnClickListener(v -> showTimePicker(false));
+    }
+    private void setupObservers() {
+        viewModel.getService().observe(getViewLifecycleOwner(), serviceDTO -> {
+            if (serviceDTO != null) {
+                service = serviceDTO;
+                minDuration = service.getMinDuration();
+                maxDuration = service.getMaxDuration();
+                isFixedDuration = minDuration == maxDuration;
 
-        updateDurationInfo();
+                setupTimeSelection();
+                setupServiceData();
+                setupEventSpinner();
+            }
+        });
+
+    }
+        private void setupEventSpinner() {
+        eventAdapter = new ArrayAdapter<GetEventDTO>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                new ArrayList<>()
+        ) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                GetEventDTO event = getItem(position);
+                if (event != null) {
+                    android.widget.TextView text = (android.widget.TextView) view;
+                    text.setText(event.getName());
+                }
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                GetEventDTO event = getItem(position);
+                if (event != null) {
+                    android.widget.TextView text = (android.widget.TextView) view;
+                    text.setText(event.getName());
+                }
+                return view;
+            }
+        };
+
+        eventAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.eventSpinner.setAdapter(eventAdapter);
+
+        binding.eventSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                GetEventDTO selectedEvent = (GetEventDTO) parent.getItemAtPosition(position);
+                binding.eventDate.setVisibility(View.VISIBLE);
+                binding.eventDate.setText("Event Date: " + selectedEvent.getDate());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                binding.eventDate.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.loadEvents(organizerId);
+        viewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
+            eventAdapter.clear();
+            if (events != null) {
+                eventAdapter.addAll(events);
+            }
+            eventAdapter.notifyDataSetChanged();
+        });
     }
 
     private void setupTimeSelection() {
         if (isFixedDuration) {
-            binding.endTimeContainer.setVisibility(View.GONE);
             binding.durationInfo.setText("This service's fixed duration is " + minDuration + " hours");
         } else {
-            binding.endTimeContainer.setVisibility(View.VISIBLE);
             binding.durationInfo.setText("This service's duration is between " + minDuration +
                     " and " + maxDuration + " hours");
         }
     }
+    private void setupServiceData(){
+        binding.reservationPeriod.setText("Reservation period: "+service.getReservationPeriod()+" hours before the event");
+        binding.serviceName.setText("Booking the service: "+service.getName());
+    }
 
     private void showTimePicker(boolean isStartTime) {
+        if(isFixedDuration && !isStartTime){
+            return;
+        }
         MaterialTimePicker picker = new MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_24H)
                 .setHour(12)
@@ -92,15 +190,6 @@ public class CreateReservationFragment extends Fragment {
 
         String endTimeStr = String.format(Locale.getDefault(), "%02d:%02d", endHour, endMinute);
         binding.selectedEndTime.setText(endTimeStr);
-    }
-
-    private void updateDurationInfo() {
-        if (isFixedDuration) {
-            binding.durationInfo.setText("This service's fixed duration is " + minDuration + " hours");
-        } else {
-            binding.durationInfo.setText("This service's duration is between " + minDuration +
-                    " and " + maxDuration + " hours");
-        }
     }
 
     @Override
