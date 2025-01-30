@@ -1,4 +1,9 @@
 package m3.eventplanner.fragments.service;
+
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -8,22 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
-import android.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputLayout;
@@ -32,26 +33,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import m3.eventplanner.R;
+import m3.eventplanner.adapters.SelectedImagesAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.databinding.FragmentCreateProductBinding;
 import m3.eventplanner.databinding.FragmentCreateServiceBinding;
 import m3.eventplanner.models.CreateServiceDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 
 public class CreateServiceFragment extends Fragment {
-    private View rootView;
+    private static final int PICK_IMAGES_REQUEST = 1;
     private FragmentCreateServiceBinding binding;
     private ClientUtils clientUtils;
     private CreateServiceViewModel viewModel;
-    private boolean createCategory=false;
+    private boolean createCategory = false;
     private boolean isAvailable = false;
     private boolean isVisible = false;
     private boolean autoConfirm = false;
     private GetOfferingCategoryDTO category;
-    public CreateServiceFragment(){
+    private List<Uri> selectedImageUris = new ArrayList<>();
+    private SelectedImagesAdapter imagesAdapter;
 
+    public CreateServiceFragment() {
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentCreateServiceBinding.inflate(inflater, container, false);
@@ -65,83 +69,84 @@ public class CreateServiceFragment extends Fragment {
         clientUtils = new ClientUtils(requireContext());
         viewModel.initialize(clientUtils);
 
+        setupRecyclerView();
         setupObservers();
         setupListeners();
         setupValidation();
+        setupImageSelection();
 
-        binding.submit.setOnClickListener(v->{
-            if(!isFormValid())
+        binding.submit.setOnClickListener(v -> onSubmitButtonClick());
+    }
+
+    private void setupRecyclerView() {
+        RecyclerView recyclerView = binding.selectedImagesRecycler;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        imagesAdapter = new SelectedImagesAdapter();
+        recyclerView.setAdapter(imagesAdapter);
+
+        imagesAdapter.setOnImageRemoveListener(position -> {
+            selectedImageUris.remove(position);
+            imagesAdapter.setImages(selectedImageUris);
+        });
+    }
+
+    private void setupImageSelection() {
+        binding.addPhoto.setOnClickListener(v -> {
+            if (selectedImageUris.size() >= 10) {
+                Toast.makeText(requireContext(), "Maximum 10 images allowed",
+                        Toast.LENGTH_SHORT).show();
                 return;
-            String name = binding.name.getEditText().getText().toString().trim();
-            String description = binding.description.getEditText().getText().toString().trim();
-            String categoryName = createCategory ? binding.categoryName.getEditText().getText().toString().trim() : null;
-            String categoryDescription = createCategory ? binding.categoryDescription.getEditText().getText().toString().trim() : null;
-            double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
-            double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
-            int providerId=new TokenManager(requireContext()).getUserId();
-            int minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
-            int maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
-            int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
-            int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
-            if(minDuration == maxDuration)
-                autoConfirm = true;
-            //TODO: implement photo upload
-            CreateServiceDTO service = new CreateServiceDTO(createCategory?0:category.getId(),categoryName,categoryDescription,providerId,name,description,price,discount, new ArrayList<String>(),isVisible,isAvailable,minDuration,maxDuration,reservationDeadline,cancellationDeadline,autoConfirm);
-            viewModel.createService(service);
-        });
-    }
-    private void setupListeners(){
-        binding.createCategoryCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                createCategory=isChecked;
-                if(isChecked){
-                    binding.categorySpinner.setVisibility(View.GONE);
-                    binding.categoryError.setVisibility(View.GONE);
-                    binding.categoryText.setVisibility(View.GONE);
-                    binding.categoryName.setVisibility(View.VISIBLE);
-                    binding.categoryDescription.setVisibility(View.VISIBLE);
-                }
-                else{
-                    binding.categorySpinner.setVisibility(View.VISIBLE);
-                    binding.categoryText.setVisibility(View.VISIBLE);
-                    binding.categoryName.setVisibility(View.GONE);
-                    binding.categoryDescription.setVisibility(View.GONE);
-                }
-
             }
-        });
 
-        binding.fixedDurationCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                createCategory=isChecked;
-                if(isChecked){
-                    binding.fixedDuration.setVisibility(View.VISIBLE);
-                    binding.minDuration.setVisibility(View.GONE);
-                    binding.maxDuration.setVisibility(View.GONE);
-                }
-                else{
-                    binding.fixedDuration.setVisibility(View.GONE);
-                    binding.minDuration.setVisibility(View.VISIBLE);
-                    binding.maxDuration.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        binding.productAvailabilityGroup.addOnButtonCheckedListener(new MaterialButtonToggleGroup.OnButtonCheckedListener() {
-            @Override
-            public void onButtonChecked(MaterialButtonToggleGroup group, int checkedId, boolean isChecked) {
-                if (checkedId == R.id.buttonAvailable) {
-                    isAvailable=isChecked;
-                } else if (checkedId == R.id.buttonVisible) {
-                    isVisible=isChecked;
-                }
-            }
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(Intent.createChooser(intent, "Select Images"),
+                    PICK_IMAGES_REQUEST);
         });
     }
 
-    private void setupObservers(){
+    private void setupListeners() {
+        binding.createCategoryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            createCategory = isChecked;
+            if (isChecked) {
+                binding.categorySpinner.setVisibility(View.GONE);
+                binding.categoryError.setVisibility(View.GONE);
+                binding.categoryText.setVisibility(View.GONE);
+                binding.categoryName.setVisibility(View.VISIBLE);
+                binding.categoryDescription.setVisibility(View.VISIBLE);
+            } else {
+                binding.categorySpinner.setVisibility(View.VISIBLE);
+                binding.categoryText.setVisibility(View.VISIBLE);
+                binding.categoryName.setVisibility(View.GONE);
+                binding.categoryDescription.setVisibility(View.GONE);
+            }
+        });
+
+        binding.fixedDurationCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.fixedDuration.setVisibility(View.VISIBLE);
+                binding.minDuration.setVisibility(View.GONE);
+                binding.maxDuration.setVisibility(View.GONE);
+            } else {
+                binding.fixedDuration.setVisibility(View.GONE);
+                binding.minDuration.setVisibility(View.VISIBLE);
+                binding.maxDuration.setVisibility(View.VISIBLE);
+            }
+        });
+
+        binding.serviceAvailabilityGroup.addOnButtonCheckedListener(
+                (group, checkedId, isChecked) -> {
+                    if (checkedId == R.id.buttonAvailable) {
+                        isAvailable = isChecked;
+                    } else if (checkedId == R.id.buttonVisible) {
+                        isVisible = isChecked;
+                    }
+                });
+    }
+
+    private void setupObservers() {
         viewModel.getCategories().observe(getViewLifecycleOwner(), this::setUpCategorySpinner);
         viewModel.loadCategories();
 
@@ -149,44 +154,32 @@ public class CreateServiceFragment extends Fragment {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
         );
 
-        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    NavController navController = NavHostFragment.findNavController(CreateServiceFragment.this);
-                    navController.navigate(R.id.homeScreenFragment);
-                }
-        );
-    }
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            NavController navController = NavHostFragment.findNavController(CreateServiceFragment.this);
+            navController.navigate(R.id.homeScreenFragment);
+        });
 
-    private void setUpCategorySpinner(List<GetOfferingCategoryDTO> categories) {
-        GetOfferingCategoryDTO defaultOption=new GetOfferingCategoryDTO();
-        defaultOption.setId(-1);
-        defaultOption.setName("Select category");
-        categories.add(0,defaultOption);
-        Spinner categorySpinner = binding.categorySpinner;
-        ArrayAdapter<GetOfferingCategoryDTO> adapter = getGetOfferingCategoryDTOArrayAdapter(categories);
-        categorySpinner.setAdapter(adapter);
-        categorySpinner.setTag(categories);
-
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!categories.isEmpty()) {
-                    GetOfferingCategoryDTO selectedCategory = categories.get(position);
-                    if (selectedCategory != null) {
-                        category=selectedCategory;
-                    }
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+        viewModel.getUploadedImagePaths().observe(getViewLifecycleOwner(), paths -> {
+            if (paths != null && !paths.isEmpty()) {
+                CreateServiceDTO service = createServiceDTO();
+                service.setPhotos(paths);
+                viewModel.createService(service);
             }
         });
     }
 
-    @NonNull
-    private ArrayAdapter<GetOfferingCategoryDTO> getGetOfferingCategoryDTOArrayAdapter(List<GetOfferingCategoryDTO> categories) {
-        ArrayAdapter<GetOfferingCategoryDTO> adapter = new ArrayAdapter<GetOfferingCategoryDTO>(requireContext(), android.R.layout.simple_spinner_item, categories) {
+    private void setUpCategorySpinner(List<GetOfferingCategoryDTO> categories) {
+        GetOfferingCategoryDTO defaultOption = new GetOfferingCategoryDTO();
+        defaultOption.setId(-1);
+        defaultOption.setName("Select category");
+        categories.add(0, defaultOption);
+
+        ArrayAdapter<GetOfferingCategoryDTO> adapter = new ArrayAdapter<GetOfferingCategoryDTO>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                categories
+        ) {
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -205,87 +198,124 @@ public class CreateServiceFragment extends Fragment {
         };
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
+        binding.categorySpinner.setAdapter(adapter);
+        binding.categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!categories.isEmpty()) {
+                    category = categories.get(position);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
-    private void setupValidation(){
-        binding.categoryName.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+    private void setupValidation() {
+        setupTextValidator(binding.categoryName);
+        setupTextValidator(binding.categoryDescription);
+        setupTextValidator(binding.name);
+        setupTextValidator(binding.description);
+        setupTextValidator(binding.price);
+        setupTextValidator(binding.discount);
+    }
 
+    private void setupTextValidator(TextInputLayout textInputLayout) {
+        textInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.categoryName);
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        binding.categoryDescription.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
-            @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.categoryDescription);
+                validateRequiredField(textInputLayout);
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {}
-        });
-
-        binding.name.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.name);
+            public void afterTextChanged(Editable editable) {
             }
-
-            @Override
-            public void afterTextChanged(Editable editable) {}
         });
+    }
 
-        binding.description.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.description);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            if (data.getClipData() != null) {
+                ClipData clipData = data.getClipData();
+                int count = Math.min(clipData.getItemCount(), 10 - selectedImageUris.size());
+                for (int i = 0; i < count; i++) {
+                    Uri imageUri = clipData.getItemAt(i).getUri();
+                    if (!selectedImageUris.contains(imageUri)) {
+                        selectedImageUris.add(imageUri);
+                    }
+                }
+            } else if (data.getData() != null) {
+                Uri imageUri = data.getData();
+                if (!selectedImageUris.contains(imageUri)) {
+                    selectedImageUris.add(imageUri);
+                }
             }
+            imagesAdapter.setImages(selectedImageUris);
+        }
+    }
 
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+    private void onSubmitButtonClick() {
+        if (!isFormValid())
+            return;
 
-        binding.price.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+        if (!selectedImageUris.isEmpty()) {
+            viewModel.uploadImages(selectedImageUris, requireContext());
+        } else {
+            CreateServiceDTO service = createServiceDTO();
+            service.setPhotos(new ArrayList<>());
+            viewModel.createService(service);
+        }
+    }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.price);
-            }
+    private CreateServiceDTO createServiceDTO() {
+        String name = binding.name.getEditText().getText().toString().trim();
+        String description = binding.description.getEditText().getText().toString().trim();
+        String specification = binding.specification.getEditText().getText().toString().trim();
+        String categoryName = createCategory ? binding.categoryName.getEditText().getText().toString().trim() : null;
+        String categoryDescription = createCategory ? binding.categoryDescription.getEditText().getText().toString().trim() : null;
+        double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
+        double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
+        int providerId = new TokenManager(requireContext()).getUserId();
 
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+        int minDuration, maxDuration;
+        if (binding.fixedDurationCheckbox.isChecked()) {
+            minDuration = maxDuration = Integer.parseInt(binding.fixedDuration.getEditText().getText().toString().trim());
+            autoConfirm = true;
+        } else {
+            minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
+            maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
+        }
 
-        binding.discount.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
+        int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
+        int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                validateRequiredField(binding.discount);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {}
-        });
+        return new CreateServiceDTO(
+                createCategory ? 0 : category.getId(),
+                categoryName,
+                categoryDescription,
+                providerId,
+                name,
+                description,
+                specification,
+                price,
+                discount,
+                new ArrayList<>(),
+                isVisible,
+                isAvailable,
+                minDuration,
+                maxDuration,
+                reservationDeadline,
+                cancellationDeadline,
+                autoConfirm
+        );
     }
 
     private boolean validateDuration() {
@@ -346,10 +376,6 @@ public class CreateServiceFragment extends Fragment {
             }
             if (cancellationDeadline < 0) {
                 binding.cancellationDeadline.setError("Cancellation deadline must be non-negative");
-                return false;
-            }
-            if (cancellationDeadline > reservationDeadline) {
-                binding.cancellationDeadline.setError("Cancellation deadline cannot be after reservation deadline");
                 return false;
             }
         } catch (NumberFormatException e) {
