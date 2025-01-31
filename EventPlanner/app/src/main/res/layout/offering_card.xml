@@ -90,6 +90,7 @@
                     android:textSize="12sp"
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
+                    android:layout_marginBottom="2dp"
                     android:background="@drawable/small_border"
                     android:gravity="center" />
 
@@ -99,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
                     android:text="CATEGORY"
                     android:textSize="12sp"
                     android:paddingStart="7dp"
@@ -121,17 +123,6 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
-
-                <!-- Heart Icon -->
-                <ImageButton
-                    android:id="@+id/offering_card_heart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="TODO"
-                    android:src="@drawable/heart_outline"
-                    android:scaleType="centerInside"
-                    android:padding="4dp" />
 
             </LinearLayout>
 
