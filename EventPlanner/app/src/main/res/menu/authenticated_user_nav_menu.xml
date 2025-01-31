@@ -24,6 +24,11 @@
                 android:title="Upgrade role"
                 android:checkable="true"
                 android:icon="@drawable/ic_upgrade_role"/>
+            <item
+                android:id="@+id/userDetailsFragment"
+                android:title="@string/account_details"
+                android:checkable="true"
+                android:icon="@drawable/ic_profile"/>
         </menu>
     </item>
 </menu>
