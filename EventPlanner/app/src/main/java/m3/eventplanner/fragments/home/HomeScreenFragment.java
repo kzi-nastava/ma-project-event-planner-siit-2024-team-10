@@ -41,6 +41,7 @@ import java.util.Map;
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
@@ -56,6 +57,9 @@ public class HomeScreenFragment extends Fragment {
     private OfferingListAdapter offeringAdapter;
     private SearchView searchEventView, searchOfferingView;
     private ClientUtils clientUtils;
+    private Integer loggedInID;
+    private Boolean initialEventLoad = true;
+    private Boolean initialOfferingLoad = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +79,10 @@ public class HomeScreenFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loggedInID = new TokenManager(requireContext()).getAccountId();
+        if (loggedInID == 0){
+            loggedInID = null;
+        }
 
         eventsViewModel.getTopData().observe(getViewLifecycleOwner(), events -> {
             if (events != null && !events.isEmpty()) {
@@ -149,7 +157,7 @@ public class HomeScreenFragment extends Fragment {
             }
         });
 
-        eventsViewModel.loadTopEvents();
+        eventsViewModel.loadTopEvents(loggedInID);
 
         setUpEventSortSpinners(view);
         setUpOfferingSortSpinners(view);
@@ -250,14 +258,14 @@ public class HomeScreenFragment extends Fragment {
             if (isChecked) {
                 resetVisibilityForTab(checkedId);
                 if (checkedId == R.id.tabTopEvents) {
-                    eventsViewModel.loadTopEvents();
+                    eventsViewModel.loadTopEvents(loggedInID);
                 } else if (checkedId == R.id.tabAllEvents) {
-                    eventsViewModel.fetchPage(0);
+                    eventsViewModel.fetchPage(0, initialOfferingLoad, loggedInID);
                 } else if (checkedId == R.id.tabTopOfferings) {
-                    offeringsViewModel.loadTopOfferings();
+                    offeringsViewModel.loadTopOfferings(loggedInID);
                 } else if (checkedId == R.id.tabAllOfferings) {
                     Boolean isService = getSelectedOfferingType(view);
-                    offeringsViewModel.loadOfferings(0, isService);
+                    offeringsViewModel.loadOfferings(0, isService, initialOfferingLoad, loggedInID);
                 }
             }
         });
@@ -289,7 +297,9 @@ public class HomeScreenFragment extends Fragment {
                 String sortBy = sortCriteriaMapping.get(selectedSortBy);
                 String sortDirection = sortDirectionMapping.get(selectedSortDirection);
 
-                eventsViewModel.loadSortedEvents(0, sortBy, sortDirection);
+                if (sortBy!=null) {
+                    eventsViewModel.loadSortedEvents(0, sortBy, sortDirection);
+                }
             }
 
             @Override
@@ -380,7 +390,7 @@ public class HomeScreenFragment extends Fragment {
         offeringRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             Boolean isService = getSelectedOfferingType(view);
             if (isService != null) {
-                offeringsViewModel.loadOfferings(0, isService);
+                offeringsViewModel.loadOfferings(0, isService, this.initialOfferingLoad, this.loggedInID);
                 offeringsViewModel.resetFilters();
             } else {
                 Log.e("HomeScreenFragment", "Invalid offering type selection.");
@@ -470,8 +480,9 @@ public class HomeScreenFragment extends Fragment {
                 }
             }
 
-            eventsViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString);
+            eventsViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString, initialEventLoad, loggedInID);
             bottomSheetDialog.dismiss();
+            initialEventLoad=false;
         });
 
         resetFiltersButton.setOnClickListener(v->{
@@ -566,9 +577,10 @@ public class HomeScreenFragment extends Fragment {
             SwitchCompat switchAvailable = bottomSheetView.findViewById(R.id.switch_available);
             Boolean isAvailable = switchAvailable.isChecked() ? true : null;
 
-            offeringsViewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable);
+            offeringsViewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable, this.initialOfferingLoad, this.loggedInID);
 
             bottomSheetDialog.dismiss();
+            initialOfferingLoad = false;
         });
 
         resetFiltersButton.setOnClickListener(v->{

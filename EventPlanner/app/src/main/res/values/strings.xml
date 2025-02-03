@@ -133,4 +133,16 @@
     <string name="visible">Visible</string>
     <string name="categories">Categories</string>
     <string name="no_offerings_found">No offerings found</string>
+    <string name="personal_info">Personal info</string>
+    <string name="company_info">Company info</string>
+    <string name="company_photos">Company photos</string>
+    <string name="account_details">Account details</string>
+    <string name="your_email">Your email:</string>
+    <string name="edit_personal_details">Edit Personal Details</string>
+    <string name="edit_company_details">Edit Company Details</string>
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="change_password">Change password</string>
+    <string name="deactivate_account">Deactivate account</string>
 </resources>

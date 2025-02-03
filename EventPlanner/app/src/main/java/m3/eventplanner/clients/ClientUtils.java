@@ -25,6 +25,7 @@ public class ClientUtils {
     private AccountService accountService;
     private CategoryService categoryService;
     private ProductService productService;
+    private UserService userService;
     private ServiceService serviceService;
     private ImageUploadService imageUploadService;
 
@@ -57,6 +58,7 @@ public class ClientUtils {
         productService = retrofit.create(ProductService.class);
         serviceService = retrofit.create(ServiceService.class);
         imageUploadService = retrofit.create(ImageUploadService.class);
+        userService = retrofit.create(UserService.class);
     }
 
     public EventService getEventService() {
@@ -84,4 +86,8 @@ public class ClientUtils {
         return serviceService;
     }
     public ImageUploadService getImageUploadService() { return imageUploadService; }
+
+    public UserService getUserService() {
+        return userService;
+    }
 }

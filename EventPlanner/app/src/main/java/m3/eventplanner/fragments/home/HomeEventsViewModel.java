@@ -37,6 +37,8 @@ public class HomeEventsViewModel extends ViewModel {
     private String searchQuery;
     private String sortBy;
     private String sortDirection;
+    private Boolean initLoad;
+    private Integer accountId;
 
     public void initialize(ClientUtils clientUtils) {
         this.clientUtils = clientUtils;
@@ -58,8 +60,8 @@ public class HomeEventsViewModel extends ViewModel {
         return pagedData;
     }
 
-    public void loadTopEvents() {
-        clientUtils.getEventService().getTopEvents().enqueue(new Callback<Collection<GetEventDTO>>() {
+    public void loadTopEvents(Integer loggedInID) {
+        clientUtils.getEventService().getTopEvents(loggedInID).enqueue(new Callback<Collection<GetEventDTO>>() {
             @Override
             public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -77,7 +79,12 @@ public class HomeEventsViewModel extends ViewModel {
         });
     }
 
-    public void fetchPage(int page) {
+    public void fetchPage(int page, Boolean initLoad, Integer accountId) {
+        if (Boolean.FALSE.equals(initLoad)) {
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
         clientUtils.getEventService().getEvents(
                 page,
                 pageSize,
@@ -89,7 +96,8 @@ public class HomeEventsViewModel extends ViewModel {
                 filterEndDate,
                 searchQuery,
                 sortBy,
-                sortDirection
+                sortDirection,
+                accountId
         ).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
@@ -108,14 +116,14 @@ public class HomeEventsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<PagedResponse<GetEventDTO>> call, Throwable t) {
                 pagedData.setValue(null);
-                error.setValue("Failed to load events: " + t.getMessage());
+                error.setValue("Failed to load events: " + t.getMessage() + t.getStackTrace());
             }
         });
     }
 
     public void fetchNextPage() {
         if (currentPage + 1 < totalPages) {
-            fetchPage(currentPage + 1);
+            fetchPage(currentPage + 1, this.initLoad, this.accountId);
         } else {
             error.setValue("No more pages to load.");
         }
@@ -123,31 +131,37 @@ public class HomeEventsViewModel extends ViewModel {
 
     public void fetchPreviousPage() {
         if (currentPage > 0) {
-            fetchPage(currentPage - 1);
+            fetchPage(currentPage - 1, this.initLoad, this.accountId);
         } else {
             error.setValue("Already on the first page.");
         }
     }
 
-    public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate) {
+    public void loadFilteredEvents(int page, Integer eventTypeId, String location, Integer maxParticipants, Double minRating, String startDate, String endDate, Boolean initialLoad, Integer accountId) {
         this.filterTypeId = eventTypeId;
         this.filterLocation = location;
         this.filterMaxParticipants = maxParticipants;
         this.filterMinRating = minRating;
         this.filterStartDate = startDate;
         this.filterEndDate = endDate;
-        fetchPage(page);
+        this.initLoad = initialLoad;
+        if (!initialLoad){
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
+        fetchPage(page, this.initLoad, this.accountId);
     }
 
     public void loadSearchedEvents(int page, String query) {
         this.searchQuery = query;
-        fetchPage(page);
+        fetchPage(page, this.initLoad, this.accountId);
     }
 
     public void loadSortedEvents(int page, String sortBy, String sortDirection) {
         this.sortBy = sortBy;
         this.sortDirection = sortDirection;
-        fetchPage(page);
+        fetchPage(page, this.initLoad, this.accountId);
     }
 
     public void resetFilters() {
@@ -161,7 +175,7 @@ public class HomeEventsViewModel extends ViewModel {
         this.sortBy = null;
         this.sortDirection = null;
 
-        fetchPage(0);
+        fetchPage(0, this.initLoad, this.accountId);
     }
 
     public void fetchEventTypes() {

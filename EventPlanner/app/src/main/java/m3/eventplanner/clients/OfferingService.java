@@ -2,21 +2,19 @@ package m3.eventplanner.clients;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
-import m3.eventplanner.models.UpdateEventTypeDTO;
-import m3.eventplanner.models.UpdatedEventTypeDTO;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface OfferingService {
     @GET("offerings/top")
+    Call<Collection<GetOfferingDTO>> getTopOfferings(
+            @Query("accountId") Integer accountId
+    );
     Call<Collection<GetOfferingDTO>> getTopOfferings();
     @GET("offerings/{providerId}")
     Call<Collection<GetOfferingDTO>> getProvidersOfferings(@Path("providerId") int providerId);
@@ -51,7 +49,9 @@ public interface OfferingService {
             @Query("minRating") Double minRating,
             @Query("isAvailable") Boolean isAvailable,
             @Query("sortBy") String sortBy,
-            @Query("sortDirection") String sortDirection);
+            @Query("sortDirection") String sortDirection,
+            @Query("accountId") Integer accountId
+            );
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
 }
