@@ -42,15 +42,15 @@ public class CreateReservationViewModel extends ViewModel {
             @Override
             public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
                 if (response.isSuccessful() && response.body()!=null){
-                    events.setValue(response.body());
+                    events.postValue(response.body());
                 } else{
-                    error.setValue("Failed to load events.");
+                    error.postValue("Failed to load events.");
                 }
             }
 
             @Override
             public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading events");
+                error.postValue(t.getMessage() != null ? t.getMessage() : "Error loading events");
             }
         });
     }
@@ -60,20 +60,20 @@ public class CreateReservationViewModel extends ViewModel {
             @Override
             public void onResponse(Call<CreatedReservationDTO> call, Response<CreatedReservationDTO> response) {
                 if (response.isSuccessful()){
-                    successMessage.setValue("Reservation created successfully. Email confirmation has been sent.");
+                    successMessage.postValue("Reservation created successfully. Email confirmation has been sent.");
                 } else {
                     try {
                         String errorMessage = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                        error.setValue(errorMessage);
+                        error.postValue(errorMessage);
                     } catch (IOException e) {
-                        error.setValue("Error parsing server response");
+                        error.postValue("Error parsing server response");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<CreatedReservationDTO> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error creating reservation");
+                error.postValue(t.getMessage() != null ? t.getMessage() : "Error creating reservation");
             }
         });
     }
@@ -82,15 +82,15 @@ public class CreateReservationViewModel extends ViewModel {
             @Override
             public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
                 if (response.isSuccessful() && response.body()!=null){
-                    service.setValue(response.body());
+                    service.postValue(response.body());
                 } else{
-                    error.setValue("Failed to load service.");
+                    error.postValue("Failed to load service.");
                 }
             }
 
             @Override
             public void onFailure(Call<GetServiceDTO> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading service.");
+                error.postValue(t.getMessage() != null ? t.getMessage() : "Error loading service.");
             }
         });
     }

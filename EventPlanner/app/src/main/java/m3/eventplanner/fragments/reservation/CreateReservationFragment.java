@@ -3,6 +3,7 @@ package m3.eventplanner.fragments.reservation;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,8 +124,12 @@ public class CreateReservationFragment extends Fragment {
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
             binding.error.setVisibility(View.GONE);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    NavController navController = NavHostFragment.findNavController(CreateReservationFragment.this);
-                    navController.navigate(R.id.homeScreenFragment);
+            try {
+                NavController navController = NavHostFragment.findNavController(CreateReservationFragment.this);
+                navController.navigate(R.id.homeScreenFragment);
+            } catch (Exception e) {
+                Log.e("NavigationError", "Failed to navigate", e);
+            }
                 }
         );
 
