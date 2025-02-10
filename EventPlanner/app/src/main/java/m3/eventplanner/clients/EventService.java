@@ -99,4 +99,11 @@ public interface EventService {
     @Streaming
     Call<ResponseBody> getOpenEventReport(@Path("eventId") int eventId);
 
+    @GET("events/{eventId}/reports/info")
+    @Headers({
+            "Accept: application/pdf"
+    })
+    @Streaming
+    Call<ResponseBody> getEventInfoReport(@Path("eventId") int eventId);
+
 }

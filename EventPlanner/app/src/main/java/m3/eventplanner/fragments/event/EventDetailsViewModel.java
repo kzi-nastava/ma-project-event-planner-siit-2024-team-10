@@ -1,6 +1,8 @@
 package m3.eventplanner.fragments.event;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -8,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +27,8 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventStatsDTO;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
+import m3.eventplanner.utils.PdfUtils;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,9 +45,11 @@ public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isParticipating = new MutableLiveData<>();
 
     private ClientUtils clientUtils;
+    private PdfUtils pdfUtils;
 
-    public void initialize(ClientUtils clientUtils) {
-        this.clientUtils = clientUtils;
+    public void initialize(Context context) {
+        this.clientUtils = new ClientUtils(context);
+        this.pdfUtils = new PdfUtils(context);
     }
 
     public LiveData<GetEventDTO> getEvent() {
@@ -275,6 +283,39 @@ public class EventDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<GetEventStatsDTO> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error submitting participation");
+            }
+        });
+    }
+
+    public void exportToPdf(){
+        clientUtils.getEventService().getEventInfoReport(event.getValue().getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    new Thread(() -> {
+                        try {
+                            // Read bytes from ResponseBody
+                            byte[] pdfBytes = response.body().bytes();
+
+                            // Save the PDF file
+                            File file = pdfUtils.savePdfFile(pdfBytes, "open_event_report");
+
+                            // Open the saved PDF file on the main thread
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                pdfUtils.openPdfFile(file);
+                            });
+                        } catch (IOException e) {
+                            error.setValue("Error saving PDF report");
+                        }
+                    }).start();
+                } else {
+                    error.setValue("Error generating PDF report");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                error.setValue("Error generating PDF report");
             }
         });
     }

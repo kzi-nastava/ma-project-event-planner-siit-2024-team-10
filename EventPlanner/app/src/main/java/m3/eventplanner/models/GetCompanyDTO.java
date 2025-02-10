@@ -17,7 +17,7 @@ public class GetCompanyDTO implements Parcelable, Serializable {
     private String phoneNumber;
     @SerializedName("description")
     private String description;
-    @SerializedName("photo_url")
+    @SerializedName("photos")
     private List<String> photos;
     @SerializedName("location")
     private GetLocationDTO location;

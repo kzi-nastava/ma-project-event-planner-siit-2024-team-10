@@ -70,8 +70,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
-        clientUtils = new ClientUtils(requireContext());
-        viewModel.initialize(clientUtils);
+        viewModel.initialize(requireContext());
 
         setupObservers();
         setupClickListeners();
@@ -165,6 +164,10 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
 
         binding.attendButton.setOnClickListener(v->{
             viewModel.addParticipant();
+        });
+
+        binding.exportToPdfButton.setOnClickListener(v->{
+            viewModel.exportToPdf();
         });
     }
 
