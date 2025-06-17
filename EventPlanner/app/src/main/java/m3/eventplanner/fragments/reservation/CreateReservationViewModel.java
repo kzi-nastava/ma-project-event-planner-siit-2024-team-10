@@ -24,11 +24,15 @@ public class CreateReservationViewModel extends ViewModel {
     private final MutableLiveData<List<GetEventDTO>> events = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    private final MutableLiveData<String> notification = new MutableLiveData<>();
     public LiveData<String> getError() {
         return error;
     }
     public LiveData<String> getSuccessMessage() {
         return successMessage;
+    }
+    public LiveData<String> getNotification(){
+        return notification;
     }
     private ClientUtils clientUtils;
     public void initialize(ClientUtils clientUtils) {
@@ -56,6 +60,7 @@ public class CreateReservationViewModel extends ViewModel {
     }
 
     public void createReservation(CreateReservationDTO reservationDTO){
+        notification.postValue("Pending reservation...");
         clientUtils.getReservationService().createReservation(reservationDTO).enqueue(new Callback<CreatedReservationDTO>() {
             @Override
             public void onResponse(Call<CreatedReservationDTO> call, Response<CreatedReservationDTO> response) {
