@@ -121,6 +121,9 @@ public class CreateReservationFragment extends Fragment {
             binding.error.setText(error);
             binding.error.setVisibility(View.VISIBLE);
         });
+        viewModel.getNotification().observe(getViewLifecycleOwner(), notification -> {
+            Toast.makeText(getContext(), notification, Toast.LENGTH_SHORT).show();
+        });
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
             binding.error.setVisibility(View.GONE);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
