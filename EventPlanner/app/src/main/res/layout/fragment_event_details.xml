@@ -171,6 +171,14 @@
                         android:padding="12dp"
                         android:visibility="gone"/>
 
+                    <Button
+                        android:id="@+id/edit_event_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_event"
+                        android:padding="12dp"
+                        android:visibility="gone"/>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
