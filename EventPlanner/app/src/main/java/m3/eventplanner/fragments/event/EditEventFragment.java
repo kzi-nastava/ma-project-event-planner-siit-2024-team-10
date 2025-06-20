@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
@@ -44,6 +46,7 @@ import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateLocationDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.UpdateEventDTO;
 
 public class EditEventFragment extends Fragment {
     private FragmentEditEventBinding binding;
@@ -98,17 +101,15 @@ public class EditEventFragment extends Fragment {
         binding.submit.setOnClickListener(v->{
             if(!isFormValid())
                 return;
-//            String name=binding.name.getEditText().getText().toString().trim();
-//            String description=binding.description.getEditText().getText().toString().trim();
-//            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
-//            String country=binding.country.getEditText().getText().toString().trim();
-//            String city=binding.city.getEditText().getText().toString().trim();
-//            String street=binding.street.getEditText().getText().toString().trim();
-//            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
-//            int organizerId=new TokenManager(requireContext()).getUserId();
-//            CreateEventDTO eventDTO = new CreateEventDTO(noEventType?0:eventType.getId(),organizerId,name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
-//            this.viewModel.createEvent(eventDTO);
-            //TODO: edit event
+            String name=binding.name.getEditText().getText().toString().trim();
+            String description=binding.description.getEditText().getText().toString().trim();
+            int maxParticipants=Integer.parseInt(binding.maxParticipants.getEditText().getText().toString().trim());
+            String country=binding.country.getEditText().getText().toString().trim();
+            String city=binding.city.getEditText().getText().toString().trim();
+            String street=binding.street.getEditText().getText().toString().trim();
+            String houseNumber=binding.houseNumber.getEditText().getText().toString().trim();
+            UpdateEventDTO updateEventDTO = new UpdateEventDTO(noEventType?0:eventType.getId(),name,description,maxParticipants,isOpen,eventDate,new CreateLocationDTO(country,city,street,houseNumber));
+            this.viewModel.updateEvent(updateEventDTO,this.eventId);
         });
     }
 
@@ -123,11 +124,16 @@ public class EditEventFragment extends Fragment {
         );
 
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
-                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-//                    NavController navController = NavHostFragment.findNavController(CreateEventFragment.this);
-//                    navController.navigate(R.id.homeScreenFragment);
-            //TODO:navigate to event details page
-                }
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", this.eventId);
+
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.eventDetailsFragment, true)
+                    .build();
+
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.eventDetailsFragment, bundle, navOptions);
+        }
         );
     }
 
@@ -144,7 +150,7 @@ public class EditEventFragment extends Fragment {
         if(event.isOpen())
             binding.buttonOpen.setChecked(true);
         else
-            binding.buttonClosed.setChecked(false);
+            binding.buttonClosed.setChecked(true);
 
         if(event.getEventType()==null){
             binding.noEventTypeCheckbox.setChecked(true);

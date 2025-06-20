@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.models.UpdateEventDTO;
+import m3.eventplanner.models.UpdatedEventDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,21 +80,27 @@ public class EditEventViewModel extends ViewModel {
         });
     }
 
-//    public void createEvent(CreateEventDTO createEventDTO) {
-//        clientUtils.getEventService().addEvent(createEventDTO).enqueue(new Callback<CreatedEventDTO>() {
-//            @Override
-//            public void onResponse(Call<CreatedEventDTO> call, Response<CreatedEventDTO> response) {
-//                if (response.isSuccessful()) {
-//                    successMessage.setValue("Event type created successfully");
-//                } else {
-//                    error.setValue("Failed to create event type");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<CreatedEventDTO> call, Throwable t) {
-//                error.setValue(t.getMessage() != null ? t.getMessage() : "Error creating event type");
-//            }
-//        });
-//    }
+    public void updateEvent(UpdateEventDTO updateEventDTO, int eventId) {
+        clientUtils.getEventService().updateEvent(eventId,updateEventDTO).enqueue(new Callback<UpdatedEventDTO>() {
+            @Override
+            public void onResponse(Call<UpdatedEventDTO> call, Response<UpdatedEventDTO> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event edited successfully");
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        error.setValue(errorBody);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        error.setValue("An error occurred while parsing the error message.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UpdatedEventDTO> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error ");
+            }
+        });
+    }
 }
