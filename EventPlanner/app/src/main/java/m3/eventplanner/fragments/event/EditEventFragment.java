@@ -30,8 +30,10 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
@@ -40,16 +42,20 @@ import m3.eventplanner.databinding.FragmentCreateEventBinding;
 import m3.eventplanner.databinding.FragmentEditEventBinding;
 import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateLocationDTO;
+import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 
 public class EditEventFragment extends Fragment {
     private FragmentEditEventBinding binding;
     private GetEventTypeDTO eventType;
+    private List<GetEventTypeDTO> eventTypes;
     private EditEventViewModel viewModel;
     private ClientUtils clientUtils;
     private boolean noEventType=false;
     private boolean isOpen=true;
     private String eventDate;
+
+    private int eventId;
 
     public EditEventFragment() {
         // Required empty public constructor
@@ -85,6 +91,10 @@ public class EditEventFragment extends Fragment {
         setupDatePicker();
         setupValidation();
 
+        if (getArguments() != null) {
+            eventId = getArguments().getInt("selectedEventId");
+        }
+
         binding.submit.setOnClickListener(v->{
             if(!isFormValid())
                 return;
@@ -106,6 +116,8 @@ public class EditEventFragment extends Fragment {
         viewModel.getEventTypes().observe(getViewLifecycleOwner(), this::setUpEventTypeSpinner);
         viewModel.loadEventTypes();
 
+        viewModel.getEvent().observe(getViewLifecycleOwner(), this::populateEventDetails);
+
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
         );
@@ -117,6 +129,37 @@ public class EditEventFragment extends Fragment {
             //TODO:navigate to event details page
                 }
         );
+    }
+
+    private void populateEventDetails(GetEventDTO event) {
+        binding.name.getEditText().setText(event.getName());
+        binding.description.getEditText().setText(event.getDescription());
+        binding.maxParticipants.getEditText().setText(String.valueOf(event.getMaxParticipants()));
+        binding.country.getEditText().setText(event.getLocation().getCountry());
+        binding.city.getEditText().setText(event.getLocation().getCity());
+        binding.street.getEditText().setText(event.getLocation().getStreet());
+        binding.houseNumber.getEditText().setText(event.getLocation().getHouseNumber());
+        this.eventDate=event.getDate();
+        binding.eventDate.getEditText().setText(event.getDate());
+        if(event.isOpen())
+            binding.buttonOpen.setChecked(true);
+        else
+            binding.buttonClosed.setChecked(false);
+
+        if(event.getEventType()==null){
+            binding.noEventTypeCheckbox.setChecked(true);
+            return;
+        }
+
+        if(eventTypes.stream()
+                .noneMatch(eventType -> eventType.getId()==event.getEventType().getId())){
+            eventTypes.add(event.getEventType());
+        }
+        binding.eventTypeSpinner.setSelection(
+                IntStream.range(0, eventTypes.size())
+                .filter(i -> eventTypes.get(i).getId()==event.getEventType().getId())
+                .findFirst()
+                .orElse(-1));
     }
 
     private void setupListeners() {
@@ -151,6 +194,7 @@ public class EditEventFragment extends Fragment {
     }
 
     private void setUpEventTypeSpinner(List<GetEventTypeDTO> eventTypes) {
+        this.eventTypes=eventTypes;
         GetEventTypeDTO defaultOption=new GetEventTypeDTO();
         defaultOption.setId(-1);
         defaultOption.setName("Select event type");
@@ -175,6 +219,8 @@ public class EditEventFragment extends Fragment {
 
             }
         });
+
+        viewModel.loadEventDetails(eventId);
     }
 
     @NonNull

@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.models.CreateEventDTO;
-import m3.eventplanner.models.CreatedEventDTO;
+import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,6 +17,7 @@ import retrofit2.Response;
 
 public class EditEventViewModel extends ViewModel {
     private final MutableLiveData<List<GetEventTypeDTO>> eventTypes = new MutableLiveData<>();
+    private final MutableLiveData<GetEventDTO> event = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
     public LiveData<String> getError() {
@@ -37,6 +37,8 @@ public class EditEventViewModel extends ViewModel {
         return this.eventTypes;
     }
 
+    public LiveData<GetEventDTO> getEvent() { return event; }
+
     public void loadEventTypes(){
         clientUtils.getEventTypeService().getEventTypes().enqueue(new Callback<Collection<GetEventTypeDTO>>() {
             @Override
@@ -52,6 +54,24 @@ public class EditEventViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Collection<GetEventTypeDTO>> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading event details");
+            }
+        });
+    }
+
+    public void loadEventDetails(int eventId) {
+        clientUtils.getEventService().getEvent(eventId).enqueue(new Callback<GetEventDTO>() {
+            @Override
+            public void onResponse(Call<GetEventDTO> call, Response<GetEventDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    event.setValue(response.body());
+                } else {
+                    error.setValue("Failed to load event details");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetEventDTO> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading event details");
             }
         });
