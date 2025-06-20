@@ -114,6 +114,11 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             this.isOwner=isOwner;
             if(isOwner){
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+                binding.editEventButton.setVisibility(View.VISIBLE);
+            }
+            else{
+                binding.addAgendaItemButton.setVisibility(View.GONE);
+                binding.editEventButton.setVisibility(View.GONE);
             }
 
             if( (isOwner||isAdmin) && event.isOpen()) {
@@ -160,6 +165,12 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             Bundle bundle = new Bundle();
             bundle.putInt("selectedEventId", event.getId());
             Navigation.findNavController(v).navigate(R.id.openEventReportFragment, bundle);
+        });
+
+        binding.editEventButton.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", event.getId());
+            Navigation.findNavController(v).navigate(R.id.editEventFragment, bundle);
         });
 
         binding.attendButton.setOnClickListener(v->{

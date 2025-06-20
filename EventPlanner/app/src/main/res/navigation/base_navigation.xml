@@ -111,4 +111,8 @@
         android:id="@+id/editCompanyFragment"
         android:name="m3.eventplanner.fragments.user.EditCompanyFragment"
         android:label="@string/edit_company_details" />
+    <fragment
+        android:id="@+id/editEventFragment"
+        android:name="m3.eventplanner.fragments.event.EditEventFragment"
+        android:label="@string/edit_event" />
 </navigation>
