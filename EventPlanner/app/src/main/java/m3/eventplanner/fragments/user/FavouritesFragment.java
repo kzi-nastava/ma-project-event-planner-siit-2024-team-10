@@ -66,6 +66,7 @@ public class FavouritesFragment extends Fragment {
                 binding.eventRecyclerView.setAdapter(eventAdapter);
                 eventAdapter.notifyDataSetChanged();
                 binding.eventRecyclerView.setVisibility(View.VISIBLE);
+                binding.eventPaginationBar.getRoot().setVisibility(View.VISIBLE);
                 binding.noEventsFoundTextView.setVisibility(View.GONE);
                 binding.eventPaginationBar.paginationCurrentPage.setText(String.valueOf("Page "+ (viewModel.currentEventPage + 1) +" of "+ viewModel.totalEventPages));
                 binding.eventPaginationBar.totalNumberOfElements.setText(String.format("Total Elements: %d", viewModel.totalEventElements));
@@ -73,6 +74,23 @@ public class FavouritesFragment extends Fragment {
                 binding.noEventsFoundTextView.setVisibility(View.VISIBLE);
                 binding.eventRecyclerView.setVisibility(View.GONE);
                 binding.eventPaginationBar.getRoot().setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.getFavouriteOfferings().observe(getViewLifecycleOwner(), pagedOfferings -> {
+            if (pagedOfferings != null && !pagedOfferings.getContent().equals(new ArrayList<>())) {
+                offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
+                binding.offeringRecyclerView.setAdapter(offeringAdapter);
+                offeringAdapter.notifyDataSetChanged();
+                binding.offeringRecyclerView.setVisibility(View.VISIBLE);
+                binding.offeringPaginationBar.getRoot().setVisibility(View.VISIBLE);
+                binding.noOfferingsFoundTextView.setVisibility(View.GONE);
+                binding.offeringPaginationBar.paginationCurrentPage.setText(String.valueOf("Page "+ (viewModel.currentOfferingPage + 1) +" of "+ viewModel.totalOfferingPages));
+                binding.offeringPaginationBar.totalNumberOfElements.setText(String.format("Total Elements: %d", viewModel.totalOfferingElements));
+            } else {
+                binding.noOfferingsFoundTextView.setVisibility(View.VISIBLE);
+                binding.offeringRecyclerView.setVisibility(View.GONE);
+                binding.offeringPaginationBar.getRoot().setVisibility(View.GONE);
             }
         });
 
@@ -90,6 +108,15 @@ public class FavouritesFragment extends Fragment {
             viewModel.fetchPreviousEventPage();
         });
 
+        binding.offeringPaginationBar.paginationForwardButton.setOnClickListener(v -> {
+            viewModel.fetchNextOfferingPage();
+        });
+
+        binding.offeringPaginationBar.paginationBackButton.setOnClickListener(v -> {
+            viewModel.fetchPreviousOfferingPage();
+        });
+
         viewModel.fetchEventPage(0);
+        viewModel.fetchOfferingPage(0);
     }
 }

@@ -42,7 +42,8 @@
             android:id="@+id/eventPaginationBar"
             layout="@layout/pagination_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/favourite_offerings_text"
@@ -77,7 +78,8 @@
             android:id="@+id/offeringPaginationBar"
             layout="@layout/pagination_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
     </LinearLayout>
 
 
