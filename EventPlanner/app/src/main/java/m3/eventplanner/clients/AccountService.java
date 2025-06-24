@@ -28,6 +28,13 @@ public interface AccountService {
             "User-Agent: Mobile-Android",
             "Content-Type: application/json"
     })
+    @GET("accounts/{accountId}/favourite-events/{eventId}")
+    Call<GetEventDTO> getFavouriteEvent(@Path("accountId") int accountId, @Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("accounts/{accountId}/favourite-events")
     Call<Void> addEventToFavourites(@Path("accountId") int accountId, @Body AddFavouriteEventDTO addFavouriteEventDTO);
 

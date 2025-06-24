@@ -104,19 +104,21 @@ public class EventDetailsViewModel extends ViewModel {
             return;
 
         // Check if event is favourite
-        clientUtils.getAccountService().getFavouriteEvents(accountId).enqueue(new Callback<Collection<GetEventDTO>>() {
+        clientUtils.getAccountService().getFavouriteEvent(accountId,eventId).enqueue(new Callback<GetEventDTO>() {
             @Override
-            public void onResponse(Call<Collection<GetEventDTO>> call, Response<Collection<GetEventDTO>> response) {
+            public void onResponse(Call<GetEventDTO> call, Response<GetEventDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    boolean isFav = response.body().stream().anyMatch(e -> e.getId() == eventId);
-                    isFavourite.setValue(isFav);
+                    isFavourite.setValue(true);
                 } else {
-                    error.setValue("Failed to check favourite status");
+                    if(response.code()==404)
+                        isFavourite.setValue(false);
+                    else
+                        error.setValue("Failed to check favourite status");
                 }
             }
 
             @Override
-            public void onFailure(Call<Collection<GetEventDTO>> call, Throwable t) {
+            public void onFailure(Call<GetEventDTO> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error checking favourite status");
             }
         });
