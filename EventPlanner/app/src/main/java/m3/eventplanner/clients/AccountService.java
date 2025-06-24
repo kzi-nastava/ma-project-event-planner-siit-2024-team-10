@@ -22,7 +22,9 @@ public interface AccountService {
             "Content-Type: application/json"
     })
     @GET("accounts/{accountId}/favourite-events")
-    Call<Collection<GetEventDTO>> getFavouriteEvents(@Path("accountId") int accountId);
+    Call<PagedResponse<GetEventDTO>> getFavouriteEvents(@Path("accountId") int accountId,
+                                                        @Query("page") int page,
+                                                        @Query("size") int size);
 
     @Headers({
             "User-Agent: Mobile-Android",
