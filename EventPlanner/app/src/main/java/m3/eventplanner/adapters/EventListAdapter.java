@@ -66,7 +66,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.Even
         holder.eventCard.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putInt("selectedEventId", event.getId());
-            Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_eventDetailsFragment, bundle);
+            Navigation.findNavController(v).navigate(R.id.eventDetailsFragment, bundle);
         });
     }
 

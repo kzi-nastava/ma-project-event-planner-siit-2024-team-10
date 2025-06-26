@@ -115,4 +115,9 @@
         android:id="@+id/editEventFragment"
         android:name="m3.eventplanner.fragments.event.EditEventFragment"
         android:label="@string/edit_event" />
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="m3.eventplanner.fragments.user.FavouritesFragment"
+        android:label="@string/favourites"
+        tools:layout="@layout/fragment_favourites" />
 </navigation>
