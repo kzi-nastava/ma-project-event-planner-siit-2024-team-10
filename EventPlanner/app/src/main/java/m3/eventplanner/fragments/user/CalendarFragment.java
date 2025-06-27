@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarDay;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,6 +91,7 @@ public class CalendarFragment extends Fragment {
                     clickedDate.get(Calendar.MONTH) + 1,
                     clickedDate.get(Calendar.DAY_OF_MONTH)
             );
+            binding.selectedDateTextView.setText(selectedDate.toString());
             calendarItemAdapter.updateCalendarItems(calendarMap.get(selectedDate)!=null?calendarMap.get(selectedDate):new ArrayList<>());
         });
 
