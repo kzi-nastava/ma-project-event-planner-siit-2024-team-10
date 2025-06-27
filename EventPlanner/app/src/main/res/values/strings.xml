@@ -156,5 +156,6 @@
     <string name="edit_event">Edit event</string>
     <string name="your_favourite_events">Your Favourite Events</string>
     <string name="your_favourite_offerings">Your Favourite Offerings</string>
-    <string name="favourites">Favourites</string>
+    <string name="favourites">Favourites</string>\
+    <string name="calendar">Calendar</string>
 </resources>

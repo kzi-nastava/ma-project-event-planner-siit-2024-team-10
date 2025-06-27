@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         topLevelDestinations.add((R.id.categoryFragment));
         topLevelDestinations.add(R.id.userDetailsFragment);
         topLevelDestinations.add(R.id.favouritesFragment);
+        topLevelDestinations.add(R.id.calendarFragment);
 
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
 
