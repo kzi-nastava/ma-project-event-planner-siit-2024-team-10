@@ -87,6 +87,15 @@ public class CalendarFragment extends Fragment {
         });
         binding.calendarItemRecyclerView.setAdapter(calendarItemAdapter);
 
+        String role = tokenManager.getRole();
+        if (!"EVENT_ORGANIZER".equals(role)) {
+            binding.createdEventLegend.setVisibility(View.GONE);
+        }
+        if (!"PROVIDER".equals(role)) {
+            binding.reservationLegend.setVisibility(View.GONE);
+        }
+
+
         binding.calendarView.setOnDayClickListener(eventDay -> {
             Calendar clickedDate = eventDay.getCalendar();
             LocalDate selectedDate = LocalDate.of(
