@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import m3.eventplanner.models.GetCalendarItemDTO;
@@ -95,6 +97,36 @@ public class CalendarItemAdapter extends RecyclerView.Adapter<CalendarItemAdapte
     }
 
     public void updateCalendarItems(List<GetCalendarItemDTO> newItems) {
+        Collections.sort(newItems, new Comparator<GetCalendarItemDTO>() {
+            @Override
+            public int compare(GetCalendarItemDTO o1, GetCalendarItemDTO o2) {
+                boolean o1AllDay = isAllDay(o1);
+                boolean o2AllDay = isAllDay(o2);
+
+                // Put all-day events first
+                if (o1AllDay && !o2AllDay) return -1;
+                if (!o1AllDay && o2AllDay) return 1;
+
+                // If both are not all-day, sort by start time
+                if (!o1AllDay && !o2AllDay) {
+                    try {
+                        LocalDateTime start1 = LocalDateTime.parse(o1.getStartTime());
+                        LocalDateTime start2 = LocalDateTime.parse(o2.getStartTime());
+                        return start1.compareTo(start2);
+                    } catch (DateTimeParseException e) {
+                        return 0; // Keep original order on parse error
+                    }
+                }
+
+                // If both are all-day, maintain original order
+                return 0;
+            }
+
+            private boolean isAllDay(GetCalendarItemDTO item) {
+                String type = item.getType();
+                return "CREATED_EVENT".equals(type) || "ACCEPTED_EVENT".equals(type);
+            }
+        });
         this.calendarItems = newItems;
         notifyDataSetChanged();
     }
