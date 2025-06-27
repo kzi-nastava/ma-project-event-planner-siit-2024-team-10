@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import m3.eventplanner.R;
+import m3.eventplanner.adapters.CalendarItemAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCalendarBinding;
@@ -39,6 +41,8 @@ public class CalendarFragment extends Fragment {
 
     private FragmentCalendarBinding binding;
     private CalendarViewModel viewModel;
+    private CalendarItemAdapter calendarItemAdapter;
+    private Map<LocalDate, List<GetCalendarItemDTO>> calendarMap = new HashMap<>();
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -70,11 +74,30 @@ public class CalendarFragment extends Fragment {
         );
 
         TokenManager tokenManager = new TokenManager(requireContext());
+
+        binding.calendarItemRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        calendarItemAdapter = new CalendarItemAdapter(new ArrayList<>(), calendarItem -> {
+            // Handle calendar item click
+            Toast.makeText(getContext(), "Clicked: " + calendarItem.getTitle(), Toast.LENGTH_SHORT).show();
+        });
+        binding.calendarItemRecyclerView.setAdapter(calendarItemAdapter);
+
+        binding.calendarView.setOnDayClickListener(eventDay -> {
+            Calendar clickedDate = eventDay.getCalendar();
+            LocalDate selectedDate = LocalDate.of(
+                    clickedDate.get(Calendar.YEAR),
+                    clickedDate.get(Calendar.MONTH) + 1,
+                    clickedDate.get(Calendar.DAY_OF_MONTH)
+            );
+            calendarItemAdapter.updateCalendarItems(calendarMap.get(selectedDate)!=null?calendarMap.get(selectedDate):new ArrayList<>());
+        });
+
+
         viewModel.loadCalendar(tokenManager.getAccountId());
     }
 
     private void populateCalendar(Collection<GetCalendarItemDTO> calendarItems){
-        Map<LocalDate, List<GetCalendarItemDTO>> calendarMap = new HashMap<>();
+        calendarMap = new HashMap<>();
         Map<LocalDate, Set<Integer>> dotsByDate = new HashMap<>();
 
         for (GetCalendarItemDTO item : calendarItems) {
