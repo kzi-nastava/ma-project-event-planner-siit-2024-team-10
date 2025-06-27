@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -79,8 +81,9 @@ public class CalendarFragment extends Fragment {
 
         binding.calendarItemRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         calendarItemAdapter = new CalendarItemAdapter(new ArrayList<>(), calendarItem -> {
-            // Handle calendar item click
-            Toast.makeText(getContext(), "Clicked: " + calendarItem.getTitle(), Toast.LENGTH_SHORT).show();
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", calendarItem.getEventId());
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.eventDetailsFragment, bundle);
         });
         binding.calendarItemRecyclerView.setAdapter(calendarItemAdapter);
 
