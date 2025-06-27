@@ -6,14 +6,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarDay;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -25,13 +28,17 @@ import java.util.Map;
 import java.util.Set;
 
 import m3.eventplanner.R;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCalendarBinding;
+import m3.eventplanner.fragments.event.EventDetailsViewModel;
 import m3.eventplanner.models.GetCalendarItemDTO;
 import m3.eventplanner.utils.MultiDotDrawable;
 
 public class CalendarFragment extends Fragment {
 
     private FragmentCalendarBinding binding;
+    private CalendarViewModel viewModel;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -53,8 +60,48 @@ public class CalendarFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        List<CalendarDay> calendarDays = new ArrayList<>();
+        viewModel = new ViewModelProvider(this).get(CalendarViewModel.class);
+        viewModel.initialize(new ClientUtils(requireContext()));
+
+        viewModel.getCalendarItems().observe(getViewLifecycleOwner(), this::populateCalendar);
+
+        viewModel.getError().observe(getViewLifecycleOwner(), error ->
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
+        );
+
+        TokenManager tokenManager = new TokenManager(requireContext());
+        viewModel.loadCalendar(tokenManager.getAccountId());
     }
+
+    private void populateCalendar(Collection<GetCalendarItemDTO> calendarItems){
+        Map<LocalDate, List<GetCalendarItemDTO>> calendarMap = new HashMap<>();
+        Map<LocalDate, Set<Integer>> dotsByDate = new HashMap<>();
+
+        for (GetCalendarItemDTO item : calendarItems) {
+            LocalDate date = LocalDateTime.parse(item.getStartTime()).toLocalDate();
+            calendarMap.computeIfAbsent(date, k -> new ArrayList<>()).add(item);
+            int color = getCalendarItemColor(item.getType());
+            dotsByDate.computeIfAbsent(date, k -> new HashSet<>()).add(color);
+        }
+
+
+        List<CalendarDay> calendarDays = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, Set<Integer>> entry : dotsByDate.entrySet()) {
+            LocalDate date = entry.getKey();
+            Set<Integer> colorSet = entry.getValue();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
+
+            CalendarDay calendarDay = new CalendarDay(calendar);
+            calendarDay.setImageDrawable(new MultiDotDrawable(new ArrayList<>(colorSet), 10));
+            calendarDays.add(calendarDay);
+        }
+
+        binding.calendarView.setCalendarDays(calendarDays);
+    }
+
 
     private int getCalendarItemColor(String itemType) {
         switch (itemType) {
