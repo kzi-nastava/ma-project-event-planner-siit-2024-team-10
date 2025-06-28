@@ -1,0 +1,43 @@
+package m3.eventplanner.clients;
+
+import m3.eventplanner.models.GetNotificationDTO;
+import m3.eventplanner.models.PagedResponse;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+
+public interface NotificationService {
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @GET("notifications/{accountId}")
+    Call<PagedResponse<GetNotificationDTO>> getNotifications(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Path("accountId") Integer accountId
+    );
+
+    @PUT("notifications/read/{notificationId}")
+    Call<?> markAsRead(
+            @Path("notificationId") Integer notificationId
+    );
+
+    @PUT("notifications/{accountId}/readAll")
+    Call<?> readAll(
+            @Path("accountId") Integer accountId
+    );
+
+    @GET("notifications/{accountId}/toggle")
+    Call<Boolean> isNotificationSilenced(
+            @Path("accountId") Integer accountId
+    );
+
+    @PUT("notifications/{accountId}/change-toggle")
+    Call<?> toggleNotifications(
+            @Path("accountId") Integer accountId
+    );
+}
