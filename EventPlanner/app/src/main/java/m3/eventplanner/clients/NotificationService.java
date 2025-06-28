@@ -22,12 +22,12 @@ public interface NotificationService {
     );
 
     @PUT("notifications/read/{notificationId}")
-    Call<?> markAsRead(
+    Call<Void> markAsRead(
             @Path("notificationId") Integer notificationId
     );
 
-    @PUT("notifications/{accountId}/readAll")
-    Call<?> readAll(
+    @PUT("notifications/{accountId}/read-all")
+    Call<Void> readAll(
             @Path("accountId") Integer accountId
     );
 
@@ -37,7 +37,7 @@ public interface NotificationService {
     );
 
     @PUT("notifications/{accountId}/change-toggle")
-    Call<?> toggleNotifications(
+    Call<Void> toggleNotifications(
             @Path("accountId") Integer accountId
     );
 }

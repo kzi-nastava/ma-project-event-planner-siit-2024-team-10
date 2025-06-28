@@ -20,7 +20,7 @@ public class NotificationViewModel extends ViewModel {
     public int currentPage = 0;
     public int totalPages = 0;
     public int totalElements = 0;
-    public final int pageSize = 3;
+    public final int pageSize = 6;
     private Integer accountId;
 
     private ClientUtils clientUtils;
@@ -74,5 +74,26 @@ public class NotificationViewModel extends ViewModel {
             error.setValue("Already on the first page.");
         }
     }
+
+    public void readAll() {
+        clientUtils.getNotificationService().readAll(this.accountId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("NotificationViewModel", "All notifications marked as read.");
+                } else {
+                    error.setValue("Failed to mark notifications as read");
+                    Log.d("fail", "Failed to mark notifications as read. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue("Failed to mark notifications as read: " + t.getMessage());
+                Log.d("fail", "Failed to mark notifications as read: " + t.getMessage(), t);
+            }
+        });
+    }
+
 
 }

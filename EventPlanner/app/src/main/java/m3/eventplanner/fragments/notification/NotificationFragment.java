@@ -103,4 +103,10 @@ public class NotificationFragment extends Fragment {
         paginationView.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        notificationViewModel.readAll();
+    }
+
 }
