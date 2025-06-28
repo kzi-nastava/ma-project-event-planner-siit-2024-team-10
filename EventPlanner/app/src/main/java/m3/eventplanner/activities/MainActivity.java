@@ -2,13 +2,15 @@ package m3.eventplanner.activities;
 
 import static android.view.View.GONE;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,10 +18,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -30,7 +32,8 @@ import java.util.Set;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
-import m3.eventplanner.fragments.LoginFragment;
+import m3.eventplanner.models.GetNotificationDTO;
+import m3.eventplanner.utils.NotificationWebSocketManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -129,5 +132,32 @@ public class MainActivity extends AppCompatActivity {
         drawer.close();
         navController.navigate(R.id.homeScreenFragment);
         logoutButton.setVisibility(GONE);
+        NotificationWebSocketManager.disconnect();
+    }
+
+    public void showNotification(GetNotificationDTO notification) {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "notifications_channel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, "Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_bell)
+                .setContentTitle(notification.getTitle())
+                .setContentText(notification.getContent())
+                .setAutoCancel(true);
+
+        notificationManager.notify(notification.getId(), builder.build());
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationWebSocketManager.disconnect();
     }
 }
