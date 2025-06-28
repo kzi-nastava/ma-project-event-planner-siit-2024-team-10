@@ -47,6 +47,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled  = true
     }
 }
 
@@ -74,4 +75,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
