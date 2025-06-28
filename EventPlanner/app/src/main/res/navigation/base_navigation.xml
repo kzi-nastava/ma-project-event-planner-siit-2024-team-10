@@ -61,7 +61,7 @@
         android:label="Event Details" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="m3.eventplanner.fragments.NotificationFragment"
+        android:name="m3.eventplanner.fragments.notification.NotificationFragment"
         android:label="Notifications" />
     <fragment
         android:id="@+id/registerFragment"
