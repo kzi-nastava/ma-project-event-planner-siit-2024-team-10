@@ -21,7 +21,7 @@ public class GetNotificationDTO implements Parcelable, Serializable {
     private String content;
 
     @SerializedName("date")
-    private LocalDateTime date;
+    private String date;
 
     @SerializedName("read")
     private boolean read;
@@ -35,8 +35,7 @@ public class GetNotificationDTO implements Parcelable, Serializable {
         id = in.readInt();
         title = in.readString();
         content = in.readString();
-        String dateString = in.readString();
-        date = dateString != null ? LocalDateTime.parse(dateString, FORMATTER) : null;
+        date = in.readString();
         read = in.readByte() != 0;
     }
 
@@ -45,7 +44,7 @@ public class GetNotificationDTO implements Parcelable, Serializable {
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(content);
-        dest.writeString(date != null ? date.format(FORMATTER) : null);
+        dest.writeString(date);
         dest.writeByte((byte) (read ? 1 : 0));
     }
 
@@ -79,9 +78,9 @@ public class GetNotificationDTO implements Parcelable, Serializable {
 
     public void setContent(String content) { this.content = content; }
 
-    public LocalDateTime getDate() { return date; }
+    public String getDate() { return date; }
 
-    public void setDate(LocalDateTime date) { this.date = date; }
+    public void setDate(String date) { this.date = date; }
 
     public boolean isRead() { return read; }
 

@@ -16,9 +16,9 @@ public interface NotificationService {
     })
     @GET("notifications/{accountId}")
     Call<PagedResponse<GetNotificationDTO>> getNotifications(
+            @Path("accountId") Integer accountId,
             @Query("page") int page,
-            @Query("size") int size,
-            @Path("accountId") Integer accountId
+            @Query("size") int size
     );
 
     @PUT("notifications/read/{notificationId}")

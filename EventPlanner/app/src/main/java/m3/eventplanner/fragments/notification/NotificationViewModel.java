@@ -1,5 +1,7 @@
 package m3.eventplanner.fragments.notification;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -33,7 +35,7 @@ public class NotificationViewModel extends ViewModel {
     public LiveData<String> getError() { return error; }
 
     public void fetchPage(int page){
-        clientUtils.getNotificationService().getNotifications(page, pageSize, this.accountId).enqueue(new Callback<PagedResponse<GetNotificationDTO>>() {
+        clientUtils.getNotificationService().getNotifications(this.accountId, page, pageSize).enqueue(new Callback<PagedResponse<GetNotificationDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetNotificationDTO>> call, Response<PagedResponse<GetNotificationDTO>> response) {
                 if (response.isSuccessful() && response.body() != null){
@@ -45,6 +47,7 @@ public class NotificationViewModel extends ViewModel {
                 } else {
                     notifications.setValue(null);
                     error.setValue("Failed to load page: " + page);
+                    Log.d("fail", String.valueOf(page));
                 }
             }
 
@@ -52,6 +55,7 @@ public class NotificationViewModel extends ViewModel {
             public void onFailure(Call<PagedResponse<GetNotificationDTO>> call, Throwable t) {
                 notifications.setValue(null);
                 error.setValue("Failed to load events: " + t.getMessage() + t.getStackTrace());
+                Log.d("fail","Failed to load events: " + t.getMessage() + t.getStackTrace());
             }
         });
     }
