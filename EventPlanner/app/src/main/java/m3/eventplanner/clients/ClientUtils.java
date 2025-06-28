@@ -28,6 +28,7 @@ public class ClientUtils {
     private ReservationService reservationService;
     private ServiceService serviceService;
     private UserService userService;
+    private NotificationService notificationService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -59,6 +60,7 @@ public class ClientUtils {
         reservationService = retrofit.create(ReservationService.class);
         serviceService = retrofit.create(ServiceService.class);
         userService = retrofit.create(UserService.class);
+        notificationService = retrofit.create(NotificationService.class);
     }
 
     public EventService getEventService() {
@@ -87,4 +89,5 @@ public class ClientUtils {
     public UserService getUserService() {
         return userService;
     }
+    public NotificationService getNotificationService() { return notificationService; }
 }
