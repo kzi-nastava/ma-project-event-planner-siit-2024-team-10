@@ -136,6 +136,20 @@ public class MainActivity extends AppCompatActivity {
         NotificationWebSocketManager.disconnect();
     }
 
+    public void updateNotificationBadge(boolean hasUnread) {
+        runOnUiThread(() -> {
+            Menu menu = navigationView.getMenu();
+            MenuItem notificationItem = menu.findItem(R.id.notificationFragment);
+            if (notificationItem != null) {
+                if (hasUnread) {
+                    notificationItem.setIcon(R.drawable.ic_bell_with_badge);
+                } else {
+                    notificationItem.setIcon(R.drawable.ic_bell);
+                }
+            }
+        });
+    }
+
     public void showNotification(GetNotificationDTO notification) {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -153,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 .setAutoCancel(true);
 
         notificationManager.notify(notification.getId(), builder.build());
+        updateNotificationBadge(true);
     }
 
 
