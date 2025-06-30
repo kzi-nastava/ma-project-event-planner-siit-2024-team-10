@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId = "m3.eventplanner"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -47,7 +47,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-        isCoreLibraryDesugaringEnabled  = true
     }
 }
 
@@ -80,4 +79,5 @@ dependencies {
     implementation("org.java-websocket:Java-WebSocket:1.5.2")
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation("com.applandeo:material-calendar-view:1.9.2")
 }

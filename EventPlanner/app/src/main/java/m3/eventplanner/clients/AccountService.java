@@ -2,6 +2,7 @@ package m3.eventplanner.clients;
 
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.Event;
+import m3.eventplanner.models.GetCalendarItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
@@ -56,5 +57,12 @@ public interface AccountService {
     Call<PagedResponse<GetOfferingDTO>> getFavouriteOfferings(@Path("accountId") int accountId,
                                                               @Query("page") int page,
                                                               @Query("size") int size);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @GET("accounts/{accountId}/calendar")
+    Call<Collection<GetCalendarItemDTO>> getCalendar(@Path("accountId") int accountId);
 }
 
