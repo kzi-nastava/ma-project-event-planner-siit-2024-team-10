@@ -23,7 +23,7 @@ import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 
 public class NotificationFragment extends Fragment {
-    private SwitchCompat toggle;
+
     private RecyclerView contentRecyclerView;
     private TextView noCardsFoundTextView, pageNumber, totalNumberOfElements;
     private View paginationView;
@@ -72,13 +72,13 @@ public class NotificationFragment extends Fragment {
         notificationViewModel.fetchPage(0);
 
         setUpPaginationButtons(view);
+        setUpToggle(view);
     }
 
     private void initializeUIElements(View rootView) {
         contentRecyclerView = rootView.findViewById(R.id.notification_list);
         noCardsFoundTextView = rootView.findViewById(R.id.noNotificationsFoundTextView);
         paginationView = rootView.findViewById(R.id.notification_pagination);
-        toggle = rootView.findViewById(R.id.toggle_notifications);
     }
 
     private void setUpPaginationButtons(View rootView) {
@@ -93,6 +93,22 @@ public class NotificationFragment extends Fragment {
 
         paginationBackButton.setOnClickListener(v -> {
             notificationViewModel.fetchPreviousPage();
+        });
+    }
+
+    private void setUpToggle(View rootView) {
+        SwitchCompat toggle = rootView.findViewById(R.id.toggle_notifications);
+
+        notificationViewModel.getIsNotificationsSilenced().observe(getViewLifecycleOwner(), isSilenced -> {
+            if (isSilenced != null) {
+                toggle.setChecked(!isSilenced);
+            }
+        });
+
+        notificationViewModel.fetchNotificationSilenceStatus();
+
+        toggle.setOnClickListener(v -> {
+            notificationViewModel.toggleNotifications();
         });
     }
 

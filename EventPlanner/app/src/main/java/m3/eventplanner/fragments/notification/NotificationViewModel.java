@@ -17,6 +17,8 @@ public class NotificationViewModel extends ViewModel {
     private final MutableLiveData<PagedResponse<GetNotificationDTO>> notifications = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> isNotificationsSilenced = new MutableLiveData<>();
+
     public int currentPage = 0;
     public int totalPages = 0;
     public int totalElements = 0;
@@ -33,6 +35,10 @@ public class NotificationViewModel extends ViewModel {
     public LiveData<PagedResponse<GetNotificationDTO>> getNotifications() { return notifications; }
 
     public LiveData<String> getError() { return error; }
+
+    public LiveData<Boolean> getIsNotificationsSilenced() {
+        return isNotificationsSilenced;
+    }
 
     public void fetchPage(int page){
         clientUtils.getNotificationService().getNotifications(this.accountId, page, pageSize).enqueue(new Callback<PagedResponse<GetNotificationDTO>>() {
@@ -95,5 +101,42 @@ public class NotificationViewModel extends ViewModel {
         });
     }
 
+    public void toggleNotifications(){
+        clientUtils.getNotificationService().toggleNotifications(this.accountId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("NotificationViewModel", "Notifications toggled.");
+                } else {
+                    error.setValue("Failed to toggle notifications");
+                    Log.d("fail", "Failed to toggle notifications. Code: " + response.code());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue("Failed to toggle notifications");
+                Log.d("fail", "Failed to toggle notifications: " + t.getMessage(), t);
+            }
+        });
+    }
+
+    public void fetchNotificationSilenceStatus() {
+        clientUtils.getNotificationService().isNotificationSilenced(accountId)
+                .enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            isNotificationsSilenced.postValue(response.body());
+                        } else {
+                            error.setValue("Failed to fetch toggle state");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        error.setValue("Failed to fetch toggle state: " + t.getMessage());
+                    }
+                });
+    }
 }
