@@ -215,6 +215,14 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         if(!event.isOpen()){
             binding.participantsTitle.setVisibility(View.GONE);
             binding.participantsSection.setVisibility(View.GONE);
+            binding.viewGuestListButton.setVisibility(View.VISIBLE);
+            binding.viewGuestListButton.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putInt("eventId", event.getId());
+                Navigation.findNavController(requireView()).navigate(R.id.guestListFragment, bundle);
+            });
+        } else {
+            binding.viewGuestListButton.setVisibility(View.GONE);
         }
     }
 
