@@ -32,6 +32,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginBottom="12dp" />
+
         <LinearLayout
             android:id="@+id/guestContainer"
             android:visibility="gone"

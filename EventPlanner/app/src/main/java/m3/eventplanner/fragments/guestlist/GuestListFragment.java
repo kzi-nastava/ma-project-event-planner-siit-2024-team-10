@@ -56,8 +56,6 @@ public class GuestListFragment extends Fragment {
         binding.toggleFormBtn.setOnClickListener(v -> toggleFormVisibility());
         binding.addGuestBtn.setOnClickListener(v -> addGuestField());
         binding.submitBtn.setOnClickListener(v -> submitGuestList());
-
-        addGuestField();
     }
 
     private void setUpObservers() {
@@ -66,8 +64,8 @@ public class GuestListFragment extends Fragment {
         });
 
         viewModel.getCurrentGuestList().observe(getViewLifecycleOwner(), guests -> {
-            String display = guests.getGuests().isEmpty() ? "None yet" : TextUtils.join(", ", guests.getGuests());
-            binding.currentGuestListText.setText("Current guest list: " + display);
+            String display = guests.getGuests().isEmpty() ? "None yet" : TextUtils.join(",\n", guests.getGuests());
+            binding.currentGuestListText.setText(display);
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
@@ -76,7 +74,6 @@ public class GuestListFragment extends Fragment {
 
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-            requireActivity().onBackPressed();
         });
     }
 
