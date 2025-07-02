@@ -100,6 +100,14 @@
         tools:layout="@layout/fragment_create_reservation" >
     </fragment>
     <fragment
+        android:id="@+id/guestListFragment"
+        android:name="m3.eventplanner.fragments.guestlist.GuestListFragment"
+        android:label="Guest List" >
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
         android:id="@+id/userDetailsFragment"
         android:name="m3.eventplanner.fragments.user.UserDetailsFragment"
         android:label="@string/account_details" />
