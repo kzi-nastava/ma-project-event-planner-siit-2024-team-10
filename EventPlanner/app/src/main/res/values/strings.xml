@@ -161,4 +161,5 @@
     <string name="add_guest">Add Guest</string>
     <string name="current_guest_list">Current guest list:</string>
     <string name="show_guest_form">Show Guest Form</string>
+    <string name="view_guest_list">View Guest List</string>
 </resources>
