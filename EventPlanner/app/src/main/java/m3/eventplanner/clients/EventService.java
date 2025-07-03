@@ -12,6 +12,7 @@ import m3.eventplanner.models.CreatedEventRatingDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventStatsDTO;
+import m3.eventplanner.models.GetGuestDTO;
 import m3.eventplanner.models.GetGuestsDTO;
 import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
@@ -114,4 +115,7 @@ public interface EventService {
 
     @POST("events/{eventId}/invite")
     Call<Void> sendInvitations(@Path("eventId") int eventId, @Body CreateGuestListDTO guests);
+
+    @POST("events/process-invitation")
+    Call<Void> processInvitation(@Query("invitation-token") String token, @Body GetGuestDTO guest);
 }
