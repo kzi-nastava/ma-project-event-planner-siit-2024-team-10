@@ -25,8 +25,9 @@ public class ClientUtils {
     private AccountService accountService;
     private CategoryService categoryService;
     private ProductService productService;
-    private UserService userService;
+    private ReservationService reservationService;
     private ServiceService serviceService;
+    private UserService userService;
     private ImageUploadService imageUploadService;
 
     public ClientUtils(Context context){
@@ -56,6 +57,7 @@ public class ClientUtils {
         accountService = retrofit.create(AccountService.class);
         categoryService = retrofit.create(CategoryService.class);
         productService = retrofit.create(ProductService.class);
+        reservationService = retrofit.create(ReservationService.class);
         serviceService = retrofit.create(ServiceService.class);
         imageUploadService = retrofit.create(ImageUploadService.class);
         userService = retrofit.create(UserService.class);
@@ -78,14 +80,12 @@ public class ClientUtils {
         return accountService;
     }
     public CategoryService getCategoryService() {return categoryService;}
-
     public ProductService getProductService() {
         return productService;
     }
-    public ServiceService getServiceService() {
-        return serviceService;
-    }
     public ImageUploadService getImageUploadService() { return imageUploadService; }
+    public ReservationService getReservationService() { return reservationService; }
+    public ServiceService getServiceService() { return serviceService; }
 
     public UserService getUserService() {
         return userService;

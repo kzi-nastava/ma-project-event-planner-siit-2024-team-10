@@ -45,6 +45,7 @@ import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
+import m3.eventplanner.models.Service;
 
 public class HomeScreenFragment extends Fragment {
     private MaterialButtonToggleGroup toggleGroup;

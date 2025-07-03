@@ -132,6 +132,15 @@
     <string name="category_description">Category Description</string>
     <string name="visible">Visible</string>
     <string name="categories">Categories</string>
+    <string name="reserve_a_service">Book A Service</string>
+    <string name="choose_event">Choose Event To Book For</string>
+    <string name="event_date">Selected event date: </string>
+    <string name="reservation">Reservation</string>
+    <string name="select_an_event">Select an event</string>
+    <string name="end">End Time:</string>
+    <string name="not_selected">Not selected</string>
+    <string name="select">Select</string>
+    <string name="start">Start Time:</string>
     <string name="no_offerings_found">No offerings found</string>
     <string name="personal_info">Personal info</string>
     <string name="company_info">Company info</string>
@@ -145,4 +154,9 @@
     <string name="confirm_password">Confirm password</string>
     <string name="change_password">Change password</string>
     <string name="deactivate_account">Deactivate account</string>
+    <string name="edit_event">Edit event</string>
+    <string name="your_favourite_events">Your Favourite Events</string>
+    <string name="your_favourite_offerings">Your Favourite Offerings</string>
+    <string name="favourites">Favourites</string>
+    <string name="calendar">Calendar</string>
 </resources>

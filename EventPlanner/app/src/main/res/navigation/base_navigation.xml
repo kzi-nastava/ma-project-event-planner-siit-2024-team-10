@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_homeScreenFragment_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />
+        <action
+            android:id="@+id/action_homeScreenFragment_to_createReservationFragment"
+            app:destination="@id/createReservationFragment" />
     </fragment>
     <fragment
         android:id="@+id/manageOfferingsFragment"
@@ -91,6 +94,12 @@
         android:name="m3.eventplanner.fragments.category.CategoryFragment"
         android:label="@string/categories" />
     <fragment
+        android:id="@+id/createReservationFragment"
+        android:name="m3.eventplanner.fragments.reservation.CreateReservationFragment"
+        android:label="@string/reservation"
+        tools:layout="@layout/fragment_create_reservation" >
+    </fragment>
+    <fragment
         android:id="@+id/userDetailsFragment"
         android:name="m3.eventplanner.fragments.user.UserDetailsFragment"
         android:label="@string/account_details" />
@@ -102,4 +111,18 @@
         android:id="@+id/editCompanyFragment"
         android:name="m3.eventplanner.fragments.user.EditCompanyFragment"
         android:label="@string/edit_company_details" />
+    <fragment
+        android:id="@+id/editEventFragment"
+        android:name="m3.eventplanner.fragments.event.EditEventFragment"
+        android:label="@string/edit_event" />
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="m3.eventplanner.fragments.user.FavouritesFragment"
+        android:label="@string/favourites"
+        tools:layout="@layout/fragment_favourites" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="m3.eventplanner.fragments.user.CalendarFragment"
+        android:label="@string/calendar"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>

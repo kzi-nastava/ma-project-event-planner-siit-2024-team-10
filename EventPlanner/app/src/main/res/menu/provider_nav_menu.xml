@@ -34,6 +34,16 @@
                 android:title="@string/account_details"
                 android:checkable="true"
                 android:icon="@drawable/ic_profile"/>
+            <item
+                android:id="@+id/favouritesFragment"
+                android:title="@string/favourites"
+                android:checkable="true"
+                android:icon="@drawable/heart_filled"/>
+            <item
+                android:id="@+id/calendarFragment"
+                android:title="@string/calendar"
+                android:checkable="true"
+                android:icon="@drawable/ic_calendar"/>
         </menu>
     </item>
 </menu>

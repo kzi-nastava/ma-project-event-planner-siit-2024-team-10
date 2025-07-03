@@ -1,12 +1,16 @@
 package m3.eventplanner.adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.card.MaterialCardView;
 
 import com.bumptech.glide.Glide;
 
@@ -41,15 +45,24 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
     public void onBindViewHolder(OfferingViewHolder holder, int position) {
         GetOfferingDTO offering = (GetOfferingDTO) offeringList.toArray()[position];
         holder.bind(offering);
+        holder.offeringCard.setOnClickListener(v->{
+            if (!offering.isProduct()){
+                Bundle bundle = new Bundle();
+                bundle.putInt("selectedServiceId", offering.getId());
+                Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_createReservationFragment,bundle);
+            }
+        });
+
     }
 
     public static class OfferingViewHolder extends RecyclerView.ViewHolder {
-
+        public MaterialCardView offeringCard;
         TextView title, rating, price, provider, type, category;
         ImageView picture;
 
         public OfferingViewHolder(View itemView) {
             super(itemView);
+            offeringCard = itemView.findViewById(R.id.offering_card);
             title = itemView.findViewById(R.id.offering_card_title);
             rating = itemView.findViewById(R.id.offering_card_rating);
             price = itemView.findViewById(R.id.offering_card_price);

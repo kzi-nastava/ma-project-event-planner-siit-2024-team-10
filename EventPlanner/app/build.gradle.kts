@@ -26,7 +26,7 @@ android {
 
     defaultConfig {
         applicationId = "m3.eventplanner"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -74,6 +74,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime:2.6.1")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation("com.applandeo:material-calendar-view:1.9.2")
     implementation("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 }

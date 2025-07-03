@@ -17,7 +17,11 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventStatsDTO;
 import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateEventDTO;
+import m3.eventplanner.models.UpdateUserDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
+import m3.eventplanner.models.UpdatedEventDTO;
+import m3.eventplanner.models.UpdatedUserDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -98,5 +102,15 @@ public interface EventService {
     })
     @Streaming
     Call<ResponseBody> getOpenEventReport(@Path("eventId") int eventId);
+
+    @GET("events/{eventId}/reports/info")
+    @Headers({
+            "Accept: application/pdf"
+    })
+    @Streaming
+    Call<ResponseBody> getEventInfoReport(@Path("eventId") int eventId);
+
+    @PUT("events/{eventId}")
+    Call<UpdatedEventDTO> updateEvent(@Path("eventId") int eventId, @Body UpdateEventDTO updateEventDTO);
 
 }

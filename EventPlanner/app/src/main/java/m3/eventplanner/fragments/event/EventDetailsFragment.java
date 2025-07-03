@@ -70,8 +70,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
-        clientUtils = new ClientUtils(requireContext());
-        viewModel.initialize(clientUtils);
+        viewModel.initialize(requireContext());
 
         setupObservers();
         setupClickListeners();
@@ -115,6 +114,11 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             this.isOwner=isOwner;
             if(isOwner){
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+                binding.editEventButton.setVisibility(View.VISIBLE);
+            }
+            else{
+                binding.addAgendaItemButton.setVisibility(View.GONE);
+                binding.editEventButton.setVisibility(View.GONE);
             }
 
             if( (isOwner||isAdmin) && event.isOpen()) {
@@ -163,8 +167,18 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             Navigation.findNavController(v).navigate(R.id.openEventReportFragment, bundle);
         });
 
+        binding.editEventButton.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", event.getId());
+            Navigation.findNavController(v).navigate(R.id.editEventFragment, bundle);
+        });
+
         binding.attendButton.setOnClickListener(v->{
             viewModel.addParticipant();
+        });
+
+        binding.exportToPdfButton.setOnClickListener(v->{
+            viewModel.exportToPdf();
         });
     }
 
