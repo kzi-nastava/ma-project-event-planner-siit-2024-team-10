@@ -81,7 +81,8 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
 
             List<String> photos = offering.getPhotos();
             if (photos != null && !photos.isEmpty()) {
-                String imageUrl = "http://" + BuildConfig.IP_ADDR + ":8080/api/images/" + photos.get(0).substring(photos.get(0).lastIndexOf(File.separator) + 1);                Glide.with(itemView.getContext())
+                String imageUrl = "http://" + BuildConfig.IP_ADDR + ":8080/api/images/" + photos.get(0).substring(photos.get(0).lastIndexOf(File.separator) + 1);
+                Glide.with(itemView.getContext())
                         .load(imageUrl)
                         .placeholder(R.drawable.placeholder)
                         .error(R.drawable.placeholder)

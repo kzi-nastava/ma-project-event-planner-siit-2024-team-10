@@ -26,13 +26,13 @@ android {
 
     defaultConfig {
         applicationId = "m3.eventplanner"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "IP_ADDR", "\"${getIpAddress()}\"") // Inject IP into BuildConfig
+        buildConfigField("String", "IP_ADDR", "\"${getIpAddress()}\"")
     }
 
     buildTypes {
@@ -44,7 +44,6 @@ android {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -52,6 +51,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -75,6 +75,6 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.applandeo:material-calendar-view:1.9.2")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

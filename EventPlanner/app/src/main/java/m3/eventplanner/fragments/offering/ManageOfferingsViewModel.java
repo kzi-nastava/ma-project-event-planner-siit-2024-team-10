@@ -40,6 +40,7 @@ public class ManageOfferingsViewModel extends ViewModel {
     private String searchQuery;
     private String sortBy;
     private String sortDirection;
+    private int accountId;
     private MutableLiveData<Double> highestPrice = new MutableLiveData<>();
     public LiveData<Double> getHighestPrice() {
         return highestPrice;
@@ -99,7 +100,8 @@ public class ManageOfferingsViewModel extends ViewModel {
                 filterMinRating,
                 filterIsAvailable,
                 sortBy,
-                sortDirection
+                sortDirection,
+                accountId
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {

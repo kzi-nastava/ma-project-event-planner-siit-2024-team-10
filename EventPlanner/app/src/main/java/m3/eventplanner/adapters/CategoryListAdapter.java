@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import m3.eventplanner.R;
-import m3.eventplanner.fragments.category.CategoriesFragment;
 import m3.eventplanner.fragments.category.CategoryFormFragment;
+import m3.eventplanner.fragments.category.CategoryFragment;
 import m3.eventplanner.fragments.category.CategoryViewModel;
 import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
 import m3.eventplanner.models.GetEventTypeDTO;
@@ -28,9 +28,9 @@ import m3.eventplanner.models.GetOfferingCategoryDTO;
 public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder>{
     private List<GetOfferingCategoryDTO> categoryList;
     private CategoryViewModel categoryViewModel;
-    private CategoriesFragment categoryFragment;
+    private CategoryFragment categoryFragment;
 
-    public CategoryListAdapter(List<GetOfferingCategoryDTO> categoryList, CategoriesFragment fragment) {
+    public CategoryListAdapter(List<GetOfferingCategoryDTO> categoryList, CategoryFragment fragment) {
         this.categoryFragment=fragment;
         categoryList.sort(Comparator.comparing(GetOfferingCategoryDTO::getName));
         this.categoryList = categoryList;
