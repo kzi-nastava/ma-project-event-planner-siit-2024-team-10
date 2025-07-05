@@ -35,6 +35,11 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_profile"/>
             <item
+                android:id="@+id/reservationConfirmationFragment"
+                android:title="@string/reservation_manager"
+                android:checkable="true"
+                android:icon="@drawable/ic_bookmark"/>
+            <item
                 android:id="@+id/favouritesFragment"
                 android:title="@string/favourites"
                 android:checkable="true"
