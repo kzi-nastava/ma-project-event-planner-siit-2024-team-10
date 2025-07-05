@@ -100,6 +100,14 @@
         tools:layout="@layout/fragment_create_reservation" >
     </fragment>
     <fragment
+        android:id="@+id/guestListFragment"
+        android:name="m3.eventplanner.fragments.guestlist.GuestListFragment"
+        android:label="Guest List" >
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
         android:id="@+id/userDetailsFragment"
         android:name="m3.eventplanner.fragments.user.UserDetailsFragment"
         android:label="@string/account_details" />
@@ -125,4 +133,13 @@
         android:name="m3.eventplanner.fragments.user.CalendarFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar" />
+
+    <fragment
+        android:id="@+id/invitationFragment"
+        android:name="m3.eventplanner.fragments.invitation.InvitationFragment"
+        android:label="Invitation">
+        <argument
+            android:name="invitation-token"
+            app:argType="string" />
+    </fragment>
 </navigation>
