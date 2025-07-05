@@ -45,27 +45,28 @@ public class InvitationFragment extends Fragment {
         TokenManager tokenManager = new TokenManager(requireContext());
         String email = tokenManager.getEmail();
 
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
+            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(this).navigate(R.id.userDetailsFragment);
+        });
+
+        viewModel.getError().observe(getViewLifecycleOwner(), err -> {
+            Toast.makeText(requireContext(), err, Toast.LENGTH_LONG).show();
+            if (err.contains("401") || err.contains("Unauthorized")) {
+                tokenManager.clearToken();
+                Bundle bundle = new Bundle();
+                bundle.putString("invitation-token", token);
+                NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle);
+            }
+        });
+
         if (email == null) {
             Bundle bundle = new Bundle();
             bundle.putString("invitation-token", token);
             NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle);
         } else {
             viewModel.processInvitation(token, email);
-
-            viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-                NavHostFragment.findNavController(this).navigate(R.id.userDetailsFragment);
-            });
-
-            viewModel.getError().observe(getViewLifecycleOwner(), err -> {
-                Toast.makeText(requireContext(), err, Toast.LENGTH_LONG).show();
-                if (err.contains("401") || err.contains("Unauthorized")) {
-                    tokenManager.clearToken();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("invitation-token", token);
-                    NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle);
-                }
-            });
         }
+
     }
 }
