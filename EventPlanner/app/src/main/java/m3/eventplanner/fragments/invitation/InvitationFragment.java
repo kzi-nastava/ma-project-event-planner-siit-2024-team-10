@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import m3.eventplanner.auth.TokenManager;
@@ -47,7 +48,11 @@ public class InvitationFragment extends Fragment {
 
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
             Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(this).navigate(R.id.userDetailsFragment);
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(NavHostFragment.findNavController(this).getGraph().getStartDestinationId(), true)
+                    .build();
+
+            NavHostFragment.findNavController(this).navigate(R.id.userDetailsFragment, null, navOptions);
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), err -> {
@@ -56,14 +61,22 @@ public class InvitationFragment extends Fragment {
                 tokenManager.clearToken();
                 Bundle bundle = new Bundle();
                 bundle.putString("invitation-token", token);
-                NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle);
+                NavOptions navOptions = new NavOptions.Builder()
+                        .setPopUpTo(NavHostFragment.findNavController(this).getGraph().getStartDestinationId(), true)
+                        .build();
+
+                NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle, navOptions);
             }
         });
 
         if (email == null) {
             Bundle bundle = new Bundle();
             bundle.putString("invitation-token", token);
-            NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle);
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(NavHostFragment.findNavController(this).getGraph().getStartDestinationId(), true)
+                    .build();
+
+            NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle, navOptions);
         } else {
             viewModel.processInvitation(token, email);
         }

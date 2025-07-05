@@ -14,10 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import m3.eventplanner.R;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentGuestListBinding;
 
@@ -74,6 +77,15 @@ public class GuestListFragment extends Fragment {
 
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), msg -> {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", this.eventId);
+
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.eventDetailsFragment, true)
+                    .build();
+
+            Navigation.findNavController(binding.getRoot()).navigate(R.id.eventDetailsFragment, bundle, navOptions);
         });
     }
 
