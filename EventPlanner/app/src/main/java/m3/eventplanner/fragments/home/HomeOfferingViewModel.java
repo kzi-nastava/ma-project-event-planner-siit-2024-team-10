@@ -105,7 +105,8 @@ public class HomeOfferingViewModel extends ViewModel {
                 filterIsAvailable,
                 sortBy,
                 sortDirection,
-                accountId
+                accountId,
+                null
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
