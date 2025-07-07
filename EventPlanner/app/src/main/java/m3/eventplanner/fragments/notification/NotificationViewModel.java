@@ -60,8 +60,8 @@ public class NotificationViewModel extends ViewModel {
             @Override
             public void onFailure(Call<PagedResponse<GetNotificationDTO>> call, Throwable t) {
                 notifications.setValue(null);
-                error.setValue("Failed to load events: " + t.getMessage() + t.getStackTrace());
-                Log.d("fail","Failed to load events: " + t.getMessage() + t.getStackTrace());
+                error.setValue("Failed to load notifications: " + t.getMessage() + t.getStackTrace());
+                Log.d("fail","Failed to load notifications: " + t.getMessage() + t.getStackTrace());
             }
         });
     }
