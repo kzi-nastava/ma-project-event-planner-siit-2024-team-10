@@ -14,6 +14,7 @@
         android:text="@string/all_offerings"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:id="@+id/title"
         android:textColor="@color/chocolate_brown"/>
 
     <androidx.appcompat.widget.SearchView

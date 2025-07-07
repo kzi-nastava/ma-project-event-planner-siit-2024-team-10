@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/manageOfferingsFragment"
-        android:name="m3.eventplanner.fragments.ManageOfferingsFragment"
+        android:name="m3.eventplanner.fragments.offering.ManageOfferingsFragment"
         android:label="@string/your_products_and_services"
         tools:layout="@layout/fragment_manage_offerings">
         <action
