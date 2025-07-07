@@ -39,8 +39,8 @@ public interface ReservationService {
     @DELETE("reservations/{id}")
     Call<Void> cancelReservation(@Path("id") int id);
 
-    @GET("reservations/{id}/pending")
-    Call<List<GetReservationDTO>> getPendingReservationsByProvider(@Path("id") int providerId);
+    @GET("reservations/{providerId}/pending")
+    Call<List<GetReservationDTO>> getPendingReservationsByProvider(@Path("providerId") int providerId);
 
     @PUT("reservations/{reservationId}/accept")
     Call<Void> acceptReservation(@Path("reservationId") int reservationId);
