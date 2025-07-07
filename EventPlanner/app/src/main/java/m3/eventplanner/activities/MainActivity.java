@@ -6,6 +6,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,6 +103,19 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawer)
                 .build();
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+
+        if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            String invitationToken = data.getQueryParameter("invitation-token");
+            if (invitationToken != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("invitation-token", invitationToken);
+                navController.navigate(R.id.invitationFragment, bundle);
+            }
+        }
+
         NavigationUI.setupWithNavController(navigationView, navController);
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -108,6 +123,21 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> {
             logout();
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Uri data = intent.getData();
+        if (data != null) {
+            String invitationToken = data.getQueryParameter("invitation-token");
+            if (invitationToken != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("invitation-token", invitationToken);
+                navController.navigate(R.id.invitationFragment, bundle);
+            }
+        }
     }
 
 
