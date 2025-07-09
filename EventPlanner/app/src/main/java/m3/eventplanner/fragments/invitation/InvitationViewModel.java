@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.IOException;
+
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetGuestDTO;
 import retrofit2.Call;
@@ -34,7 +36,13 @@ public class InvitationViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     successMessage.postValue("Event was added to your schedule");
                 } else {
-                    error.postValue("Error processing invitation");
+                    try {
+                        String errorBody = response.errorBody().string();
+                        error.setValue(errorBody);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        error.setValue("An error occurred while parsing the error message.");
+                    }
                 }
             }
 
