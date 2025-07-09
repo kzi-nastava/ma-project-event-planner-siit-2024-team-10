@@ -1,5 +1,7 @@
 package m3.eventplanner.fragments.event;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.session.MediaSession;
 import android.os.Bundle;
 
@@ -7,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -101,6 +104,14 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                         R.drawable.heart_filled : R.drawable.heart_outline)
         );
 
+        viewModel.getNavigateHome().observe(getViewLifecycleOwner(), navigateHome ->
+            {
+                if(navigateHome){
+                    Navigation.findNavController(binding.getRoot()).navigate(R.id.homeScreenFragment);
+                }
+            }
+        );
+
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
         );
@@ -113,6 +124,7 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         {
             this.isOwner=isOwner;
             if(isOwner){
+                binding.deleteEventButton.setVisibility(View.VISIBLE);
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
                 binding.editEventButton.setVisibility(View.VISIBLE);
 
@@ -169,6 +181,26 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         binding.addAgendaItemButton.setOnClickListener(v->{
             AgendaItemFormFragment dialog = new AgendaItemFormFragment();
             dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
+        });
+
+        binding.deleteEventButton.setOnClickListener(v->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+            builder.setTitle("Confirm delete")
+                    .setMessage("Are you sure you want to delete this event?")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            viewModel.deleteEvent();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
         });
 
         binding.openEventReportButton.setOnClickListener(v->{

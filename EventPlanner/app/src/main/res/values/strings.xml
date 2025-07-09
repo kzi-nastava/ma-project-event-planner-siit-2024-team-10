@@ -164,4 +164,5 @@
     <string name="view_guest_list">View Guest List</string>
     <string name="remove_guest">Remove guest</string>
     <string name="guest_example_com">guest@example.com</string>
+    <string name="delete_event">Delete event</string>
 </resources>
