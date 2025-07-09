@@ -107,6 +107,13 @@ public interface EventService {
     @Streaming
     Call<ResponseBody> getEventInfoReport(@Path("eventId") int eventId);
 
+    @GET("events/{eventId}/reports/guestlist")
+    @Headers({
+            "Accept: application/pdf"
+    })
+    @Streaming
+    Call<ResponseBody> getGuestlistReport(@Path("eventId") int eventId);
+
     @PUT("events/{eventId}")
     Call<UpdatedEventDTO> updateEvent(@Path("eventId") int eventId, @Body UpdateEventDTO updateEventDTO);
 
