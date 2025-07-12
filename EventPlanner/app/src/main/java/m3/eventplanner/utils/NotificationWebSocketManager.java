@@ -25,28 +25,36 @@ public class NotificationWebSocketManager {
 
             stompClient.lifecycle().subscribe(lifecycleEvent -> {
                 LifecycleEvent.Type type = lifecycleEvent.getType();
-                if (type == LifecycleEvent.Type.OPENED) {
-                    Log.d(TAG, "Stomp connection opened");
-                } else if (type == LifecycleEvent.Type.ERROR) {
-                    Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
-                } else if (type == LifecycleEvent.Type.CLOSED) {
-                    Log.d(TAG, "Stomp connection closed");
+                switch (type) {
+                    case OPENED:
+                        Log.d(TAG, "Stomp connection opened");
+
+                        String topic = "/socket-publisher/notifications/" + accountId;
+                        stompClient.topic(topic).subscribe(topicMessage -> {
+                            String payload = topicMessage.getPayload();
+                            Log.d(TAG, "Received notification payload: " + payload);
+
+                            Gson gson = new Gson();
+                            GetNotificationDTO notification = gson.fromJson(payload, GetNotificationDTO.class);
+                            onMessageReceived.accept(notification);
+                        }, error -> {
+                            Log.e(TAG, "Error subscribing to topic", error);
+                        });
+
+                        break;
+                    case ERROR:
+                        Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
+                        break;
+                    case CLOSED:
+                        Log.d(TAG, "Stomp connection closed");
+                        break;
                 }
             });
 
             stompClient.connect();
-
-            String topic = "/socket-publisher/notifications/" + accountId;
-            stompClient.topic(topic).subscribe(topicMessage -> {
-                String payload = topicMessage.getPayload();
-                Log.d(TAG, "Received notification payload: " + payload);
-
-                Gson gson = new Gson();
-                GetNotificationDTO notification = gson.fromJson(payload, GetNotificationDTO.class);
-                onMessageReceived.accept(notification);
-            });
         }
     }
+
 
 
     public static void disconnect() {
