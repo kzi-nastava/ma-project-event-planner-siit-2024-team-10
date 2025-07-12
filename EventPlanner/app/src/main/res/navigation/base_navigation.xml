@@ -133,6 +133,11 @@
         android:name="m3.eventplanner.fragments.user.CalendarFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/reservationConfirmationFragment"
+        android:name="m3.eventplanner.fragments.reservation.ReservationConfirmationFragment"
+        android:label="Reservation Confirmation"
+        tools:layout="@layout/fragment_reservation_confirmation" />
 
     <fragment
         android:id="@+id/invitationFragment"

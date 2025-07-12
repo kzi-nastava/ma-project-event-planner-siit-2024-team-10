@@ -158,6 +158,14 @@
     <string name="your_favourite_offerings">Your Favourite Offerings</string>
     <string name="favourites">Favourites</string>
     <string name="calendar">Calendar</string>
+    <string name="service_name">Service Name</string>
+    <string name="event_name_2025_07_05">Event Name • 2025-07-05</string>
+    <string name="start_10_00">Start: 10:00</string>
+    <string name="end_11_00">End: 11:00</string>
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+    <string name="reservations">Reservations</string>
+    <string name="reservation_manager">Reservation Manager</string>
     <string name="add_guest">Add Guest</string>
     <string name="current_guest_list">Current guest list:</string>
     <string name="show_guest_form">Show Guest Form</string>
