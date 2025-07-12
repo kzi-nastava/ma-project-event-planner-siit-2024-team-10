@@ -34,8 +34,12 @@ import java.util.Set;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetNotificationDTO;
 import m3.eventplanner.utils.NotificationWebSocketManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -168,6 +172,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNotification(GetNotificationDTO notification) {
+        Integer accountId = new TokenManager(this).getAccountId();
+
+        ClientUtils clientUtils = new ClientUtils(this);
+
+        clientUtils.getNotificationService().isNotificationSilenced(accountId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                if (response.isSuccessful() && Boolean.FALSE.equals(response.body())) {
+                    displayLocalNotification(notification);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    private void displayLocalNotification(GetNotificationDTO notification) {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -185,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
         notificationManager.notify(notification.getId(), builder.build());
     }
+
 
 
     @Override
