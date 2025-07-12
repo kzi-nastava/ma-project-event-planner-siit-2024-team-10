@@ -35,11 +35,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import m3.eventplanner.R;
+import m3.eventplanner.activities.MainActivity;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.AuthService;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.LoginRequestDTO;
 import m3.eventplanner.models.LoginResponseDTO;
+import m3.eventplanner.utils.NotificationWebSocketManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -133,6 +135,14 @@ public class LoginFragment extends Fragment {
                     TokenManager tokenManager=new TokenManager(requireContext());
                     tokenManager.saveToken(token);
                     updateNavigation(tokenManager.getRole());
+
+                    Integer accountId = new TokenManager(requireContext()).getAccountId();
+                    NotificationWebSocketManager.connect(
+                            requireContext(),
+                            accountId,
+                            ((MainActivity) requireActivity())::showNotification
+                    );
+
                     NavController navController = NavHostFragment.findNavController(LoginFragment.this);
                     if (invitationToken != null) {
                         Bundle bundle = new Bundle();
