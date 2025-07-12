@@ -171,48 +171,6 @@ public class MainActivity extends AppCompatActivity {
         NotificationWebSocketManager.disconnect();
     }
 
-    public void showNotification(GetNotificationDTO notification) {
-        Integer accountId = new TokenManager(this).getAccountId();
-
-        ClientUtils clientUtils = new ClientUtils(this);
-
-        clientUtils.getNotificationService().isNotificationSilenced(accountId).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
-                if (response.isSuccessful() && Boolean.FALSE.equals(response.body())) {
-                    displayLocalNotification(notification);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-
-    private void displayLocalNotification(GetNotificationDTO notification) {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        String channelId = "notifications_channel";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, "Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_bell)
-                .setContentTitle(notification.getTitle())
-                .setContentText(notification.getContent())
-                .setAutoCancel(true);
-
-        notificationManager.notify(notification.getId(), builder.build());
-    }
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
