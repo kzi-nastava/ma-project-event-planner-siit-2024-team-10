@@ -110,6 +110,9 @@ public interface EventService {
     @PUT("events/{eventId}")
     Call<UpdatedEventDTO> updateEvent(@Path("eventId") int eventId, @Body UpdateEventDTO updateEventDTO);
 
+    @DELETE("events/{eventId}")
+    Call<Void> deleteEvent(@Path("eventId") int eventId);
+
     @GET("events/{eventId}/guests")
     Call<GetGuestsDTO> getGuests(@Path("eventId") int eventId);
 

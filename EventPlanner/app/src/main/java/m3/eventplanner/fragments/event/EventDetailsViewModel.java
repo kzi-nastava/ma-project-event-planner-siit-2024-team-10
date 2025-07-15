@@ -40,6 +40,7 @@ public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<List<GetAgendaItemDTO>> agenda = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isFavourite = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isOwner = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> navigateHome = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isParticipating = new MutableLiveData<>();
@@ -48,6 +49,7 @@ public class EventDetailsViewModel extends ViewModel {
     private PdfUtils pdfUtils;
 
     public void initialize(Context context) {
+        navigateHome.setValue(false);
         this.clientUtils = new ClientUtils(context);
         this.pdfUtils = new PdfUtils(context);
     }
@@ -70,6 +72,10 @@ public class EventDetailsViewModel extends ViewModel {
 
     public LiveData<String> getError() {
         return error;
+    }
+
+    public LiveData<Boolean> getNavigateHome() {
+        return navigateHome;
     }
 
     public LiveData<String> getSuccessMessage() {
@@ -318,6 +324,31 @@ public class EventDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 error.setValue("Error generating PDF report");
+            }
+        });
+    }
+
+    public void deleteEvent(){
+        clientUtils.getEventService().deleteEvent(this.event.getValue().getId()).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Event deleted successfully");
+                    navigateHome.setValue(true);
+                } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        error.setValue(errorBody);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        error.setValue("An error occurred while parsing the error message.");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting event");
             }
         });
     }
