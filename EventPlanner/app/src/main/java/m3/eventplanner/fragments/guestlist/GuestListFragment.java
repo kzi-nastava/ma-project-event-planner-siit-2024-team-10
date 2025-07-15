@@ -60,7 +60,7 @@ public class GuestListFragment extends Fragment {
         binding.toggleFormBtn.setOnClickListener(v -> toggleFormVisibility());
         binding.addGuestBtn.setOnClickListener(v -> addGuestField());
         binding.submitBtn.setOnClickListener(v -> submitGuestList());
-        binding.exportGuestlitsToPdfButton.setOnClickListener(v -> {
+        binding.exportGuestlistToPdfButton.setOnClickListener(v -> {
             viewModel.exportToPdf();
         });
     }
