@@ -140,7 +140,7 @@ public class LoginFragment extends Fragment {
                     NotificationWebSocketManager.connect(
                             requireContext(),
                             accountId,
-                            ((MainActivity) requireActivity())::showNotification
+                            notification -> NotificationWebSocketManager.showNotification(requireContext(), notification)
                     );
 
                     NavController navController = NavHostFragment.findNavController(LoginFragment.this);

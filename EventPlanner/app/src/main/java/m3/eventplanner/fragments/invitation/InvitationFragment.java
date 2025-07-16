@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import m3.eventplanner.activities.MainActivity;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentInvitationBinding;
@@ -57,16 +58,7 @@ public class InvitationFragment extends Fragment {
 
         viewModel.getError().observe(getViewLifecycleOwner(), err -> {
             Toast.makeText(requireContext(), err, Toast.LENGTH_LONG).show();
-            if (err.contains("401") || err.contains("Unauthorized")) {
-                tokenManager.clearToken();
-                Bundle bundle = new Bundle();
-                bundle.putString("invitation-token", token);
-                NavOptions navOptions = new NavOptions.Builder()
-                        .setPopUpTo(NavHostFragment.findNavController(this).getGraph().getStartDestinationId(), true)
-                        .build();
-
-                NavHostFragment.findNavController(this).navigate(R.id.loginFragment, bundle, navOptions);
-            }
+            ((MainActivity)requireActivity()).logout();
         });
 
         if (email == null) {
