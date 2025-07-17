@@ -73,7 +73,7 @@ public class CommentApprovalViewModel extends ViewModel {
     }
 
     public void denyComment(int commentId) {
-        clientUtils.getCommentService().deleteComment(commentId).enqueue(new Callback<Void>() {
+        clientUtils.getCommentService().rejectComment(commentId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
