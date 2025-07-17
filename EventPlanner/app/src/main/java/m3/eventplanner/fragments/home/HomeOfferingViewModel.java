@@ -87,7 +87,7 @@ public class HomeOfferingViewModel extends ViewModel {
     }
 
     public void fetchPage(int page) {
-        if(!initLoad && this.filterOfferingLocation != null){
+        if(!initLoad || this.filterOfferingLocation != null){
             accountId=null;
         }
         clientUtils.getOfferingService().getOfferings(
@@ -185,6 +185,11 @@ public class HomeOfferingViewModel extends ViewModel {
             this.accountId=accountId;
         }
         fetchPage(page);
+    }
+
+    public void seeAll(){
+        this.initLoad = false;
+        resetFilters();
     }
 
     public void resetFilters() {
