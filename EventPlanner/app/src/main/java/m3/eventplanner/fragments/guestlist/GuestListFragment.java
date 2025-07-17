@@ -23,6 +23,7 @@ import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentGuestListBinding;
+import m3.eventplanner.utils.PdfUtils;
 
 public class GuestListFragment extends Fragment {
     private FragmentGuestListBinding binding;
@@ -50,7 +51,7 @@ public class GuestListFragment extends Fragment {
             eventId = args.getInt("eventId");
         }
 
-        viewModel.initialize(clientUtils, eventId);
+        viewModel.initialize(clientUtils, new PdfUtils(requireContext()), eventId);
         viewModel.getEventById(eventId);
         viewModel.loadGuestList();
 
@@ -59,6 +60,9 @@ public class GuestListFragment extends Fragment {
         binding.toggleFormBtn.setOnClickListener(v -> toggleFormVisibility());
         binding.addGuestBtn.setOnClickListener(v -> addGuestField());
         binding.submitBtn.setOnClickListener(v -> submitGuestList());
+        binding.exportGuestlistToPdfButton.setOnClickListener(v -> {
+            viewModel.exportToPdf();
+        });
     }
 
     private void setUpObservers() {

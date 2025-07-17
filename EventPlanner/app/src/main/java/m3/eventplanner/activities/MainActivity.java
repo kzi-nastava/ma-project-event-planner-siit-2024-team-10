@@ -34,8 +34,12 @@ import java.util.Set;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.GetNotificationDTO;
 import m3.eventplanner.utils.NotificationWebSocketManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -166,26 +170,6 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setVisibility(GONE);
         NotificationWebSocketManager.disconnect();
     }
-
-    public void showNotification(GetNotificationDTO notification) {
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        String channelId = "notifications_channel";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, "Notifications", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_bell)
-                .setContentTitle(notification.getTitle())
-                .setContentText(notification.getContent())
-                .setAutoCancel(true);
-
-        notificationManager.notify(notification.getId(), builder.build());
-    }
-
 
     @Override
     protected void onDestroy() {

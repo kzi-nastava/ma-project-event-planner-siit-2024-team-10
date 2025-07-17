@@ -97,7 +97,7 @@ public class HomeEventsViewModel extends ViewModel {
                 searchQuery,
                 sortBy,
                 sortDirection,
-                accountId
+                this.accountId
         ).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
@@ -162,6 +162,11 @@ public class HomeEventsViewModel extends ViewModel {
         this.sortBy = sortBy;
         this.sortDirection = sortDirection;
         fetchPage(page, this.initLoad, this.accountId);
+    }
+
+    public void seeAll(){
+        this.initLoad = false;
+        resetFilters();
     }
 
     public void resetFilters() {

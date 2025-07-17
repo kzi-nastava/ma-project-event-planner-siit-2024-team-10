@@ -61,6 +61,7 @@ public class HomeScreenFragment extends Fragment {
     private Integer loggedInID;
     private Boolean initialEventLoad = true;
     private Boolean initialOfferingLoad = true;
+    private Button seeAllEvents, seeAllOfferings;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -123,9 +124,13 @@ public class HomeScreenFragment extends Fragment {
                 paginationBar.setVisibility(View.VISIBLE);
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 pageNumber.setText(String.valueOf("Page "+ (eventsViewModel.currentPage + 1) +" of "+ eventsViewModel.totalPages));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", eventsViewModel.totalElements));
             } else {
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
                 handleNoDataFound(true);
             }
         });
@@ -140,9 +145,13 @@ public class HomeScreenFragment extends Fragment {
                 paginationBar.setVisibility(View.VISIBLE);
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 pageNumber.setText(String.valueOf("Page "+ (offeringsViewModel.currentPage + 1) +" of "+ offeringsViewModel.totalPages));
                 totalNumberOfElements.setText(String.format("Total Elements: %d", offeringsViewModel.totalElements));
             } else {
+                topEventsTextView.setVisibility(View.GONE);
+                topOfferingsTextView.setVisibility(View.GONE);
                 handleNoDataFound(false);
             }
         });
@@ -166,6 +175,7 @@ public class HomeScreenFragment extends Fragment {
         setUpPaginationButtons(view);
         setUpSearchBar(view);
         setUpOfferingRadioGroup(view);
+        setUpSeeAllItemsButton(view);
 
         setUpToggleGroup(view);
     }
@@ -209,7 +219,10 @@ public class HomeScreenFragment extends Fragment {
         searchEventView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                eventsViewModel.loadSearchedEvents(0,query);
+                if(query != ""){
+                    initialEventLoad = false;
+                    eventsViewModel.loadSearchedEvents(0,query);
+                }
                 return true;
             }
             @Override
@@ -224,7 +237,10 @@ public class HomeScreenFragment extends Fragment {
         searchOfferingView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                offeringsViewModel.loadSearchedOfferings(0,query);
+                if(query != ""){
+                    initialOfferingLoad = false;
+                    offeringsViewModel.loadSearchedOfferings(0,query);
+                }
                 return true;
             }
             @Override
@@ -373,6 +389,21 @@ public class HomeScreenFragment extends Fragment {
         });
     }
 
+    private void setUpSeeAllItemsButton(View view){
+        seeAllEvents = view.findViewById(R.id.see_all_events_btn);
+        seeAllOfferings = view.findViewById(R.id.see_all_offerings_btn);
+
+        seeAllEvents.setOnClickListener(v -> {
+            initialEventLoad = false;
+            eventsViewModel.seeAll();
+        });
+
+        seeAllOfferings.setOnClickListener(v -> {
+            initialOfferingLoad = false;
+            offeringsViewModel.seeAll();
+        });
+    }
+
     private Boolean getSelectedOfferingType(View view) {
         RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
         int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
@@ -402,8 +433,10 @@ public class HomeScreenFragment extends Fragment {
     private void handleNoDataFound(Boolean isEvent) {
         if (isEvent){
             noCardsFoundTextView.setText(R.string.no_events);
+            seeAllEvents.setVisibility(View.VISIBLE);
         }else{
             noCardsFoundTextView.setText(R.string.no_offerings);
+            seeAllOfferings.setVisibility(View.VISIBLE);
         }
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
@@ -480,10 +513,9 @@ public class HomeScreenFragment extends Fragment {
                     e.printStackTrace();
                 }
             }
-
+            initialEventLoad = false;
             eventsViewModel.loadFilteredEvents(0, eventTypeId, location, maxParticipants, minRating, startDateString, endDateString, initialEventLoad, loggedInID);
             bottomSheetDialog.dismiss();
-            initialEventLoad=false;
         });
 
         resetFiltersButton.setOnClickListener(v->{
@@ -578,10 +610,10 @@ public class HomeScreenFragment extends Fragment {
             SwitchCompat switchAvailable = bottomSheetView.findViewById(R.id.switch_available);
             Boolean isAvailable = switchAvailable.isChecked() ? true : null;
 
+            initialOfferingLoad = false;
             offeringsViewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable, this.initialOfferingLoad, this.loggedInID);
 
             bottomSheetDialog.dismiss();
-            initialOfferingLoad = false;
         });
 
         resetFiltersButton.setOnClickListener(v->{
