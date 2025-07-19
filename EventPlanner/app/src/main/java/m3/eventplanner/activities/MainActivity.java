@@ -109,15 +109,25 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         Intent intent = getIntent();
-        String action = intent.getAction();
         Uri data = intent.getData();
 
-        if (Intent.ACTION_VIEW.equals(action) && data != null) {
-            String invitationToken = data.getQueryParameter("invitation-token");
-            if (invitationToken != null) {
-                Bundle bundle = new Bundle();
-                bundle.putString("invitation-token", invitationToken);
-                navController.navigate(R.id.invitationFragment, bundle);
+        if (Intent.ACTION_VIEW.equals(intent.getAction()) && data != null) {
+            String host = data.getHost();
+
+            if ("accept-invite".equals(host)) {
+                String invitationToken = data.getQueryParameter("invitation-token");
+                if (invitationToken != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("invitation-token", invitationToken);
+                    navController.navigate(R.id.invitationFragment, bundle);
+                }
+            } else if ("activate-account".equals(host)) {
+                String activationToken = data.getQueryParameter("token");
+                if (activationToken != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("activation-token", activationToken);
+                    navController.navigate(R.id.activateAccountFragment, bundle);
+                }
             }
         }
 
@@ -135,12 +145,24 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
 
         Uri data = intent.getData();
-        if (data != null) {
-            String invitationToken = data.getQueryParameter("invitation-token");
-            if (invitationToken != null) {
-                Bundle bundle = new Bundle();
-                bundle.putString("invitation-token", invitationToken);
-                navController.navigate(R.id.invitationFragment, bundle);
+
+        if (Intent.ACTION_VIEW.equals(intent.getAction()) && data != null) {
+            String host = data.getHost();
+
+            if ("accept-invite".equals(host)) {
+                String invitationToken = data.getQueryParameter("invitation-token");
+                if (invitationToken != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("invitation-token", invitationToken);
+                    navController.navigate(R.id.invitationFragment, bundle);
+                }
+            } else if ("activate-account".equals(host)) {
+                String activationToken = data.getQueryParameter("activation-token");
+                if (activationToken != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("activation-token", activationToken);
+                    navController.navigate(R.id.activateAccountFragment, bundle);
+                }
             }
         }
     }
