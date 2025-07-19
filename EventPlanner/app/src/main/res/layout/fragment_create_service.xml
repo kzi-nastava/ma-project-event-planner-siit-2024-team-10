@@ -253,44 +253,19 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <RadioGroup
-                android:checkedButton="@+id/conformation_method"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <RadioButton
-                    android:id="@+id/event_organizer"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:enabled="true"
-                    android:text="@string/automatic"/>
-                <RadioButton
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:enabled="true"
-                    android:text="@string/manual"/>
-            </RadioGroup>
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/serviceAvailabilityGroup"
+            <CheckBox
+                android:id="@+id/checkboxAvailable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp">
+                android:text="@string/available"
+                android:layout_margin="8dp"/>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonAvailable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/available"
-                    style="?attr/materialButtonOutlinedStyle" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonVisible"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/visible"
-                    style="?attr/materialButtonOutlinedStyle"/>
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+            <CheckBox
+                android:id="@+id/checkboxVisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/visible"
+                android:layout_margin="8dp"/>
 
             <Button
                 android:id="@+id/submit"

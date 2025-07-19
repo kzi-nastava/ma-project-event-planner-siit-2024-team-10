@@ -13,8 +13,8 @@ public class CreateServiceDTO {
     private double price;
     private double discount;
     private List<String> photos;
-    private boolean visible;
-    private boolean available;
+    private boolean isVisible;
+    private boolean isAvailable;
     private int maxDuration;
     private int minDuration;
     private int cancellationPeriod;
@@ -32,8 +32,8 @@ public class CreateServiceDTO {
         this.price = price;
         this.discount = discount;
         this.photos = photos;
-        this.visible = isVisible;
-        this.available = isAvailable;
+        this.isVisible = isVisible;
+        this.isAvailable = isAvailable;
         this.maxDuration = maxDuration;
         this.minDuration = minDuration;
         this.cancellationPeriod = cancellationPeriod;
@@ -114,19 +114,19 @@ public class CreateServiceDTO {
     }
 
     public boolean isVisible() {
-        return visible;
+        return isVisible;
     }
 
     public void setVisible(boolean visible) {
-        this.visible = visible;
+        this.isVisible = visible;
     }
 
     public boolean isAvailable() {
-        return available;
+        return isAvailable;
     }
 
     public void setAvailable(boolean available) {
-        this.available = available;
+        this.isAvailable = available;
     }
 
     public int getMaxDuration() {

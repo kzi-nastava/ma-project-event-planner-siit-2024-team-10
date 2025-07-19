@@ -31,6 +31,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.SelectedImagesAdapter;
@@ -136,14 +137,14 @@ public class CreateServiceFragment extends Fragment {
             }
         });
 
-        binding.serviceAvailabilityGroup.addOnButtonCheckedListener(
-                (group, checkedId, isChecked) -> {
-                    if (checkedId == R.id.buttonAvailable) {
-                        isAvailable = isChecked;
-                    } else if (checkedId == R.id.buttonVisible) {
-                        isVisible = isChecked;
-                    }
-                });
+        binding.checkboxAvailable.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isAvailable = isChecked;
+        });
+
+        binding.checkboxVisible.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isVisible = isChecked;
+        });
+
     }
 
     private void setupObservers() {
@@ -292,7 +293,16 @@ public class CreateServiceFragment extends Fragment {
         } else {
             minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
             maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
+            autoConfirm = false;
         }
+
+        binding.checkboxAvailable.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isAvailable = isChecked;
+        });
+
+        binding.checkboxVisible.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isVisible = isChecked;
+        });
 
         int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
         int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
