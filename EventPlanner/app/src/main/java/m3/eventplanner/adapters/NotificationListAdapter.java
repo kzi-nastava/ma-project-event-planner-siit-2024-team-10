@@ -12,15 +12,15 @@ import com.google.android.material.card.MaterialCardView;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.List;
+import java.util.Collection;
 import m3.eventplanner.R;
-import m3.eventplanner.models.Notification;
+import m3.eventplanner.models.GetNotificationDTO;
 
 public class NotificationListAdapter extends RecyclerView.Adapter<NotificationListAdapter.NotificationViewHolder> {
 
-    private List<Notification> notificationItemList;
+    private Collection<GetNotificationDTO> notificationItemList;
 
-    public NotificationListAdapter(List<Notification> notificationItemList) {
+    public NotificationListAdapter(Collection<GetNotificationDTO> notificationItemList) {
         this.notificationItemList = notificationItemList;
     }
 
@@ -49,11 +49,17 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
 
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
-        Notification notification = notificationItemList.get(position);
+        GetNotificationDTO notification = (GetNotificationDTO) notificationItemList.toArray()[position];
 
         holder.titleTextView.setText(notification.getTitle());
         holder.descriptionTextView.setText(notification.getContent());
-        String formattedDate = formatDateTime(notification.getDate());
+        String formattedDate;
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(notification.getDate());
+            formattedDate = dateTime.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM));
+        } catch (Exception e) {
+            formattedDate = notification.getDate();
+        }
         holder.dateAndTimeTextView.setText(formattedDate);
 
         if (!notification.isRead()) {
@@ -61,10 +67,6 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationLi
         } else {
             holder.notificationCard.setCardBackgroundColor(Color.LTGRAY);
         }
-    }
-    private String formatDateTime(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-        return dateTime.format(formatter);
     }
 
     @Override

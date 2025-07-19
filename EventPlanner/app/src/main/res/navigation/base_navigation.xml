@@ -18,8 +18,8 @@
             android:id="@+id/action_homeScreenFragment_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />
         <action
-            android:id="@+id/action_homeScreenFragment_to_createReservationFragment"
-            app:destination="@id/createReservationFragment" />
+            android:id="@+id/action_homeScreenFragment_to_serviceDetailsFragment"
+            app:destination="@id/serviceDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/manageOfferingsFragment"
@@ -34,6 +34,7 @@
             android:id="@+id/action_manageOfferingsFragment_to_serviceDetailsFragment"
             app:destination="@id/serviceDetailsFragment"
             app:launchSingleTop="true" />
+
 
     </fragment>
     <fragment
@@ -61,7 +62,7 @@
         android:label="Event Details" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="m3.eventplanner.fragments.NotificationFragment"
+        android:name="m3.eventplanner.fragments.notification.NotificationFragment"
         android:label="Notifications" />
     <fragment
         android:id="@+id/registerFragment"
@@ -100,6 +101,14 @@
         tools:layout="@layout/fragment_create_reservation" >
     </fragment>
     <fragment
+        android:id="@+id/guestListFragment"
+        android:name="m3.eventplanner.fragments.guestlist.GuestListFragment"
+        android:label="Guest List" >
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
         android:id="@+id/userDetailsFragment"
         android:name="m3.eventplanner.fragments.user.UserDetailsFragment"
         android:label="@string/account_details" />
@@ -125,4 +134,18 @@
         android:name="m3.eventplanner.fragments.user.CalendarFragment"
         android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/reservationConfirmationFragment"
+        android:name="m3.eventplanner.fragments.reservation.ReservationConfirmationFragment"
+        android:label="Reservation Confirmation"
+        tools:layout="@layout/fragment_reservation_confirmation" />
+
+    <fragment
+        android:id="@+id/invitationFragment"
+        android:name="m3.eventplanner.fragments.invitation.InvitationFragment"
+        android:label="Invitation">
+        <argument
+            android:name="invitation-token"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -40,13 +40,16 @@ public class ManageOfferingsViewModel extends ViewModel {
     private String searchQuery;
     private String sortBy;
     private String sortDirection;
-    private int accountId;
+    private Boolean initLoad = true;
+    private Integer accountId;
+    private Integer userId;
     private MutableLiveData<Double> highestPrice = new MutableLiveData<>();
     public LiveData<Double> getHighestPrice() {
         return highestPrice;
     }
 
-    public void initialize(ClientUtils clientUtils) {
+    public void initialize(ClientUtils clientUtils, Integer userId) {
+        this.userId=userId;
         this.clientUtils = clientUtils;
     }
 
@@ -86,6 +89,9 @@ public class ManageOfferingsViewModel extends ViewModel {
     }
 
     public void fetchPage(int page) {
+        if(!initLoad && this.filterOfferingLocation != null){
+            accountId=null;
+        }
         clientUtils.getOfferingService().getOfferings(
                 page,
                 pageSize,
@@ -101,7 +107,9 @@ public class ManageOfferingsViewModel extends ViewModel {
                 filterIsAvailable,
                 sortBy,
                 sortDirection,
-                accountId
+                accountId,
+                userId
+
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetOfferingDTO>> call, Response<PagedResponse<GetOfferingDTO>> response) {
@@ -141,7 +149,7 @@ public class ManageOfferingsViewModel extends ViewModel {
         }
     }
 
-    public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable) {
+    public void loadFilteredOfferings(int page, Integer categoryId, String location, Integer minPrice, Integer maxPrice, Integer minDuration, Integer minDiscount, Double minRating, Boolean isAvailable, Boolean initialLoad, Integer accountId) {
         this.filterCategoryId = categoryId;
         this.filterOfferingLocation = location;
         this.filterMinPrice = minPrice;
@@ -150,6 +158,12 @@ public class ManageOfferingsViewModel extends ViewModel {
         this.filterMinDuration = minDuration;
         this.filterMinRating = minRating;
         this.filterIsAvailable = isAvailable;
+        this.initLoad = initialLoad;
+        if (!initialLoad && this.filterOfferingLocation!=null){
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
         fetchPage(page);
     }
 
@@ -161,11 +175,18 @@ public class ManageOfferingsViewModel extends ViewModel {
     public void loadSortedOfferings(int page, String sortBy, String sortDirection) {
         this.sortBy = sortBy;
         this.sortDirection = sortDirection;
+
         fetchPage(page);
     }
 
-    public void loadOfferings(int page, Boolean isService){
+    public void loadOfferings(int page, Boolean isService, Boolean initialLoad, Integer accountId){
         this.isService = isService;
+        this.initLoad = initialLoad;
+        if (!initialLoad && this.filterOfferingLocation!=null){
+            this.accountId=null;
+        }else{
+            this.accountId=accountId;
+        }
         fetchPage(page);
     }
 

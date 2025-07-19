@@ -2,13 +2,17 @@ package m3.eventplanner.activities;
 
 import static android.view.View.GONE;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,10 +20,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -30,7 +34,12 @@ import java.util.Set;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
-import m3.eventplanner.fragments.LoginFragment;
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.GetNotificationDTO;
+import m3.eventplanner.utils.NotificationWebSocketManager;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         topLevelDestinations.add(R.id.userDetailsFragment);
         topLevelDestinations.add(R.id.favouritesFragment);
         topLevelDestinations.add(R.id.calendarFragment);
+        topLevelDestinations.add(R.id.reservationConfirmationFragment);
 
         navController = Navigation.findNavController(this, R.id.fragment_nav_content_main);
 
@@ -98,6 +108,19 @@ public class MainActivity extends AppCompatActivity {
                 .setOpenableLayout(drawer)
                 .build();
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+
+        if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            String invitationToken = data.getQueryParameter("invitation-token");
+            if (invitationToken != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("invitation-token", invitationToken);
+                navController.navigate(R.id.invitationFragment, bundle);
+            }
+        }
+
         NavigationUI.setupWithNavController(navigationView, navController);
 
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -105,6 +128,21 @@ public class MainActivity extends AppCompatActivity {
         logoutButton.setOnClickListener(v -> {
             logout();
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Uri data = intent.getData();
+        if (data != null) {
+            String invitationToken = data.getQueryParameter("invitation-token");
+            if (invitationToken != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("invitation-token", invitationToken);
+                navController.navigate(R.id.invitationFragment, bundle);
+            }
+        }
     }
 
 
@@ -130,5 +168,12 @@ public class MainActivity extends AppCompatActivity {
         drawer.close();
         navController.navigate(R.id.homeScreenFragment);
         logoutButton.setVisibility(GONE);
+        NotificationWebSocketManager.disconnect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationWebSocketManager.disconnect();
     }
 }

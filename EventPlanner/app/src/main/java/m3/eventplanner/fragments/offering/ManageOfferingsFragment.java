@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -26,147 +25,92 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import m3.eventplanner.R;
-import m3.eventplanner.adapters.EventListAdapter;
 import m3.eventplanner.adapters.OfferingListAdapter;
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.fragments.home.HomeEventsViewModel;
-import m3.eventplanner.fragments.home.HomeOfferingViewModel;
-import m3.eventplanner.models.GetEventTypeDTO;
+import m3.eventplanner.databinding.FragmentFavouritesBinding;
+import m3.eventplanner.databinding.FragmentManageOfferingsBinding;
+import m3.eventplanner.fragments.user.FavouritesViewModel;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
 import m3.eventplanner.models.Offering;
 
 public class ManageOfferingsFragment extends Fragment {
-    private View offeringSearchBar, paginationBar;
-    private RecyclerView contentRecyclerView;
-    private TextView noCardsFoundTextView, pageNumber, totalNumberOfElements;
-    private ManageOfferingsViewModel offeringsViewModel;
-    private OfferingListAdapter offeringAdapter;
-    private SearchView searchOfferingView;
+    private FragmentManageOfferingsBinding binding;
+    private ManageOfferingsViewModel viewModel;
     private ClientUtils clientUtils;
-    private FloatingActionButton fab;
+    private Integer accountId;
+    private Boolean initialLoad = true;
+    private OfferingListAdapter offeringAdapter;
+
+    public ManageOfferingsFragment() {
+        // Required empty public constructor
+    }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        clientUtils = new ClientUtils(requireContext());
-        offeringsViewModel = new ViewModelProvider(this).get(ManageOfferingsViewModel.class);
-        offeringsViewModel.initialize(clientUtils);
-        View rootView = inflater.inflate(R.layout.fragment_manage_offerings, container, false);
-        initializeUIElements(rootView);
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        offeringsViewModel.fetchCategories();
-        return rootView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentManageOfferingsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        offeringsViewModel.getPagedData().observe(getViewLifecycleOwner(), pagedOfferings -> {
+        viewModel = new ViewModelProvider(this).get(ManageOfferingsViewModel.class);
+        TokenManager tokenManager = new TokenManager(requireContext());
+        this.accountId= tokenManager.getAccountId();
+        if(accountId==0)
+            accountId=null;
+        this.clientUtils = new ClientUtils(requireContext());
+        viewModel.initialize(clientUtils,tokenManager.getUserId());
+        binding.contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        viewModel.fetchCategories();
+
+        viewModel.getPagedData().observe(getViewLifecycleOwner(), pagedOfferings -> {
             if (pagedOfferings != null && !pagedOfferings.getContent().equals(new ArrayList<>())) {
                 offeringAdapter = new OfferingListAdapter(pagedOfferings.getContent());
-                contentRecyclerView.setAdapter(offeringAdapter);
+                binding.contentRecyclerView.setAdapter(offeringAdapter);
                 offeringAdapter.notifyDataSetChanged();
-                contentRecyclerView.setVisibility(View.VISIBLE);
-                noCardsFoundTextView.setVisibility(View.GONE);
-                paginationBar.setVisibility(View.VISIBLE);
-                pageNumber.setText(String.valueOf("Page " + (offeringsViewModel.currentPage + 1) + " of " + offeringsViewModel.totalPages));
-                totalNumberOfElements.setText(String.format("Total Elements: %d", offeringsViewModel.totalElements));
+                binding.noCardsFoundTextView.setVisibility(View.GONE);
+                binding.paginationBar.paginationCurrentPage.setText(String.valueOf("Page "+ (viewModel.currentPage + 1) +" of "+ viewModel.totalPages));
+                binding.paginationBar.totalNumberOfElements.setText(String.format("Total Elements: %d", viewModel.totalElements));
             } else {
-                handleNoDataFound();
+                binding.noCardsFoundTextView.setVisibility(View.VISIBLE);
+                binding.contentRecyclerView.setVisibility(View.GONE);
+                binding.paginationBar.getRoot().setVisibility(View.GONE);
             }
         });
 
-        offeringsViewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
+        viewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
             if (errorMessage != null && !errorMessage.isEmpty()) {
                 Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Initial load of offerings
-        Boolean isService = getSelectedOfferingType(view);
-        offeringsViewModel.loadOfferings(0, isService);
-
-        setUpOfferingSortSpinners(view);
-        setUpFilterButtons(view);
-        setUpPaginationButtons(view);
-        setUpSearchBar(view);
-        setUpOfferingRadioGroup(view);
+        setUpOfferingSortSpinners();
+        setUpFilterButtons();
+        setUpPaginationButtons();
+        setUpSearchBar();
+        setUpOfferingRadioGroup();
     }
 
-    private void initializeUIElements(View rootView) {
-        offeringSearchBar = rootView.findViewById(R.id.offeringSearchBar);
-        paginationBar = rootView.findViewById(R.id.paginationBar);
-        contentRecyclerView = rootView.findViewById(R.id.contentRecyclerView);
-        noCardsFoundTextView = rootView.findViewById(R.id.noCardsFoundTextView);
-        pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
-        totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
-
-        fab = rootView.findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
-        fab.setOnClickListener(view -> {
-            NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.action_manageOfferingsFragment_to_createOfferingFragment);
-        });
-
-        // Show offerings-related views
-        offeringSearchBar.setVisibility(View.VISIBLE);
-        paginationBar.setVisibility(View.VISIBLE);
-        contentRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void setUpPaginationButtons(View rootView) {
-        Button paginationForwardButton = rootView.findViewById(R.id.paginationForwardButton);
-        Button paginationBackButton = rootView.findViewById(R.id.paginationBackButton);
-        pageNumber = rootView.findViewById(R.id.paginationCurrentPage);
-        totalNumberOfElements = rootView.findViewById(R.id.totalNumberOfElements);
-
-        paginationForwardButton.setOnClickListener(v -> {
-            offeringsViewModel.fetchNextPage();
-        });
-
-        paginationBackButton.setOnClickListener(v -> {
-            offeringsViewModel.fetchPreviousPage();
-        });
-    }
-    private void setUpSearchBar(View view) {
-        searchOfferingView = view.findViewById(R.id.offering_search_text);
-
-        searchOfferingView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                offeringsViewModel.loadSearchedOfferings(0,query);
-                return true;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-        });
-
-    }
-
-    private void setUpOfferingSortSpinners(View view) {
-        Spinner offeringSortBySpinner = view.findViewById(R.id.btn_sort_offerings_by);
-        Spinner offeringSortDirectionSpinner = view.findViewById(R.id.btn_sort_offering_direction);
+    private void setUpOfferingSortSpinners() {
+        Spinner offeringSortBySpinner = binding.offeringSearchBar.btnSortOfferingsBy;
+        Spinner offeringSortDirectionSpinner = binding.offeringSearchBar.btnSortOfferingDirection;
 
         offeringSortBySpinner.setAdapter(createSpinnerAdapter(R.array.offering_sort_criteria));
         offeringSortDirectionSpinner.setAdapter(createSpinnerAdapter(R.array.sort_directions));
@@ -191,7 +135,7 @@ public class ManageOfferingsFragment extends Fragment {
                 String sortBy = sortCriteriaMapping.get(selectedSortBy);
                 String sortDirection = sortDirectionMapping.get(selectedSortDirection);
 
-                offeringsViewModel.loadSortedOfferings(0, sortBy, sortDirection);
+                viewModel.loadSortedOfferings(0, sortBy, sortDirection);
             }
 
             @Override
@@ -214,45 +158,24 @@ public class ManageOfferingsFragment extends Fragment {
         return adapter;
     }
 
-    private void setUpFilterButtons(View view) {
-        Button btnOfferingFilters = view.findViewById(R.id.filter_offerings_button);
+    private void setUpFilterButtons() {
+        Button btnOfferingFilters = binding.offeringSearchBar.filterOfferingsButton;
         btnOfferingFilters.setOnClickListener(v -> {
-            Boolean isService = getSelectedOfferingType(view);
+            Boolean isService = getSelectedOfferingType();
             showOfferingFilterBottomSheet(isService);
         });
     }
 
-    private Boolean getSelectedOfferingType(View view) {
-        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
+    private Boolean getSelectedOfferingType() {
+        RadioGroup offeringRadioGroup = binding.offeringSearchBar.offeringRadioGroup;
         int selectedId = offeringRadioGroup.getCheckedRadioButtonId();
         if (selectedId != -1) {
-            String selectedText = ((RadioButton) view.findViewById(selectedId)).getText().toString();
+            String selectedText = ((RadioButton) binding.offeringSearchBar.getRoot().findViewById(selectedId)).getText().toString();
             return "Service".equalsIgnoreCase(selectedText);
         } else {
             Log.e("HomeScreenFragment", "No radio button selected.");
             return null;
         }
-    }
-
-    private void setUpOfferingRadioGroup(View view) {
-        RadioGroup offeringRadioGroup = view.findViewById(R.id.offering_radio_group);
-
-        offeringRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            Boolean isService = getSelectedOfferingType(view);
-            if (isService != null) {
-                offeringsViewModel.loadOfferings(0, isService);
-                offeringsViewModel.resetFilters();
-            } else {
-                Log.e("HomeScreenFragment", "Invalid offering type selection.");
-            }
-        });
-    }
-
-    private void handleNoDataFound() {
-        noCardsFoundTextView.setText(R.string.no_offerings);
-        noCardsFoundTextView.setVisibility(View.VISIBLE);
-        contentRecyclerView.setVisibility(View.GONE);
-        paginationBar.setVisibility(View.GONE);
     }
 
     private void showOfferingFilterBottomSheet(Boolean isService) {
@@ -262,7 +185,7 @@ public class ManageOfferingsFragment extends Fragment {
 
         RangeSlider priceRangeSlider = bottomSheetView.findViewById(R.id.price_range_slider);
 
-        offeringsViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
+        viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null && !categories.isEmpty()) {
                 setUpCategorySpinner(bottomSheetView, categories);
             } else {
@@ -270,7 +193,7 @@ public class ManageOfferingsFragment extends Fragment {
             }
         });
 
-        offeringsViewModel.getHighestPrice().observe(getViewLifecycleOwner(), highestPrice -> {
+        viewModel.getHighestPrice().observe(getViewLifecycleOwner(), highestPrice -> {
             if (highestPrice != null) {
                 priceRangeSlider.setValueTo(highestPrice.floatValue());
 
@@ -284,7 +207,7 @@ public class ManageOfferingsFragment extends Fragment {
                 Toast.makeText(getContext(), R.string.highest_price_error, Toast.LENGTH_SHORT);
             }
         });
-        offeringsViewModel.fetchHighestPrice(isService);
+        viewModel.fetchHighestPrice(isService);
 
         setUpVisibilityForOfferingType(bottomSheetView, isService);
 
@@ -339,13 +262,14 @@ public class ManageOfferingsFragment extends Fragment {
             SwitchCompat switchAvailable = bottomSheetView.findViewById(R.id.switch_available);
             Boolean isAvailable = switchAvailable.isChecked() ? true : null;
 
-            offeringsViewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable);
+            viewModel.loadFilteredOfferings(0, categoryId,location,priceFrom,priceTo,duration,minDiscount,minRating,isAvailable, this.initialLoad, this.accountId);
 
             bottomSheetDialog.dismiss();
+            initialLoad = false;
         });
 
         resetFiltersButton.setOnClickListener(v->{
-            offeringsViewModel.resetFilters();
+            viewModel.resetFilters();
             bottomSheetDialog.dismiss();
         });
 
@@ -394,5 +318,43 @@ public class ManageOfferingsFragment extends Fragment {
         } else {
             serviceDurationView.setVisibility(View.GONE);
         }
+    }
+
+    private void setUpPaginationButtons() {
+        binding.paginationBar.paginationForwardButton.setOnClickListener(v -> {
+            viewModel.fetchNextPage();
+        });
+        binding.paginationBar.paginationBackButton.setOnClickListener(v -> {
+            viewModel.fetchPreviousPage();
+        });
+    }
+
+    private void setUpSearchBar() {
+        binding.offeringSearchBar.title.setText("Your Offerings");
+        binding.offeringSearchBar.offeringSearchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                viewModel.loadSearchedOfferings(0,query);
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+        });
+
+    }
+
+    private void setUpOfferingRadioGroup() {
+        binding.offeringSearchBar.offeringRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            Boolean isService = getSelectedOfferingType();
+            if (isService != null) {
+                viewModel.loadOfferings(0, isService, this.initialLoad, this.accountId);
+                viewModel.resetFilters();
+            } else {
+                Log.e("ManageOfferingsFragment", "Invalid offering type selection.");
+            }
+        });
     }
 }

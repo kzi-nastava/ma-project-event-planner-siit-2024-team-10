@@ -28,6 +28,7 @@ public class ClientUtils {
     private ReservationService reservationService;
     private ServiceService serviceService;
     private UserService userService;
+    private NotificationService notificationService;
     private ImageUploadService imageUploadService;
 
     public ClientUtils(Context context){
@@ -61,6 +62,7 @@ public class ClientUtils {
         serviceService = retrofit.create(ServiceService.class);
         imageUploadService = retrofit.create(ImageUploadService.class);
         userService = retrofit.create(UserService.class);
+        notificationService = retrofit.create(NotificationService.class);
     }
 
     public EventService getEventService() {
@@ -90,4 +92,5 @@ public class ClientUtils {
     public UserService getUserService() {
         return userService;
     }
+    public NotificationService getNotificationService() { return notificationService; }
 }

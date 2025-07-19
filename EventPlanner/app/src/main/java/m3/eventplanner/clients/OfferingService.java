@@ -50,7 +50,8 @@ public interface OfferingService {
             @Query("isAvailable") Boolean isAvailable,
             @Query("sortBy") String sortBy,
             @Query("sortDirection") String sortDirection,
-            @Query("accountId") Integer accountId
+            @Query("accountId") Integer accountId,
+            @Query("providerId") Integer providerId
             );
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);

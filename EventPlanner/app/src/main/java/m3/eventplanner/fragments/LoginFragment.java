@@ -35,11 +35,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import m3.eventplanner.R;
+import m3.eventplanner.activities.MainActivity;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.AuthService;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.LoginRequestDTO;
 import m3.eventplanner.models.LoginResponseDTO;
+import m3.eventplanner.utils.NotificationWebSocketManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,6 +52,7 @@ public class LoginFragment extends Fragment {
     private ClientUtils clientUtils;
     private NavigationView navigationView;
     private TextView loginError;
+    private String invitationToken;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -65,6 +68,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        invitationToken = getArguments() != null ? getArguments().getString("invitation-token") : null;
 
         initializeRegisterMessage(view);
         emailInput=view.findViewById(R.id.email);
@@ -130,8 +135,22 @@ public class LoginFragment extends Fragment {
                     TokenManager tokenManager=new TokenManager(requireContext());
                     tokenManager.saveToken(token);
                     updateNavigation(tokenManager.getRole());
+
+                    Integer accountId = new TokenManager(requireContext()).getAccountId();
+                    NotificationWebSocketManager.connect(
+                            requireContext(),
+                            accountId,
+                            notification -> NotificationWebSocketManager.showNotification(requireContext(), notification)
+                    );
+
                     NavController navController = NavHostFragment.findNavController(LoginFragment.this);
-                    navController.navigate(R.id.homeScreenFragment);
+                    if (invitationToken != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("invitation-token", invitationToken);
+                        navController.navigate(R.id.invitationFragment, bundle);
+                    } else {
+                        navController.navigate(R.id.homeScreenFragment);
+                    }
                 } else {
                     loginError.setVisibility(View.VISIBLE);
                 }

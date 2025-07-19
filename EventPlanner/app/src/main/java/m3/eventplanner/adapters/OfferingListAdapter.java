@@ -49,7 +49,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             if (!offering.isProduct()){
                 Bundle bundle = new Bundle();
                 bundle.putInt("selectedServiceId", offering.getId());
-                Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_createReservationFragment,bundle);
+                Navigation.findNavController(v).navigate(R.id.action_manageOfferingsFragment_to_serviceDetailsFragment,bundle);
             }
         });
 

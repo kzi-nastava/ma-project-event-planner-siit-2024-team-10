@@ -180,7 +180,6 @@
                         android:layout_marginBottom="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <!-- Provider Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -193,63 +192,92 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="16dp"
-                        android:background="#d0cfe1"
-                        android:clipToOutline="true"
-                        android:id="@+id/provider_profile_photo"
-                        android:contentDescription="Provider Profile Photo"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/profile_photo" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
-                        <TextView
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:background="#d0cfe1"
+                            android:clipToOutline="true"
+                            android:id="@+id/provider_profile_photo"
+                            android:contentDescription="Provider Profile Photo"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/profile_photo" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="Beauty Elegance Studio"
-                            android:id="@+id/provider_name"
-                            android:textColor="#2d3748"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="123 Beauty Street, City, Country"
-                            android:id="@+id/provider_address"
-                            android:textColor="#4a5568"
-                            android:textSize="14sp" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="Beauty Elegance Studio"
+                                android:id="@+id/provider_name"
+                                android:textColor="#2d3748"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="contact@beautyelegance.com"
-                            android:id="@+id/provider_email"
-                            android:textColor="#4a5568"
-                            android:textSize="14sp" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="123 Beauty Street, City, Country"
+                                android:id="@+id/provider_address"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="+1 (555) 123-4567"
-                            android:id="@+id/provider_phone"
-                            android:textColor="#4a5568"
-                            android:textSize="14sp" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="contact@beautyelegance.com"
+                                android:id="@+id/provider_email"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="+1 (555) 123-4567"
+                                android:id="@+id/provider_phone"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
+                        </LinearLayout>
                     </LinearLayout>
+
+                    <!-- Action Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp"
+                        android:gravity="end">
+
+                        <Button
+                            android:id="@+id/btn_view_provider"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="View Provider"
+                            android:layout_marginEnd="8dp" />
+
+                        <Button
+                            android:id="@+id/btn_contact_provider"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contact Us" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

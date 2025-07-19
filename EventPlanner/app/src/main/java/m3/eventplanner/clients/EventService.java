@@ -1,27 +1,24 @@
 package m3.eventplanner.clients;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
-import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.CreateAgendaItemDTO;
 import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateEventRatingDTO;
-import m3.eventplanner.models.CreateEventTypeDTO;
+import m3.eventplanner.models.CreateGuestListDTO;
 import m3.eventplanner.models.CreatedAgendaItemDTO;
 import m3.eventplanner.models.CreatedEventDTO;
 import m3.eventplanner.models.CreatedEventRatingDTO;
-import m3.eventplanner.models.CreatedEventTypeDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventStatsDTO;
+import m3.eventplanner.models.GetGuestDTO;
+import m3.eventplanner.models.GetGuestsDTO;
 import m3.eventplanner.models.PagedResponse;
 import m3.eventplanner.models.UpdateAgendaItemDTO;
 import m3.eventplanner.models.UpdateEventDTO;
-import m3.eventplanner.models.UpdateUserDTO;
 import m3.eventplanner.models.UpdatedAgendaItemDTO;
 import m3.eventplanner.models.UpdatedEventDTO;
-import m3.eventplanner.models.UpdatedUserDTO;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -110,7 +107,25 @@ public interface EventService {
     @Streaming
     Call<ResponseBody> getEventInfoReport(@Path("eventId") int eventId);
 
+    @GET("events/{eventId}/reports/guestlist")
+    @Headers({
+            "Accept: application/pdf"
+    })
+    @Streaming
+    Call<ResponseBody> getGuestlistReport(@Path("eventId") int eventId);
+
     @PUT("events/{eventId}")
     Call<UpdatedEventDTO> updateEvent(@Path("eventId") int eventId, @Body UpdateEventDTO updateEventDTO);
 
+    @DELETE("events/{eventId}")
+    Call<Void> deleteEvent(@Path("eventId") int eventId);
+
+    @GET("events/{eventId}/guests")
+    Call<GetGuestsDTO> getGuests(@Path("eventId") int eventId);
+
+    @POST("events/{eventId}/invite")
+    Call<Void> sendInvitations(@Path("eventId") int eventId, @Body CreateGuestListDTO guests);
+
+    @POST("events/process-invitation")
+    Call<Void> processInvitation(@Query("invitation-token") String token, @Body GetGuestDTO guest);
 }
