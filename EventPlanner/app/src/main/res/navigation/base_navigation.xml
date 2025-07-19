@@ -147,4 +147,9 @@
             android:name="invitation-token"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/activateAccountFragment"
+        android:name="m3.eventplanner.fragments.user.ActivateAccountFragment"
+        android:label="@string/processing_activation"
+        tools:layout="@layout/fragment_activate_account" />
 </navigation>
