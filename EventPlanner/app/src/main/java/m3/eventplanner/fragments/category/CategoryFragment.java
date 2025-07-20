@@ -79,6 +79,7 @@ public class CategoryFragment extends Fragment
             CategoryFormFragment dialog = new CategoryFormFragment();
             dialog.show(getChildFragmentManager(), "CategoryFormFragment");
         });
+
     }
 
     // CategoryFormFragment.OnCategoryFormFilledListener implementation

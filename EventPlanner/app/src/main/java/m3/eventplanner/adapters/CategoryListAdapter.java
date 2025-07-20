@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Iterator;
 import java.util.List;
 
 import m3.eventplanner.R;
@@ -129,4 +130,5 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             });
         }
     }
+
 }

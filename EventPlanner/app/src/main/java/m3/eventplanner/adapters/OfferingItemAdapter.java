@@ -53,7 +53,6 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
             super(itemView);
             offeringName = itemView.findViewById(R.id.offering_name);
             offeringPrice = itemView.findViewById(R.id.offering_price);
-            offeringType = itemView.findViewById(R.id.offering_type);
         }
 
         public void bind(GetOfferingDTO offering) {

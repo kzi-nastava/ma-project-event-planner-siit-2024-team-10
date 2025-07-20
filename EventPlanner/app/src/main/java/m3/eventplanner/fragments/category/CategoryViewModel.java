@@ -115,29 +115,38 @@ public class CategoryViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                error.setValue("Network error: " + t.getMessage());
+                error.setValue(t.getMessage());
             }
         });
     }
 
     public void deleteCategory(int categoryId) {
-        clientUtils.getCategoryService().deleteCategory(categoryId).enqueue(new Callback<Void>() {
+        clientUtils.getCategoryService().deleteCategory(categoryId).enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    successMessage.setValue("Category deleted successfully");
-                    loadCategories();
+                    Boolean deleted = response.body();
+                    if (deleted != null && deleted) {
+                        successMessage.setValue("Category deleted successfully");
+                        loadCategories();
+                    } else {
+                        error.setValue("Category cannot be deleted because it has associated services.");
+                    }
+                } else if (response.code() == 404) {
+                    error.setValue("Category not found");
                 } else {
                     error.setValue("Failed to delete category");
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 error.setValue("Network error: " + t.getMessage());
             }
         });
     }
+
+
 
     public void createCategory(String name, String description) {
         CreateCategoryDTO categoryDTO = new CreateCategoryDTO(name, description);
