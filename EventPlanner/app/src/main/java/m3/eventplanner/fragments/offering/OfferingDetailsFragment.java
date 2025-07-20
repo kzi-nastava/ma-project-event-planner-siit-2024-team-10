@@ -3,12 +3,10 @@ package m3.eventplanner.fragments.offering;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,21 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.squareup.picasso.Picasso;
 
 import m3.eventplanner.R;
-import m3.eventplanner.adapters.AgendaItemListAdapter;
 import m3.eventplanner.auth.TokenManager;
-import m3.eventplanner.databinding.FragmentEventDetailsBinding;
 import m3.eventplanner.databinding.FragmentOfferingDetailsBinding;
-import m3.eventplanner.fragments.event.AgendaItemFormFragment;
 import m3.eventplanner.models.GetOfferingDTO;
-import m3.eventplanner.models.GetOrganizerDTO;
 import m3.eventplanner.models.GetProviderDTO;
 import m3.eventplanner.models.GetServiceDTO;
 
@@ -157,22 +147,25 @@ public class OfferingDetailsFragment extends Fragment {
             binding.cancellationDeadline.setVisibility(View.VISIBLE);
             binding.reservationDeadline.setVisibility(View.VISIBLE);
 
-            binding.cancellationDeadline.setText(String.valueOf(service.getCancellationPeriod()));
-            binding.reservationDeadline.setText(String.valueOf(service.getReservationPeriod()));
+            binding.cancellationDeadline.setText(String.valueOf(service.getCancellationPeriod())+"hours");
+            binding.reservationDeadline.setText(String.valueOf(service.getReservationPeriod())+"hours");
 
+            binding.specification.setText(service.getSpecification());
             if (service.isAutoConfirm()) {
-                binding.duration.setText(String.valueOf(service.getMinDuration()));
+                binding.duration.setText(String.valueOf(service.getMinDuration())+"hours");
             } else {
-                binding.duration.setText(String.format("%d - %d", service.getMinDuration(), service.getMaxDuration()));
+                binding.duration.setText(String.format("%dh - %dh", service.getMinDuration(), service.getMaxDuration()));
             }
         } else {
-            // Za ProductDTO sakrij Service-specifične delove
+            binding.specificationLabel.setVisibility(View.GONE);
             binding.reservationDeadline.setVisibility(View.GONE);
             binding.cancellationDeadline.setVisibility(View.GONE);
-            binding.duration.setText("N/A");
+            binding.reservationDeadlineLabel.setVisibility(View.GONE);
+            binding.durationLabel.setVisibility(View.GONE);
+            binding.duration.setVisibility(View.GONE);
+            binding.cancellationDeadlineLabel.setVisibility(View.GONE);
         }
 
-        // Zajednička polja
         binding.offeringName.setText(offeringDTO.getName());
 
         if (offeringDTO.getCategory() != null) {
@@ -188,30 +181,30 @@ public class OfferingDetailsFragment extends Fragment {
 
         binding.description.setText(offeringDTO.getDescription());
 
-        // Cena se ispravno prikazuje kao string
-        binding.price.setText(String.format("%.2f €", offeringDTO.getPrice()));
-
-        // Popust takođe kao string sa znakom %
-        binding.discount.setText(String.format("%.2f%%", offeringDTO.getDiscount()));
+        binding.originalPrice.setText(String.format("%.2f $", offeringDTO.getPrice()));
+        binding.priceWithDiscount.setText(String.format("%.2f $", offeringDTO.getPrice() * (1 - offeringDTO.getDiscount() / 100)));
+        binding.discount.setText(String.format("(%.2f%%)", offeringDTO.getDiscount()));
 
         // Availability styling - green if available, red if not
         if (offeringDTO.isAvailable()) {
-            binding.isAvailable.setText("Available");
-            binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
-            binding.isAvailable.setTextColor(Color.WHITE);
+            binding.isAvailable.setVisibility(View.VISIBLE);
+            binding.isNotAvailable.setVisibility(View.GONE);
 
-            // Enable Book Now button
+            binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark)); // ili #2e7d32
+            binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
+
             binding.bookNowButton.setEnabled(true);
             binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
                     ContextCompat.getColor(requireContext(), R.color.brand_purple)
             ));
             binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.chocolate_brown));
         } else {
-            binding.isAvailable.setText("Not Available");
-            binding.isAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
-            binding.isAvailable.setTextColor(Color.WHITE);
+            binding.isAvailable.setVisibility(View.GONE);
+            binding.isNotAvailable.setVisibility(View.VISIBLE);
 
-            // Disable Book Now button
+            binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark)); // ili #c62828
+            binding.isNotAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
+
             binding.bookNowButton.setEnabled(false);
             binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
                     ContextCompat.getColor(requireContext(), android.R.color.darker_gray)
@@ -219,7 +212,7 @@ public class OfferingDetailsFragment extends Fragment {
             binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
         }
 
-        // Provider detalji
+
         GetProviderDTO provider = offeringDTO.getProvider();
 
         binding.providerName.setText(provider.getCompany().getName());

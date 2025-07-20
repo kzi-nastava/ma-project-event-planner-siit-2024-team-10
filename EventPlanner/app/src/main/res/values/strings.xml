@@ -26,6 +26,7 @@
     <string name="all_events">All Events In Your Area</string>
     <string name="event_name_search">Event Name</string>
     <string name="search">Search</string>
+    <string name="original_price_strikethrough"><strike>$100</strike></string>
     <string name="filter">Filter</string>
     <string name="restart_filter">Restart Filter</string>
     <string name="top_offerings_text">Top Services/Products In Your Area</string>

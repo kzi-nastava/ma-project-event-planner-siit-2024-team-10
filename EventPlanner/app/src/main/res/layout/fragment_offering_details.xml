@@ -68,64 +68,100 @@
 
                 </LinearLayout>
 
-                <!-- Category Label -->
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="#4a5568"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:background="@drawable/category_label_background"
-                    android:textStyle="bold"/>
-
+                <!-- Prva linija: kategorija -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical">
+                    android:gravity="start|center_vertical"
+                    android:layout_marginTop="8dp">
 
                     <TextView
-                        android:id="@+id/price"
+                        android:id="@+id/category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#2d3748"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"/>
-
-                    <TextView
-                        android:id="@+id/discount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#e53e3e"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="16dp"/>
+                        android:textColor="#4a5568"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/category_label_background"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/isAvailable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Available"
-                        android:textColor="#ffffff"
+                        android:textColor="#2e7d32"
                         android:textSize="14sp"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="6dp"
                         android:background="@drawable/availability_label_background"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
-                    <!-- Spacer to push Book Now button to the right -->
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1" />
+                    <TextView
+                        android:id="@+id/isNotAvailable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not Available"
+                        android:textColor="#c62828"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/unavailability_label_background"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+                </LinearLayout>
 
-                    <!-- Book Now Button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Stara cena (prekrizena i siva) -->
+                    <TextView
+                        android:id="@+id/original_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#888888"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/original_price_strikethrough" />
+
+                    <!-- Nova cena sa popustom (glavna boja) -->
+                    <TextView
+                        android:id="@+id/price_with_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#9c555d"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"
+                        android:text="$80" />
+
+                    <!-- Popust procenat -->
+                    <TextView
+                        android:id="@+id/discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#9c555d"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="16dp"
+                        android:text="(-20%)" />
+
+                </LinearLayout>
+
+                <!-- Četvrta linija: Book Now dugme ispod cena -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_marginTop="8dp">
+
                     <Button
                         android:id="@+id/book_now_button"
                         android:layout_width="wrap_content"
@@ -133,14 +169,17 @@
                         android:text="BOOK NOW"
                         android:textSize="14sp"
                         android:textStyle="bold"
+                        android:textColor="#ffffff"
+                        android:backgroundTint="@color/red_dark"
+                        android:drawableLeft="@drawable/ic_calendar"
+                        android:drawablePadding="8dp"
                         android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:backgroundTint="@color/brand_purple"
-                        android:textColor="@color/chocolate_brown"/>
+                        android:paddingVertical="8dp" />
+
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Service Details Card -->
+                <!-- Service Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,44 +194,97 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Service Details"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:id="@+id/durationLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Duration:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:id="@+id/reservationDeadlineLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reservation Deadline:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/reservationDeadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3 months"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/cancellationDeadlineLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cancellation Deadline:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/cancellationDeadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3 months"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/specificationLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Specification"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
-                        android:id="@+id/duration"
+                        android:id="@+id/specification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Duration: 3 hours"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/reservationDeadline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Reservation Deadline: 3 months"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/cancellationDeadline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Cancellation Deadline: 3 months"
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
                         android:text="Description"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -202,6 +294,7 @@
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
                 </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Provider Details Card -->
