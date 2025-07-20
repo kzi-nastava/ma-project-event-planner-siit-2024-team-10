@@ -175,5 +175,7 @@
     <string name="comments">Comments</string>
     <string name="no_comments_to_confirm">No comments to confirm</string>
     <string name="comment_management">Comment Management</string>
+    <string name="see_all_events">See All Events</string>
+    <string name="see_all_offerings">See All Offerings</string>
     <string name="delete_event">Delete event</string>
 </resources>

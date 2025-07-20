@@ -25,12 +25,32 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/toggleFormBtn"
-            android:text="@string/show_guest_form"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="2"
+            android:paddingBottom="12dp">
+
+            <Button
+                android:id="@+id/toggleFormBtn"
+                android:text="@string/show_guest_form"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/export_guestlist_to_pdf_button"
+                android:text="@string/export_to_pdf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+
 
         <View
             android:layout_width="match_parent"
