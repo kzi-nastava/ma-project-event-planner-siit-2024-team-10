@@ -11,4 +11,5 @@
     <color name="brand_highlight_green">#AEEDDC</color>
     <color name="vibrant_green">#008000</color>
     <color name="vibrant_red">#FF0000</color>
+    <color name="category_text_color">#FF0000</color>
 </resources>

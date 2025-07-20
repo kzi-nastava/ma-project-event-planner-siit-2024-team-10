@@ -34,10 +34,12 @@ public class GetOfferingDTO implements Parcelable, Serializable {
     private boolean isProduct;
     @SerializedName("photos")
     private List<String> photos;
+    @SerializedName("isAvailable")
+    private boolean isAvailable;
     public GetOfferingDTO() {
     }
 
-    public GetOfferingDTO(int id, GetOfferingCategoryDTO category, GetProviderDTO provider, String name, String description, String specification, GetLocationDTO location, double price, double discount, double averageRating, boolean isProduct,List<String> photos) {
+    public GetOfferingDTO(int id, GetOfferingCategoryDTO category, GetProviderDTO provider, String name, String description, String specification, GetLocationDTO location, double price, double discount, double averageRating, boolean isProduct,List<String> photos, boolean isAvailable) {
         this.id = id;
         this.category = category;
         this.provider = provider;
@@ -50,6 +52,7 @@ public class GetOfferingDTO implements Parcelable, Serializable {
         this.averageRating = averageRating;
         this.isProduct = isProduct;
         this.photos=photos;
+        this.isAvailable = isAvailable;
     }
 
     @Override
@@ -195,5 +198,13 @@ public class GetOfferingDTO implements Parcelable, Serializable {
 
     public void setPhotos(List<String> photos) {
         this.photos = photos;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 }

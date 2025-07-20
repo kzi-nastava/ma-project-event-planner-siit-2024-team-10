@@ -3,9 +3,11 @@ package m3.eventplanner.clients;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -53,6 +55,10 @@ public interface OfferingService {
             @Query("accountId") Integer accountId,
             @Query("providerId") Integer providerId
             );
+
+    @DELETE("offerings/{offeringId}")
+    Call<Void> deleteOffering(@Path("offeringId") int offeringId);
+
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
 }

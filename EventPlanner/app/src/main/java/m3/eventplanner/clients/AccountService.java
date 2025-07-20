@@ -1,6 +1,7 @@
 package m3.eventplanner.clients;
 
 import m3.eventplanner.models.AddFavouriteEventDTO;
+import m3.eventplanner.models.AddFavouriteOfferingDTO;
 import m3.eventplanner.models.Event;
 import m3.eventplanner.models.GetCalendarItemDTO;
 import m3.eventplanner.models.GetEventDTO;
@@ -34,6 +35,8 @@ public interface AccountService {
     })
     @GET("accounts/{accountId}/favourite-events/{eventId}")
     Call<GetEventDTO> getFavouriteEvent(@Path("accountId") int accountId, @Path("eventId") int eventId);
+    @GET("accounts/{accountId}/favourite-offering/{offeringId}")
+    Call<GetOfferingDTO> getFavouriteOffering(@Path("accountId") int accountId, @Path("offeringId") int offeringId);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -41,6 +44,8 @@ public interface AccountService {
     })
     @POST("accounts/{accountId}/favourite-events")
     Call<Void> addEventToFavourites(@Path("accountId") int accountId, @Body AddFavouriteEventDTO addFavouriteEventDTO);
+    @POST("accounts/{accountId}/favourite-offerings")
+    Call<Void> addOfferingToFavourites(@Path("accountId") int accountId, @Body AddFavouriteOfferingDTO addFavouriteOfferingDTO);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -48,6 +53,8 @@ public interface AccountService {
     })
     @DELETE("accounts/{accountId}/favourite-events/{eventId}")
     Call<Void> removeEventFromFavourites(@Path("accountId") int accountId, @Path("eventId") int eventId);
+    @DELETE("accounts/{accountId}/favourite-offerings/{offeringId}")
+    Call<Void> removeOfferingFromFavourites(@Path("accountId") int accountId, @Path("offeringId") int offeringId);
 
     @Headers({
             "User-Agent: Mobile-Android",

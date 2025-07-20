@@ -49,67 +49,94 @@
                     android:gravity="center_vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/offeringName"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Bridal hair and makeup"
                         android:textColor="#2d3748"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <ImageButton
-                        android:id="@+id/offering_card_heart"
+                        android:id="@+id/favourite_button"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Favorite"
                         android:padding="4dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/heart_outline" />
 
-                    <ImageButton
-                        android:id="@+id/offering_card_icon"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="Offering Details"
-                        android:padding="4dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_offering" />
                 </LinearLayout>
+
+                <!-- Category Label -->
+                <TextView
+                    android:id="@+id/category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#4a5568"
+                    android:textSize="14sp"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:background="@drawable/category_label_background"
+                    android:textStyle="bold"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical">
 
                     <TextView
+                        android:id="@+id/price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Price: $299"
                         android:textColor="#2d3748"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
                         android:layout_marginEnd="16dp"/>
 
                     <TextView
+                        android:id="@+id/discount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Discount: 10% off"
-                        android:textColor="#2d3748"
+                        android:textColor="#e53e3e"
                         android:textSize="16sp"
+                        android:textStyle="bold"
                         android:layout_marginEnd="16dp"/>
 
                     <TextView
+                        android:id="@+id/isAvailable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Available"
-                        android:textColor="#2d3748"
-                        android:textSize="16sp"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp"
-                        android:background="@color/brand_purple_light"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/availability_label_background"
                         android:textStyle="bold"/>
+
+                    <!-- Spacer to push Book Now button to the right -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Book Now Button -->
+                    <Button
+                        android:id="@+id/book_now_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BOOK NOW"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:backgroundTint="@color/brand_purple"
+                        android:textColor="@color/chocolate_brown"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -137,13 +164,7 @@
                         android:layout_marginBottom="8dp" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Category: Beauty"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
+                        android:id="@+id/duration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Duration: 3 hours"
@@ -151,6 +172,7 @@
                         android:layout_marginBottom="4dp" />
 
                     <TextView
+                        android:id="@+id/reservationDeadline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Reservation Deadline: 3 months"
@@ -158,6 +180,7 @@
                         android:layout_marginBottom="4dp" />
 
                     <TextView
+                        android:id="@+id/cancellationDeadline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Cancellation Deadline: 3 months"
@@ -167,19 +190,20 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:text="Description"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
+                        android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day."
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
             <!-- Provider Details Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
