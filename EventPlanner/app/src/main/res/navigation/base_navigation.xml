@@ -140,6 +140,12 @@
         tools:layout="@layout/fragment_reservation_confirmation" />
 
     <fragment
+        android:id="@+id/commentApprovalFragment"
+        android:name="m3.eventplanner.fragments.comment.CommentApprovalFragment"
+        android:label="Comment Manager"
+        tools:layout="@layout/fragment_comment_approval" />
+
+    <fragment
         android:id="@+id/invitationFragment"
         android:name="m3.eventplanner.fragments.invitation.InvitationFragment"
         android:label="Invitation">
