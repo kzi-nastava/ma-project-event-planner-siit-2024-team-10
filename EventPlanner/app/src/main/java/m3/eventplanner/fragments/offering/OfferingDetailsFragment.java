@@ -24,7 +24,6 @@ import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProviderDTO;
 import m3.eventplanner.models.GetServiceDTO;
 
-
 public class OfferingDetailsFragment extends Fragment {
 
     private GetOfferingDTO offering;
@@ -70,6 +69,7 @@ public class OfferingDetailsFragment extends Fragment {
             viewModel.loadOfferingDetails(offeringId, accountId, userId);
         }
     }
+
     private void setupObservers() {
         viewModel.getOffering().observe(getViewLifecycleOwner(), this::populateOfferingDetails);
 
@@ -97,22 +97,30 @@ public class OfferingDetailsFragment extends Fragment {
         viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
         {
             this.isOwner=isOwner;
-            if(isOwner){
+            if(isOwner || isAdmin){
                 binding.deleteOfferingButton.setVisibility(View.VISIBLE);
                 binding.editOfferingButton.setVisibility(View.VISIBLE);
+            } else {
+                binding.deleteOfferingButton.setVisibility(View.GONE);
+                binding.editOfferingButton.setVisibility(View.GONE);
             }
         });
     }
+
     private void setupClickListeners() {
         binding.favouriteButton.setOnClickListener(v -> {
             if (getArguments() != null) {
-                int eventId = getArguments().getInt("selectedEventId");
                 int accountId = new TokenManager(requireContext()).getAccountId();
                 viewModel.toggleFavourite(accountId);
             }
         });
 
         binding.deleteOfferingButton.setOnClickListener(v->{
+            if (!isOwner && !isAdmin) {
+                Toast.makeText(getContext(), "You cannot delete this", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 
             builder.setTitle("Confirm delete")
@@ -133,11 +141,17 @@ public class OfferingDetailsFragment extends Fragment {
         });
 
         binding.editOfferingButton.setOnClickListener(v->{
+            if (!isOwner && !isAdmin) {
+                Toast.makeText(getContext(), "You cannot edit this", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Bundle bundle = new Bundle();
             bundle.putInt("selectedServiceId", offering.getId());
             Navigation.findNavController(v).navigate(R.id.editServiceFragment, bundle);
         });
     }
+
     private void populateOfferingDetails(GetOfferingDTO offeringDTO) {
         this.offering = offeringDTO;
 
@@ -190,7 +204,7 @@ public class OfferingDetailsFragment extends Fragment {
             binding.isAvailable.setVisibility(View.VISIBLE);
             binding.isNotAvailable.setVisibility(View.GONE);
 
-            binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark)); // ili #2e7d32
+            binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark));
             binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
 
             binding.bookNowButton.setEnabled(true);
@@ -202,7 +216,7 @@ public class OfferingDetailsFragment extends Fragment {
             binding.isAvailable.setVisibility(View.GONE);
             binding.isNotAvailable.setVisibility(View.VISIBLE);
 
-            binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark)); // ili #c62828
+            binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark));
             binding.isNotAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
 
             binding.bookNowButton.setEnabled(false);
@@ -211,7 +225,6 @@ public class OfferingDetailsFragment extends Fragment {
             ));
             binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
         }
-
 
         GetProviderDTO provider = offeringDTO.getProvider();
 
@@ -224,6 +237,7 @@ public class OfferingDetailsFragment extends Fragment {
             binding.providerAddress.setText("N/A");
         }
 
+
         binding.providerEmail.setText(provider.getEmail());
         binding.providerPhone.setText(provider.getPhoneNumber());
 
@@ -233,7 +247,6 @@ public class OfferingDetailsFragment extends Fragment {
                     .into(binding.providerProfilePhoto);
         }
     }
-
 
     @Override
     public void onDestroyView() {

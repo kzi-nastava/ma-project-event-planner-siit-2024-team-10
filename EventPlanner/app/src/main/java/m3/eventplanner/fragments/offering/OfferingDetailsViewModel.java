@@ -170,7 +170,7 @@ public class OfferingDetailsViewModel extends ViewModel {
         }
     }
     public void deleteOffering(){
-        clientUtils.getOfferingService().deleteOffering(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
+        clientUtils.getServiceService().deleteService(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
