@@ -135,7 +135,7 @@ public class OfferingDetailsFragment extends Fragment {
         binding.editOfferingButton.setOnClickListener(v->{
             Bundle bundle = new Bundle();
             bundle.putInt("selectedServiceId", offering.getId());
-            Navigation.findNavController(v).navigate(R.id.editOfferingFragment, bundle);
+            Navigation.findNavController(v).navigate(R.id.editServiceFragment, bundle);
         });
     }
     private void populateOfferingDetails(GetOfferingDTO offeringDTO) {

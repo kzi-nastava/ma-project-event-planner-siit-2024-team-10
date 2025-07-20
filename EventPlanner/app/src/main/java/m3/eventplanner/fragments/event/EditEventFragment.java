@@ -6,10 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,24 +23,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.IntStream;
 
 import m3.eventplanner.R;
-import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.databinding.FragmentCreateEventBinding;
 import m3.eventplanner.databinding.FragmentEditEventBinding;
-import m3.eventplanner.models.CreateEventDTO;
 import m3.eventplanner.models.CreateLocationDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;

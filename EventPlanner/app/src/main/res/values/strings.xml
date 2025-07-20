@@ -177,4 +177,7 @@
     <string name="see_all_events">See All Events</string>
     <string name="see_all_offerings">See All Offerings</string>
     <string name="delete_event">Delete event</string>
+    <string name="manage_photos">Manage photos</string>
+    <string name="fixed_duration">Fixed duration</string>
+    <string name="min_duration">Min duration</string>
 </resources>

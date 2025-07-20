@@ -43,8 +43,8 @@
         android:label="@string/details"
         tools:layout="@layout/fragment_offering_details" >
         <action
-            android:id="@+id/action_manageOfferingsFragment_to_editOfferingFragment"
-            app:destination="@id/editOfferingFragment"
+            android:id="@+id/action_manageOfferingsFragment_to_editServiceFragment"
+            app:destination="@id/editServiceFragment"
             app:launchSingleTop="true" />
     </fragment>
 
@@ -53,8 +53,8 @@
         android:name="m3.eventplanner.fragments.service.CreateServiceFragment"
         android:label="Create Offering" />
     <fragment
-        android:id="@+id/editOfferingFragment"
-        android:name="m3.eventplanner.fragments.EditOfferingFragment"
+        android:id="@+id/editServiceFragment"
+        android:name="m3.eventplanner.fragments.service.EditServiceFragment"
         android:label="Edit Offering" />
     <fragment
         android:id="@+id/eventDetailsFragment"
