@@ -1,6 +1,8 @@
 package m3.eventplanner.fragments.category;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,13 +16,20 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import m3.eventplanner.adapters.CategoryListAdapter;
+import m3.eventplanner.adapters.OfferingItemAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCategoryBinding;
+import m3.eventplanner.models.GetOfferingCategoryDTO;
 
-public class CategoryFragment extends Fragment implements CategoryFormFragment.OnCategoryFormFilledListener {
+public class CategoryFragment extends Fragment
+        implements CategoryFormFragment.OnCategoryFormFilledListener,
+        CategoryListAdapter.OnCategoryActionListener {
+
     private CategoryViewModel viewModel;
     private ClientUtils clientUtils;
     private FragmentCategoryBinding binding;
+    private CategoryListAdapter adapter;
+
     public CategoryFragment() {
     }
 
@@ -40,14 +49,18 @@ public class CategoryFragment extends Fragment implements CategoryFormFragment.O
         viewModel.initialize(clientUtils);
 
         setupObservers();
-
         viewModel.loadCategories();
     }
 
     private void setupObservers() {
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
-            binding.categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            binding.categoryRecyclerView.setAdapter(new CategoryListAdapter(categories,this));
+            if (adapter == null) {
+                binding.categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                adapter = new CategoryListAdapter(categories, this, this);
+                binding.categoryRecyclerView.setAdapter(adapter);
+            } else {
+                adapter.updateCategories(categories);
+            }
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), errorMessage -> {
@@ -68,12 +81,74 @@ public class CategoryFragment extends Fragment implements CategoryFormFragment.O
         });
     }
 
+    // CategoryFormFragment.OnCategoryFormFilledListener implementation
     @Override
     public void onCategoryFormFilled(int id, String name, String description, boolean edit) {
-        if(edit)
-            viewModel.editCategory(id,name,description);
-        else
-            viewModel.createCategory(name,description);
+        if (edit) {
+            viewModel.editCategory(id, name, description);
+        } else {
+            viewModel.createCategory(name, description);
+        }
     }
 
+    // CategoryListAdapter.OnCategoryActionListener implementation
+    @Override
+    public void onApproveCategory(GetOfferingCategoryDTO category) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Approve Category")
+                .setMessage("Are you sure you want to approve the category '" + category.getName() + "'?")
+                .setPositiveButton("Approve", (dialog, which) -> {
+                    viewModel.approveCategory(category.getId());
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    public void onEditCategory(GetOfferingCategoryDTO category) {
+        CategoryFormFragment dialog = new CategoryFormFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("selectedCategory", category);
+        dialog.setArguments(args);
+        dialog.show(getChildFragmentManager(), "CategoryFormFragment");
+    }
+
+    @Override
+    public void onDeleteCategory(GetOfferingCategoryDTO category) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Delete Category")
+                .setMessage("Are you sure you want to delete the category '" + category.getName() + "'? This action cannot be undone.")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    viewModel.deleteCategory(category.getId());
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    @Override
+    public void onChangeCategoryOfferings(GetOfferingCategoryDTO category) {
+        // TODO: Implement change category offerings functionality
+        // This could open a dialog to manage which offerings belong to this category
+        Toast.makeText(getContext(),
+                "Change offerings for category: " + category.getName(),
+                Toast.LENGTH_SHORT).show();
+
+        // Example implementation - you might want to create a separate fragment/dialog for this
+        // ChangeCategoryOfferingsFragment dialog = new ChangeCategoryOfferingsFragment();
+        // Bundle args = new Bundle();
+        // args.putParcelable("selectedCategory", category);
+        // dialog.setArguments(args);
+        // dialog.show(getChildFragmentManager(), "ChangeCategoryOfferingsFragment");
+    }
+
+    @Override
+    public void loadOfferingsForCategory(int categoryId, OfferingItemAdapter adapter, TextView noOfferingsText) {
+        viewModel.loadOfferingsForCategory(categoryId, adapter, noOfferingsText);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

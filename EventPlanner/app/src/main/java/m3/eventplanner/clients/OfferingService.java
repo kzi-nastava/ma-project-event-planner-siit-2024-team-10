@@ -61,4 +61,6 @@ public interface OfferingService {
 
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
+    @GET("offerings/all-non-paged")
+    Call<Collection<GetOfferingDTO>> getNonPaged();
 }
