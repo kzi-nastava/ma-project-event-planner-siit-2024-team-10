@@ -209,45 +209,62 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
     }
 
     private void showAddBudgetItemDialog() {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.dialog_add_budget_item, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Add Budget Item");
 
-        Spinner spinnerCategories = dialogView.findViewById(R.id.spinnerCategories);
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_add_budget_item, null);
         EditText editTextAmount = dialogView.findViewById(R.id.editTextAmount);
+        Spinner categorySpinner = dialogView.findViewById(R.id.spinnerCategories);
+
+        List<GetBudgetItemDTO> currentItems = viewModel.getBudgetItems().getValue();
+        List<Integer> usedCategoryIds = new ArrayList<>();
+        if (currentItems != null) {
+            for (GetBudgetItemDTO item : currentItems) {
+                if (item.getCategory() != null) {
+                    usedCategoryIds.add(item.getCategory().getId());
+                }
+            }
+        }
+
+        List<GetOfferingCategoryDTO> availableCategories = new ArrayList<>();
+        for (GetOfferingCategoryDTO category : categoryList) {
+            if (!usedCategoryIds.contains(category.getId())) {
+                availableCategories.add(category);
+            }
+        }
 
         List<String> categoryNames = new ArrayList<>();
-        for (GetOfferingCategoryDTO category : categoryList) {
+        for (GetOfferingCategoryDTO category : availableCategories) {
             categoryNames.add(category.getName());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                categoryNames
-        );
+        if (availableCategories.isEmpty()) {
+            Toast.makeText(requireContext(), "All categories are already added.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, categoryNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategories.setAdapter(adapter);
+        categorySpinner.setAdapter(adapter);
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Add Budget Item")
-                .setView(dialogView)
-                .setPositiveButton("Add", (dialog, which) -> {
-                    String amountStr = editTextAmount.getText().toString();
-                    int selectedEventIndex = binding.spinnerEvents.getSelectedItemPosition();
-                    int selectedCategoryIndex = spinnerCategories.getSelectedItemPosition();
+        builder.setView(dialogView);
 
-                    if (!amountStr.isEmpty() && selectedEventIndex >= 0 && selectedCategoryIndex >= 0) {
-                        int amount = Integer.parseInt(amountStr);
-                        GetEventDTO selectedEvent = eventList.get(selectedEventIndex);
-                        GetOfferingCategoryDTO selectedCategory = categoryList.get(selectedCategoryIndex);
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String amountStr = editTextAmount.getText().toString().trim();
+            if (!amountStr.isEmpty()) {
+                int amount = Integer.parseInt(amountStr);
+                int selectedCategoryIndex = categorySpinner.getSelectedItemPosition();
+                GetOfferingCategoryDTO selectedCategory = availableCategories.get(selectedCategoryIndex);
+                viewModel.addBudgetItem(currentEventId, selectedCategory.getId(), amount);
+            } else {
+                Toast.makeText(requireContext(), "Please enter an amount", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-                        currentEventId = selectedEvent.getId();
-                        viewModel.addBudgetItem(selectedEvent.getId(), selectedCategory.getId(), amount);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
+
 
     @Override
     public void onDeleteBudgetItem(int budgetItemId) {

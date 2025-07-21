@@ -2,6 +2,7 @@ package m3.eventplanner.clients;
 
 import java.util.List;
 
+import m3.eventplanner.models.BuyRequestDTO;
 import m3.eventplanner.models.CreatedBudgetItemDTO;
 import m3.eventplanner.models.CreateBudgetItemDTO;
 import m3.eventplanner.models.GetBudgetItemDTO;
@@ -38,11 +39,6 @@ public interface BudgetItemService {
             @Path("budgetItemId") int budgetItemId
     );
 
-    @GET("/api/events/budget/{eventId}")
-    Call<List<GetBudgetItemDTO>> getBudgetItemsByEvent(
-            @Path("eventId") int eventId
-    );
-
     @GET("/api/events/{eventId}/budget/total")
     Call<Double> getTotalBudget(
             @Path("eventId") int eventId
@@ -54,7 +50,8 @@ public interface BudgetItemService {
     @PUT("/api/events/{eventId}/budget/buy/{offeringId}")
     Call<Boolean> buyOffering(
             @Path("eventId") int eventId,
-            @Path("offeringId") int offeringId
+            @Path("offeringId") int offeringId,
+            @Body BuyRequestDTO pending
     );
     @GET("/api/events/budget/{eventId}")
     Call<List<GetBudgetItemDTO>> getBudgetItemsForEvent(@Path("eventId") int eventId);

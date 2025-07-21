@@ -1,6 +1,7 @@
 package m3.eventplanner.fragments.offering;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,6 +13,7 @@ import java.util.List;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.AddFavouriteOfferingDTO;
+import m3.eventplanner.models.BuyRequestDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
@@ -29,6 +31,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> navigateHome = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    private final MutableLiveData<List<GetEventDTO>> events = new MutableLiveData<>();
     private ClientUtils clientUtils;
     private PdfUtils pdfUtils;
 
@@ -53,13 +56,32 @@ public class OfferingDetailsViewModel extends ViewModel {
     public LiveData<String> getError() {
         return error;
     }
-
+    public LiveData<List<GetEventDTO>> getEvents() {
+        return events;
+    }
     public LiveData<Boolean> getNavigateHome() {
         return navigateHome;
     }
 
     public LiveData<String> getSuccessMessage() {
         return successMessage;
+    }
+    public void loadEventsForOrganizer(int organizerId) {
+        clientUtils.getBudgetItemService().findEventsByOrganizer(organizerId).enqueue(new Callback<List<GetEventDTO>>() {
+            @Override
+            public void onResponse(Call<List<GetEventDTO>> call, Response<List<GetEventDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    events.setValue(response.body());
+                } else {
+                    error.setValue("Failed to load events");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
+                error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading events");
+            }
+        });
     }
 
     public void loadOfferingDetails(int offeringId, int accountId, int userId) {
@@ -193,4 +215,22 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+    public void buyProduct(int eventId) {
+        clientUtils.getBudgetItemService().buyOffering(eventId, offering.getValue().getId(),new BuyRequestDTO(false)).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Product successfully purchased.");
+                } else {
+                    error.setValue("Failed to purchase product.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                error.setValue("Error: " + t.getMessage());
+            }
+        });
+    }
+
 }
