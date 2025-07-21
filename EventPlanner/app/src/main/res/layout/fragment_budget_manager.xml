@@ -27,6 +27,32 @@
             android:text="Add Budget Item"
             android:layout_marginStart="16dp"/>
     </LinearLayout>
+    <TextView
+        android:id="@+id/textViewRecommendedTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recommended categories:"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/layoutRecommendedCategories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:layoutDirection="ltr"/>
+
+    <TextView
+        android:id="@+id/textViewTotalBudget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total budget: 0"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:gravity="end"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBudgetItems"

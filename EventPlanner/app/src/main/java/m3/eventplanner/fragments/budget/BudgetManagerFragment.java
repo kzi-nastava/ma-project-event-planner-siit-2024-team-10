@@ -17,7 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -73,6 +75,10 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
     }
 
     private void setupViews() {
+        TextView textViewRecommendedTitle = binding.textViewRecommendedTitle;
+        LinearLayout layoutRecommendedCategories = binding.layoutRecommendedCategories;
+        TextView textViewTotalBudget = binding.textViewTotalBudget;
+
         Spinner spinnerEvents = binding.spinnerEvents;
         Button buttonAdd = binding.buttonAddBudgetItem;
         recyclerViewBudgetItems = binding.recyclerViewBudgetItems;
@@ -84,13 +90,44 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
         buttonAdd.setOnClickListener(v -> showAddBudgetItemDialog());
 
-        // Listen to spinner selection to load budget items for selected event
+        // Listen to spinner selection to load budget items for selected event and update recommended categories
         spinnerEvents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position >= 0 && eventList != null && position < eventList.size()) {
                     currentEventId = eventList.get(position).getId();
                     viewModel.loadBudgetItemsForEvent(currentEventId);
+
+                    // Prikaz preporučenih kategorija
+                    GetEventDTO selectedEvent = eventList.get(position);
+                    List<GetOfferingCategoryDTO> recommended = selectedEvent.getEventType() != null
+                            ? selectedEvent.getEventType().getRecommendedCategories()
+                            : null;
+
+                    layoutRecommendedCategories.removeAllViews();
+
+                    if (recommended != null && !recommended.isEmpty()) {
+                        textViewRecommendedTitle.setVisibility(View.VISIBLE);
+                        layoutRecommendedCategories.setVisibility(View.VISIBLE);
+
+                        for (GetOfferingCategoryDTO cat : recommended) {
+                            TextView chip = new TextView(requireContext());
+                            chip.setText(cat.getName());
+                            chip.setBackgroundResource(R.drawable.chip_background); // Ako nemaš, napravi ili ukloni
+                            chip.setPadding(16, 8, 16, 8);
+                            chip.setTextColor(getResources().getColor(android.R.color.white));
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                                    LinearLayout.LayoutParams.WRAP_CONTENT
+                            );
+                            params.setMargins(8, 4, 8, 4);
+                            chip.setLayoutParams(params);
+                            layoutRecommendedCategories.addView(chip);
+                        }
+                    } else {
+                        textViewRecommendedTitle.setVisibility(View.GONE);
+                        layoutRecommendedCategories.setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -99,9 +136,14 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
                 currentEventId = -1;
                 budgetItemsAdapter.updateBudgetItems(new ArrayList<>());
                 Toast.makeText(requireContext(), "No budget items", Toast.LENGTH_SHORT).show();
+
+                // Sakrij preporučene kategorije
+                textViewRecommendedTitle.setVisibility(View.GONE);
+                layoutRecommendedCategories.setVisibility(View.GONE);
             }
         });
     }
+
 
     private void setupObservers() {
         // Observe events and update spinner
@@ -135,6 +177,12 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
         // Observe budget items and show "No budget items" toast if empty
         viewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
+            int totalBudget = 0;
+            for (GetBudgetItemDTO item : budgetItems) {
+                totalBudget += item.getAmount();
+            }
+            binding.textViewTotalBudget.setText("Total budget: " + totalBudget);
+
             if (budgetItems == null || budgetItems.isEmpty()) {
                 budgetItemsAdapter.updateBudgetItems(new ArrayList<>());
                 Toast.makeText(requireContext(), "No budget items", Toast.LENGTH_SHORT).show();
