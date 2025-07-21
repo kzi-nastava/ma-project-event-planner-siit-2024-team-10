@@ -56,7 +56,7 @@ public class ActivateAccountFragment extends Fragment {
                     .setPopUpTo(NavHostFragment.findNavController(this).getGraph().getStartDestinationId(), true)
                     .build();
 
-            NavHostFragment.findNavController(this).navigate(R.id.homeScreenFragment, null, navOptions);
+            NavHostFragment.findNavController(this).navigate(R.id.loginFragment, null, navOptions);
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), err -> {
