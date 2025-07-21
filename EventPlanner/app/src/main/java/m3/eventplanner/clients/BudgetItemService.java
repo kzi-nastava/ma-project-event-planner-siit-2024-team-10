@@ -6,6 +6,7 @@ import m3.eventplanner.models.CreatedBudgetItemDTO;
 import m3.eventplanner.models.CreateBudgetItemDTO;
 import m3.eventplanner.models.GetBudgetItemDTO;
 import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.UpdateBudgetItemDTO;
 import m3.eventplanner.models.UpdatedBudgetItemDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -28,7 +29,7 @@ public interface BudgetItemService {
     Call<UpdatedBudgetItemDTO> updateBudgetItemAmount(
             @Path("eventId") int eventId,
             @Path("budgetItemId") int budgetItemId,
-            @Body Integer amount
+            @Body UpdateBudgetItemDTO amount
     );
 
     @DELETE("/api/events/{eventId}/budget/{budgetItemId}")

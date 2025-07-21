@@ -13,6 +13,7 @@ import m3.eventplanner.models.CreatedBudgetItemDTO;
 import m3.eventplanner.models.GetBudgetItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
+import m3.eventplanner.models.UpdateBudgetItemDTO;
 import m3.eventplanner.models.UpdatedBudgetItemDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,11 +32,25 @@ public class BudgetManagerViewModel extends ViewModel {
         this.clientUtils = clientUtils;
     }
 
-    public LiveData<List<GetBudgetItemDTO>> getBudgetItems() { return budgetItems; }
-    public LiveData<List<GetEventDTO>> getEvents() { return events; }
-    public LiveData<List<GetOfferingCategoryDTO>> getCategories() { return categories; }
-    public LiveData<String> getError() { return error; }
-    public LiveData<String> getSuccessMessage() { return successMessage; }
+    public LiveData<List<GetBudgetItemDTO>> getBudgetItems() {
+        return budgetItems;
+    }
+
+    public LiveData<List<GetEventDTO>> getEvents() {
+        return events;
+    }
+
+    public LiveData<List<GetOfferingCategoryDTO>> getCategories() {
+        return categories;
+    }
+
+    public LiveData<String> getError() {
+        return error;
+    }
+
+    public LiveData<String> getSuccessMessage() {
+        return successMessage;
+    }
 
     public void clearMessages() {
         error.setValue(null);
@@ -52,6 +67,7 @@ public class BudgetManagerViewModel extends ViewModel {
                     error.setValue("Failed to load events");
                 }
             }
+
             @Override
             public void onFailure(Call<List<GetEventDTO>> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading events");
@@ -126,9 +142,13 @@ public class BudgetManagerViewModel extends ViewModel {
                 .enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                        if (response.isSuccessful() && response.body() != null && response.body()) {
-                            successMessage.setValue("Budget item deleted successfully");
-                            loadBudgetItemsForEvent(eventId);
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (response.body()) {
+                                successMessage.setValue("Budget item deleted successfully");
+                                loadBudgetItemsForEvent(eventId);
+                            } else {
+                                error.setValue("Cannot delete budget item: there are purchased items.");
+                            }
                         } else {
                             error.setValue("Failed to delete budget item");
                         }
@@ -142,15 +162,15 @@ public class BudgetManagerViewModel extends ViewModel {
     }
 
     public void updateBudgetItemAmount(int eventId, int budgetItemId, int newAmount) {
-        clientUtils.getBudgetItemService().updateBudgetItemAmount(eventId, budgetItemId, newAmount)
+        clientUtils.getBudgetItemService().updateBudgetItemAmount(eventId, budgetItemId, new UpdateBudgetItemDTO(newAmount))
                 .enqueue(new Callback<UpdatedBudgetItemDTO>() {
                     @Override
                     public void onResponse(Call<UpdatedBudgetItemDTO> call, Response<UpdatedBudgetItemDTO> response) {
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             successMessage.setValue("Budget item updated successfully");
                             loadBudgetItemsForEvent(eventId);
                         } else {
-                            error.setValue("Failed to update budget item");
+                            error.setValue("Cannot update budget item: amount cannot be less than purchased items.");
                         }
                     }
 

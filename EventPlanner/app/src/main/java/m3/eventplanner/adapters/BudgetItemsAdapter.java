@@ -1,14 +1,14 @@
 package m3.eventplanner.adapters;
 
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,8 +26,8 @@ import m3.eventplanner.models.GetOfferingDTO;
 public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.BudgetItemViewHolder> {
 
     private List<GetBudgetItemDTO> budgetItems;
-    private Map<Integer, List<GetOfferingDTO>> offeringsMap = new HashMap<>();
-    private OnBudgetItemActionListener listener;
+    private final Map<Integer, List<GetOfferingDTO>> offeringsMap = new HashMap<>();
+    private final OnBudgetItemActionListener listener;
 
     public interface OnBudgetItemActionListener {
         void onDeleteBudgetItem(int budgetItemId);
@@ -50,12 +50,8 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
     public void onBindViewHolder(@NonNull BudgetItemViewHolder holder, int position) {
         GetBudgetItemDTO budgetItem = budgetItems.get(position);
         List<GetOfferingDTO> offerings = new ArrayList<>();
-        if (budgetItem.getServices() != null) {
-            offerings.addAll(budgetItem.getServices());
-        }
-        if (budgetItem.getProducts() != null) {
-            offerings.addAll(budgetItem.getProducts());
-        }
+        if (budgetItem.getServices() != null) offerings.addAll(budgetItem.getServices());
+        if (budgetItem.getProducts() != null) offerings.addAll(budgetItem.getProducts());
         holder.bind(budgetItem, offerings);
     }
 
@@ -82,10 +78,10 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
     }
 
     class BudgetItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewCategory;
-        private EditText editTextAmount;
-        private RecyclerView recyclerViewOfferings;
-        private ImageButton buttonDelete;
+        private final TextView textViewCategory;
+        private final EditText editTextAmount;
+        private final RecyclerView recyclerViewOfferings;
+        private final ImageButton buttonDelete;
         private OfferingItemAdapter offeringsAdapter;
 
         public BudgetItemViewHolder(@NonNull View itemView) {
@@ -94,49 +90,42 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
             editTextAmount = itemView.findViewById(R.id.editTextAmount);
             recyclerViewOfferings = itemView.findViewById(R.id.recyclerViewOfferings);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
-
             recyclerViewOfferings.setLayoutManager(new LinearLayoutManager(
                     itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
-        public void bind(GetBudgetItemDTO budgetItem, List<GetOfferingDTO> ignoredOfferings) {
+
+        public void bind(GetBudgetItemDTO budgetItem, List<GetOfferingDTO> offerings) {
             textViewCategory.setText(budgetItem.getCategory().getName());
-            editTextAmount.setText(String.valueOf((int) budgetItem.getAmount()));
+            int originalAmount = (int) budgetItem.getAmount();
+            editTextAmount.setText(String.valueOf(originalAmount));
 
-            // TextWatcher da detektuje promene u amount polju
-            editTextAmount.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            // Remove old listeners to prevent multiple triggers
+            editTextAmount.setOnFocusChangeListener(null);
+            editTextAmount.setOnEditorActionListener(null);
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    try {
-                        int newAmount = Integer.parseInt(s.toString());
-                        if (listener != null) {
-                            listener.onAmountChanged(budgetItem.getId(), newAmount);
-                        }
-                    } catch (NumberFormatException ignored) {
-                        // silently ignore invalid input
-                    }
+            // Focus lost - apply amount change
+            editTextAmount.setOnFocusChangeListener((v, hasFocus) -> {
+                if (!hasFocus) {
+                    applyAmountChange(editTextAmount, budgetItem, originalAmount);
                 }
             });
 
-            // Delete dugme
+            // Enter key - apply amount change
+            editTextAmount.setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&
+                                event.getAction() == KeyEvent.ACTION_DOWN)) {
+                    editTextAmount.clearFocus(); // Triggers focus listener
+                    return true;
+                }
+                return false;
+            });
+
             buttonDelete.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onDeleteBudgetItem(budgetItem.getId());
                 }
             });
-
-            List<GetOfferingDTO> offerings = new ArrayList<>();
-            if (budgetItem.getServices() != null) {
-                offerings.addAll(budgetItem.getServices());
-            }
-            if (budgetItem.getProducts() != null) {
-                offerings.addAll(budgetItem.getProducts());
-            }
 
             if (!offerings.isEmpty()) {
                 offeringsAdapter = new OfferingItemAdapter(offerings, true);
@@ -148,7 +137,20 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
                 recyclerViewOfferings.setVisibility(View.GONE);
                 itemView.findViewById(R.id.textViewNoOfferings).setVisibility(View.VISIBLE);
             }
+        }
 
+        private void applyAmountChange(EditText editText, GetBudgetItemDTO budgetItem, int originalAmount) {
+            String input = editText.getText().toString().trim();
+            if (!input.isEmpty()) {
+                try {
+                    int newAmount = Integer.parseInt(input);
+                    if (newAmount != originalAmount && listener != null) {
+                        listener.onAmountChanged(budgetItem.getId(), newAmount);
+                    }
+                } catch (NumberFormatException e) {
+                    Toast.makeText(editText.getContext(), "Invalid amount", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 }
