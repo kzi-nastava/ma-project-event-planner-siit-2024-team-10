@@ -1,16 +1,17 @@
 package m3.eventplanner.adapters;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Iterator;
 import java.util.List;
 
 import m3.eventplanner.R;
@@ -27,7 +28,7 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
         void onApproveCategory(GetOfferingCategoryDTO category);
         void onEditCategory(GetOfferingCategoryDTO category);
         void onDeleteCategory(GetOfferingCategoryDTO category);
-        void onChangeCategoryOfferings(GetOfferingCategoryDTO category);
+        void onChangeCategoryOfferings(GetOfferingCategoryDTO selectedCategory, GetOfferingDTO offering);
         void loadOfferingsForCategory(int categoryId, OfferingItemAdapter adapter, TextView noOfferingsText);
     }
 
@@ -104,6 +105,16 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
                 actionListener.loadOfferingsForCategory(category.getId(), offeringAdapter, noOfferingsText);
             }
 
+            if (!category.isPending()) {
+                approveButton.setVisibility(View.GONE);
+                changeOfferingsButton.setEnabled(false);
+                changeOfferingsButton.setAlpha(0.4f);
+            } else {
+                approveButton.setVisibility(View.VISIBLE);
+                changeOfferingsButton.setEnabled(true);
+                changeOfferingsButton.setAlpha(1f);
+            }
+
             // Set up button click listeners
             approveButton.setOnClickListener(v -> {
                 if (actionListener != null) {
@@ -124,11 +135,38 @@ public class CategoryListAdapter extends RecyclerView.Adapter<CategoryListAdapte
             });
 
             changeOfferingsButton.setOnClickListener(v -> {
-                if (actionListener != null) {
-                    actionListener.onChangeCategoryOfferings(category);
+                if (actionListener != null && changeOfferingsButton.isEnabled()) {
+                    // Get the current offerings for this category from the adapter
+                    List<GetOfferingDTO> currentOfferings = offeringAdapter.getOfferings();
+
+                    if (currentOfferings == null || currentOfferings.isEmpty()) {
+                        Toast.makeText(itemView.getContext(), "No offerings in this category to move", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (currentOfferings.size() == 1) {
+                        // If there's only one offering, move it directly
+                        actionListener.onChangeCategoryOfferings(category, currentOfferings.get(0));
+                    } else {
+                        // If there are multiple offerings, show selection dialog
+                        String[] offeringNames = currentOfferings.stream()
+                                .map(GetOfferingDTO::getName)
+                                .toArray(String[]::new);
+
+                        final int[] selectedIndex = {0};
+
+                        new AlertDialog.Builder(itemView.getContext())
+                                .setTitle("Select offering to move")
+                                .setSingleChoiceItems(offeringNames, 0, (dialog, which) -> selectedIndex[0] = which)
+                                .setPositiveButton("Move", (dialog, which) -> {
+                                    GetOfferingDTO selectedOffering = currentOfferings.get(selectedIndex[0]);
+                                    actionListener.onChangeCategoryOfferings(category, selectedOffering);
+                                })
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    }
                 }
             });
         }
     }
-
 }

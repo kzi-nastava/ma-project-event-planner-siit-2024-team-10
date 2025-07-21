@@ -15,6 +15,9 @@ import m3.eventplanner.models.GetOfferingDTO;
 
 public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapter.OfferingViewHolder> {
     private List<GetOfferingDTO> offerings;
+    public List<GetOfferingDTO> getOfferings() {
+        return offerings;
+    }
 
     public OfferingItemAdapter(List<GetOfferingDTO> offerings) {
         this.offerings = offerings;

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import m3.eventplanner.adapters.OfferingItemAdapter;
 import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.ChangeCategoryDTO;
 import m3.eventplanner.models.CreateCategoryDTO;
 import m3.eventplanner.models.CreatedCategoryDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
@@ -110,6 +111,25 @@ public class CategoryViewModel extends ViewModel {
                     loadCategories();
                 } else {
                     error.setValue("Failed to approve category");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                error.setValue(t.getMessage());
+            }
+        });
+    }
+    public void changeCategory(int offeringId, int categoryId) {
+        ChangeCategoryDTO dto = new ChangeCategoryDTO(categoryId);
+        clientUtils.getOfferingService().changeOfferingCategory(offeringId, dto).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    successMessage.setValue("Category changed successfully");
+                    loadCategories();
+                } else {
+                    error.setValue("Failed to change category");
                 }
             }
 

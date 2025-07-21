@@ -15,11 +15,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import m3.eventplanner.adapters.CategoryListAdapter;
 import m3.eventplanner.adapters.OfferingItemAdapter;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCategoryBinding;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
+import m3.eventplanner.models.GetOfferingDTO;
 
 public class CategoryFragment extends Fragment
         implements CategoryFormFragment.OnCategoryFormFilledListener,
@@ -50,6 +54,7 @@ public class CategoryFragment extends Fragment
 
         setupObservers();
         viewModel.loadCategories();
+
     }
 
     private void setupObservers() {
@@ -79,7 +84,6 @@ public class CategoryFragment extends Fragment
             CategoryFormFragment dialog = new CategoryFormFragment();
             dialog.show(getChildFragmentManager(), "CategoryFormFragment");
         });
-
     }
 
     // CategoryFormFragment.OnCategoryFormFilledListener implementation
@@ -125,21 +129,44 @@ public class CategoryFragment extends Fragment
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
+    // Updated method in CategoryFragment
     @Override
-    public void onChangeCategoryOfferings(GetOfferingCategoryDTO category) {
-        // TODO: Implement change category offerings functionality
-        // This could open a dialog to manage which offerings belong to this category
-        Toast.makeText(getContext(),
-                "Change offerings for category: " + category.getName(),
-                Toast.LENGTH_SHORT).show();
+    public void onChangeCategoryOfferings(GetOfferingCategoryDTO selectedCategory, GetOfferingDTO offering) {
+        List<GetOfferingCategoryDTO> allCategories = viewModel.getCategories().getValue();
+        if (allCategories == null) return;
 
-        // Example implementation - you might want to create a separate fragment/dialog for this
-        // ChangeCategoryOfferingsFragment dialog = new ChangeCategoryOfferingsFragment();
-        // Bundle args = new Bundle();
-        // args.putParcelable("selectedCategory", category);
-        // dialog.setArguments(args);
-        // dialog.show(getChildFragmentManager(), "ChangeCategoryOfferingsFragment");
+        List<GetOfferingCategoryDTO> otherCategories = allCategories.stream()
+                .filter(cat -> cat.getId() != selectedCategory.getId())
+                .collect(Collectors.toList());
+
+        if (otherCategories.isEmpty()) {
+            Toast.makeText(getContext(), "No other categories available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] categoryNames = otherCategories.stream()
+                .map(GetOfferingCategoryDTO::getName)
+                .toArray(String[]::new);
+
+        final int[] selectedIndex = {0};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Move offering '" + offering.getName() + "' to category");
+
+        builder.setSingleChoiceItems(categoryNames, 0, (dialog, which) -> {
+            selectedIndex[0] = which;
+        });
+
+        builder.setPositiveButton("Move", (dialog, which) -> {
+            GetOfferingCategoryDTO targetCategory = otherCategories.get(selectedIndex[0]);
+
+            // Now pass the offering ID instead of category ID
+            viewModel.changeCategory(offering.getId(), targetCategory.getId());
+        });
+
+        builder.setNegativeButton("Cancel", null);
+
+        builder.show();
     }
 
     @Override
