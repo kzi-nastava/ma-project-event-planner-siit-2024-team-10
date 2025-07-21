@@ -35,7 +35,7 @@ public interface AccountService {
     })
     @GET("accounts/{accountId}/favourite-events/{eventId}")
     Call<GetEventDTO> getFavouriteEvent(@Path("accountId") int accountId, @Path("eventId") int eventId);
-    @GET("accounts/{accountId}/favourite-offering/{offeringId}")
+    @GET("accounts/{accountId}/favourite-offerings/{offeringId}")
     Call<GetOfferingDTO> getFavouriteOffering(@Path("accountId") int accountId, @Path("offeringId") int offeringId);
 
     @Headers({
