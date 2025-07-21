@@ -18,6 +18,8 @@ import retrofit2.Response;
 
 public class ManageOfferingsViewModel extends ViewModel {
     private ClientUtils clientUtils;
+
+    public final MutableLiveData<Collection<GetOfferingDTO>> topData = new MutableLiveData<>();
     public final MutableLiveData<PagedResponse<GetOfferingDTO>> pagedData = new MutableLiveData<>();
     public final MutableLiveData<String> error = new MutableLiveData<>();
     public int currentPage = 0;
@@ -55,6 +57,9 @@ public class ManageOfferingsViewModel extends ViewModel {
         return error;
     }
 
+    public LiveData<Collection<GetOfferingDTO>> getTopData() {
+        return topData;
+    }
 
     public LiveData<PagedResponse<GetOfferingDTO>> getPagedData() {
         return pagedData;
@@ -62,6 +67,25 @@ public class ManageOfferingsViewModel extends ViewModel {
 
     public LiveData<List<GetOfferingCategoryDTO>> getCategories() {
         return categories;
+    }
+
+    public void loadTopOfferings() {
+        clientUtils.getOfferingService().getTopOfferings().enqueue(new Callback<Collection<GetOfferingDTO>>() {
+            @Override
+            public void onResponse(Call<Collection<GetOfferingDTO>> call, Response<Collection<GetOfferingDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    topData.setValue(new ArrayList<>(response.body()));
+                } else {
+                    topData.setValue(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection<GetOfferingDTO>> call, Throwable t) {
+                topData.setValue(null);
+                error.setValue("Failed to load offerings");
+            }
+        });
     }
 
     public void fetchPage(int page) {

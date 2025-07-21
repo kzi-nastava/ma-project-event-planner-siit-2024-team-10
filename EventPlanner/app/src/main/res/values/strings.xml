@@ -26,6 +26,7 @@
     <string name="all_events">All Events In Your Area</string>
     <string name="event_name_search">Event Name</string>
     <string name="search">Search</string>
+    <string name="original_price_strikethrough"><strike>$100</strike></string>
     <string name="filter">Filter</string>
     <string name="restart_filter">Restart Filter</string>
     <string name="top_offerings_text">Top Services/Products In Your Area</string>
@@ -141,6 +142,7 @@
     <string name="not_selected">Not selected</string>
     <string name="select">Select</string>
     <string name="start">Start Time:</string>
+    <string name="no_offerings_found">No offerings found</string>
     <string name="personal_info">Personal info</string>
     <string name="company_info">Company info</string>
     <string name="company_photos">Company photos</string>
@@ -172,8 +174,14 @@
     <string name="view_guest_list">View Guest List</string>
     <string name="remove_guest">Remove guest</string>
     <string name="guest_example_com">guest@example.com</string>
+    <string name="comments">Comments</string>
+    <string name="no_comments_to_confirm">No comments to confirm</string>
+    <string name="comment_management">Comment Management</string>
     <string name="see_all_events">See All Events</string>
     <string name="see_all_offerings">See All Offerings</string>
     <string name="delete_event">Delete event</string>
     <string name="processing_activation">Processing activation...</string>
+    <string name="manage_photos">Manage photos</string>
+    <string name="fixed_duration">Fixed duration</string>
+    <string name="min_duration">Min duration</string>
 </resources>

@@ -30,6 +30,11 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_categories"/>
             <item
+                android:id="@+id/commentApprovalFragment"
+                android:title="@string/comment_management"
+                android:checkable="true"
+                android:icon="@drawable/ic_reply"/>
+            <item
                 android:id="@+id/userDetailsFragment"
                 android:title="@string/account_details"
                 android:checkable="true"

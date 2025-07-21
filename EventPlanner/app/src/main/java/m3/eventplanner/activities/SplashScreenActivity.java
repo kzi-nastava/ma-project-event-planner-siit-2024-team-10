@@ -18,7 +18,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         // requested five seconds wait until homescreen is shown
-        int SPLASH_TIME_OUT = 5000;
+        int SPLASH_TIME_OUT = 0;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
