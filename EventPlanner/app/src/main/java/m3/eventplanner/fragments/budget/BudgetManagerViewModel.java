@@ -12,8 +12,8 @@ import m3.eventplanner.models.CreateBudgetItemDTO;
 import m3.eventplanner.models.CreatedBudgetItemDTO;
 import m3.eventplanner.models.GetBudgetItemDTO;
 import m3.eventplanner.models.GetEventDTO;
-import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
+import m3.eventplanner.models.UpdatedBudgetItemDTO;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -85,15 +85,18 @@ public class BudgetManagerViewModel extends ViewModel {
                     budgetItems.setValue(response.body());
                 } else {
                     error.setValue("Failed to load budget items");
+                    budgetItems.setValue(new ArrayList<>()); // prikaži praznu listu ako ne uspe
                 }
             }
 
             @Override
             public void onFailure(Call<List<GetBudgetItemDTO>> call, Throwable t) {
                 error.setValue(t.getMessage() != null ? t.getMessage() : "Error loading budget items");
+                budgetItems.setValue(new ArrayList<>());
             }
         });
     }
+
     public void addBudgetItem(int eventId, int categoryId, int amount) {
         CreateBudgetItemDTO createDTO = new CreateBudgetItemDTO();
         createDTO.setCategoryId(categoryId);
@@ -117,12 +120,13 @@ public class BudgetManagerViewModel extends ViewModel {
                     }
                 });
     }
+
     public void deleteBudgetItem(int budgetItemId, int eventId) {
-        clientUtils.getBudgetItemService().deleteBudgetItem(eventId,budgetItemId)
-                .enqueue(new Callback<Void>() {
+        clientUtils.getBudgetItemService().deleteBudgetItem(eventId, budgetItemId)
+                .enqueue(new Callback<Boolean>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && response.body() != null && response.body()) {
                             successMessage.setValue("Budget item deleted successfully");
                             loadBudgetItemsForEvent(eventId);
                         } else {
@@ -131,16 +135,17 @@ public class BudgetManagerViewModel extends ViewModel {
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<Boolean> call, Throwable t) {
                         error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting budget item");
                     }
                 });
     }
+
     public void updateBudgetItemAmount(int eventId, int budgetItemId, int newAmount) {
         clientUtils.getBudgetItemService().updateBudgetItemAmount(eventId, budgetItemId, newAmount)
-                .enqueue(new Callback<Void>() {
+                .enqueue(new Callback<UpdatedBudgetItemDTO>() {
                     @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
+                    public void onResponse(Call<UpdatedBudgetItemDTO> call, Response<UpdatedBudgetItemDTO> response) {
                         if (response.isSuccessful()) {
                             successMessage.setValue("Budget item updated successfully");
                             loadBudgetItemsForEvent(eventId);
@@ -150,10 +155,9 @@ public class BudgetManagerViewModel extends ViewModel {
                     }
 
                     @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
+                    public void onFailure(Call<UpdatedBudgetItemDTO> call, Throwable t) {
                         error.setValue(t.getMessage() != null ? t.getMessage() : "Error updating budget item");
                     }
                 });
     }
-
 }

@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="Category"
                 android:background="#cbfaf2"
-                android:textColor="@android:color/white"
+                android:textColor="#0d47a1"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:paddingHorizontal="8dp"
@@ -73,17 +73,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp" />
+        <TextView
+            android:id="@+id/textViewNoOfferings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No offerings"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
 
         <!-- Delete Button -->
-        <Button
+        <ImageButton
             android:id="@+id/buttonDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="Delete"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@android:color/holo_red_dark"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete"
+            android:src="@android:drawable/ic_menu_delete"
+            app:tint="@android:color/holo_red_dark"
             android:layout_marginTop="8dp" />
+
 
     </LinearLayout>
 

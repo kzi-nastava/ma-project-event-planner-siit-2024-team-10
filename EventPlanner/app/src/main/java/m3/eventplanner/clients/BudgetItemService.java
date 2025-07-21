@@ -17,38 +17,44 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 public interface BudgetItemService {
 
-    @POST("/{eventId}/budget")
+
+    @POST("/api/events/{eventId}/budget")
     Call<CreatedBudgetItemDTO> createBudgetItem(
             @Path("eventId") int eventId,
             @Body CreateBudgetItemDTO createBudgetItemDTO
     );
 
-    @PUT("/{eventId}/budget/{budgetItemId}")
-    Call<Void> updateBudgetItemAmount(
+    @PUT("/api/events/{eventId}/budget/{budgetItemId}")
+    Call<UpdatedBudgetItemDTO> updateBudgetItemAmount(
             @Path("eventId") int eventId,
             @Path("budgetItemId") int budgetItemId,
             @Body Integer amount
     );
 
-    @DELETE("/{eventId}/budget/{budgetItemId}")
-    Call<Void> deleteBudgetItem(
+    @DELETE("/api/events/{eventId}/budget/{budgetItemId}")
+    Call<Boolean> deleteBudgetItem(
             @Path("eventId") int eventId,
             @Path("budgetItemId") int budgetItemId
     );
 
-    @GET("/budget/{eventId}")
+    @GET("/api/events/budget/{eventId}")
     Call<List<GetBudgetItemDTO>> getBudgetItemsByEvent(
             @Path("eventId") int eventId
     );
 
-    @GET("/{eventId}/budget/total")
+    @GET("/api/events/{eventId}/budget/total")
     Call<Double> getTotalBudget(
             @Path("eventId") int eventId
     );
 
-    @GET("events/organizers")
+    @GET("/api/events/organizers")
     Call<List<GetEventDTO>> findEventsByOrganizer(@Query("accountId") int accountId);
 
-    @GET("/api/budget/{eventId}")
+    @PUT("/api/events/{eventId}/budget/buy/{offeringId}")
+    Call<Boolean> buyOffering(
+            @Path("eventId") int eventId,
+            @Path("offeringId") int offeringId
+    );
+    @GET("/api/events/budget/{eventId}")
     Call<List<GetBudgetItemDTO>> getBudgetItemsForEvent(@Path("eventId") int eventId);
 }

@@ -7,19 +7,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import m3.eventplanner.R;
 import m3.eventplanner.models.GetBudgetItemDTO;
+import m3.eventplanner.models.GetOfferingDTO;
 
 public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.BudgetItemViewHolder> {
+
     private List<GetBudgetItemDTO> budgetItems;
+    private Map<Integer, List<GetOfferingDTO>> offeringsMap = new HashMap<>();
     private OnBudgetItemActionListener listener;
 
     public interface OnBudgetItemActionListener {
@@ -35,15 +42,21 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
     @NonNull
     @Override
     public BudgetItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.budget_item_card, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.budget_item_card, parent, false);
         return new BudgetItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BudgetItemViewHolder holder, int position) {
         GetBudgetItemDTO budgetItem = budgetItems.get(position);
-        holder.bind(budgetItem);
+        List<GetOfferingDTO> offerings = new ArrayList<>();
+        if (budgetItem.getServices() != null) {
+            offerings.addAll(budgetItem.getServices());
+        }
+        if (budgetItem.getProducts() != null) {
+            offerings.addAll(budgetItem.getProducts());
+        }
+        holder.bind(budgetItem, offerings);
     }
 
     @Override
@@ -56,12 +69,24 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
         notifyDataSetChanged();
     }
 
+    public void setOfferingsForBudgetItem(int budgetItemId, List<GetOfferingDTO> offerings) {
+        offeringsMap.put(budgetItemId, offerings);
+        notifyItemChanged(findPositionByBudgetItemId(budgetItemId));
+    }
+
+    private int findPositionByBudgetItemId(int id) {
+        for (int i = 0; i < budgetItems.size(); i++) {
+            if (budgetItems.get(i).getId() == id) return i;
+        }
+        return -1;
+    }
+
     class BudgetItemViewHolder extends RecyclerView.ViewHolder {
         private TextView textViewCategory;
         private EditText editTextAmount;
         private RecyclerView recyclerViewOfferings;
-        private Button buttonDelete;
-        private OfferingListAdapter offeringsAdapter;
+        private ImageButton buttonDelete;
+        private OfferingItemAdapter offeringsAdapter;
 
         public BudgetItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -70,23 +95,14 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
             recyclerViewOfferings = itemView.findViewById(R.id.recyclerViewOfferings);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
 
-            setupOfferingsRecyclerView();
+            recyclerViewOfferings.setLayoutManager(new LinearLayoutManager(
+                    itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
-
-        private void setupOfferingsRecyclerView() {
-            LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext(),
-                    LinearLayoutManager.HORIZONTAL, false);
-            recyclerViewOfferings.setLayoutManager(layoutManager);
-        }
-
-        public void bind(GetBudgetItemDTO budgetItem) {
-            // Set category name
+        public void bind(GetBudgetItemDTO budgetItem, List<GetOfferingDTO> ignoredOfferings) {
             textViewCategory.setText(budgetItem.getCategory().getName());
+            editTextAmount.setText(String.valueOf((int) budgetItem.getAmount()));
 
-            // Set amount
-            editTextAmount.setText(String.valueOf(budgetItem.getAmount()));
-
-            // Setup amount change listener
+            // TextWatcher da detektuje promene u amount polju
             editTextAmount.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -101,24 +117,38 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
                         if (listener != null) {
                             listener.onAmountChanged(budgetItem.getId(), newAmount);
                         }
-                    } catch (NumberFormatException e) {
-                        // Handle invalid input
+                    } catch (NumberFormatException ignored) {
+                        // silently ignore invalid input
                     }
                 }
             });
 
-            // Setup offerings adapter
-            if (budgetItem.getOfferings() != null) {
-                offeringsAdapter = new OfferingsAdapter(budgetItem.getOfferings());
-                recyclerViewOfferings.setAdapter(offeringsAdapter);
-            }
-
-            // Setup delete button
+            // Delete dugme
             buttonDelete.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onDeleteBudgetItem(budgetItem.getId());
                 }
             });
+
+            List<GetOfferingDTO> offerings = new ArrayList<>();
+            if (budgetItem.getServices() != null) {
+                offerings.addAll(budgetItem.getServices());
+            }
+            if (budgetItem.getProducts() != null) {
+                offerings.addAll(budgetItem.getProducts());
+            }
+
+            if (!offerings.isEmpty()) {
+                offeringsAdapter = new OfferingItemAdapter(offerings, true);
+                recyclerViewOfferings.setAdapter(offeringsAdapter);
+                recyclerViewOfferings.setVisibility(View.VISIBLE);
+                itemView.findViewById(R.id.textViewNoOfferings).setVisibility(View.GONE);
+            } else {
+                recyclerViewOfferings.setAdapter(null);
+                recyclerViewOfferings.setVisibility(View.GONE);
+                itemView.findViewById(R.id.textViewNoOfferings).setVisibility(View.VISIBLE);
+            }
+
         }
     }
 }

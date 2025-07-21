@@ -10,13 +10,6 @@ public class GetBudgetItemDTO {
     private GetOfferingCategoryDTO category;
     private boolean isDeleted;
 
-    public GetBudgetItemDTO(List<GetServiceDTO> services, List<GetProductDTO> products, GetOfferingCategoryDTO category, boolean isDeleted) {
-        this.services = services;
-        this.products = products;
-        this.category = category;
-        this.isDeleted = isDeleted;
-    }
-
     public int getId() {
         return id;
     }
@@ -31,6 +24,38 @@ public class GetBudgetItemDTO {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public List<GetServiceDTO> getServices() {
+        return services;
+    }
+
+    public void setServices(List<GetServiceDTO> services) {
+        this.services = services;
+    }
+
+    public List<GetProductDTO> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<GetProductDTO> products) {
+        this.products = products;
+    }
+
+    public GetOfferingCategoryDTO getCategory() {
+        return category;
+    }
+
+    public void setCategory(GetOfferingCategoryDTO category) {
+        this.category = category;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
 

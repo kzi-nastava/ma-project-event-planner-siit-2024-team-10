@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -82,6 +83,24 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
         recyclerViewBudgetItems.setAdapter(budgetItemsAdapter);
 
         buttonAdd.setOnClickListener(v -> showAddBudgetItemDialog());
+
+        // Listen to spinner selection to load budget items for selected event
+        spinnerEvents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position >= 0 && eventList != null && position < eventList.size()) {
+                    currentEventId = eventList.get(position).getId();
+                    viewModel.loadBudgetItemsForEvent(currentEventId);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                currentEventId = -1;
+                budgetItemsAdapter.updateBudgetItems(new ArrayList<>());
+                Toast.makeText(requireContext(), "No budget items", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupObservers() {
@@ -102,7 +121,7 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             binding.spinnerEvents.setAdapter(adapter);
 
-            // Load budget items for first event if available
+            // Optionally select first event on load
             if (!events.isEmpty()) {
                 currentEventId = events.get(0).getId();
                 viewModel.loadBudgetItemsForEvent(currentEventId);
@@ -114,9 +133,14 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             categoryList = categories;
         });
 
-        // Observe budget items
+        // Observe budget items and show "No budget items" toast if empty
         viewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
-            budgetItemsAdapter.updateBudgetItems(budgetItems);
+            if (budgetItems == null || budgetItems.isEmpty()) {
+                budgetItemsAdapter.updateBudgetItems(new ArrayList<>());
+                Toast.makeText(requireContext(), "No budget items", Toast.LENGTH_SHORT).show();
+            } else {
+                budgetItemsAdapter.updateBudgetItems(budgetItems);
+            }
         });
 
         // Observe error messages
@@ -179,15 +203,11 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
     @Override
     public void onDeleteBudgetItem(int budgetItemId) {
-        // You'll need to add this method to your ViewModel
-        // viewModel.deleteBudgetItem(budgetItemId);
-        Toast.makeText(requireContext(), "Delete functionality needs to be implemented in ViewModel", Toast.LENGTH_SHORT).show();
+        viewModel.deleteBudgetItem(budgetItemId, currentEventId);
     }
 
     @Override
     public void onAmountChanged(int budgetItemId, int newAmount) {
-        // You'll need to add this method to your ViewModel
-        // viewModel.updateBudgetItemAmount(budgetItemId, newAmount);
-        Toast.makeText(requireContext(), "Update amount functionality needs to be implemented in ViewModel", Toast.LENGTH_SHORT).show();
+        viewModel.updateBudgetItemAmount(currentEventId, budgetItemId, newAmount);
     }
 }
