@@ -170,6 +170,7 @@ public class HomeScreenFragment extends Fragment {
         eventsViewModel.loadTopEvents(loggedInID);
 
         setUpEventSortSpinners(view);
+
         setUpOfferingSortSpinners(view);
         setUpFilterButtons(view);
         setUpPaginationButtons(view);

@@ -18,8 +18,8 @@
             android:id="@+id/action_homeScreenFragment_to_eventDetailsFragment"
             app:destination="@id/eventDetailsFragment" />
         <action
-            android:id="@+id/action_homeScreenFragment_to_createReservationFragment"
-            app:destination="@id/createReservationFragment" />
+            android:id="@+id/action_homeScreenFragment_to_serviceDetailsFragment"
+            app:destination="@id/serviceDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/manageOfferingsFragment"
@@ -35,25 +35,26 @@
             app:destination="@id/serviceDetailsFragment"
             app:launchSingleTop="true" />
 
+
     </fragment>
     <fragment
         android:id="@+id/serviceDetailsFragment"
-        android:name="m3.eventplanner.fragments.OfferingDetailsFragment"
+        android:name="m3.eventplanner.fragments.offering.OfferingDetailsFragment"
         android:label="@string/details"
         tools:layout="@layout/fragment_offering_details" >
         <action
-            android:id="@+id/action_manageOfferingsFragment_to_editOfferingFragment"
-            app:destination="@id/editOfferingFragment"
+            android:id="@+id/action_manageOfferingsFragment_to_editServiceFragment"
+            app:destination="@id/editServiceFragment"
             app:launchSingleTop="true" />
     </fragment>
 
     <fragment
         android:id="@+id/createOfferingFragment"
-        android:name="m3.eventplanner.fragments.CreateServiceFragment"
+        android:name="m3.eventplanner.fragments.service.CreateServiceFragment"
         android:label="Create Offering" />
     <fragment
-        android:id="@+id/editOfferingFragment"
-        android:name="m3.eventplanner.fragments.EditOfferingFragment"
+        android:id="@+id/editServiceFragment"
+        android:name="m3.eventplanner.fragments.service.EditServiceFragment"
         android:label="Edit Offering" />
     <fragment
         android:id="@+id/eventDetailsFragment"

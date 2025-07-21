@@ -15,10 +15,15 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_offering"/>
             <item
+                android:id="@+id/createOfferingFragment"
+                android:title="Create service"
+                android:checkable="true"
+                android:icon="@drawable/ic_plus_service"/>
+            <item
                 android:id="@+id/createProductFragment"
                 android:title="@string/create_product"
                 android:checkable="true"
-                android:icon="@drawable/ic_add"/>
+                android:icon="@drawable/ic_plus_product"/>
             <item
                 android:id="@+id/notificationFragment"
                 android:title="@string/notifications"
