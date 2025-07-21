@@ -97,6 +97,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             } else {
                 picture.setImageResource(R.drawable.placeholder);
             }
+            type.setText(offering.isProduct() ? "PRODUCT" : "SERVICE");
         }
     }
 }

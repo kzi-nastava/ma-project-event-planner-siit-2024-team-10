@@ -198,8 +198,9 @@ public class OfferingDetailsFragment extends Fragment {
         binding.originalPrice.setText(String.format("%.2f $", offeringDTO.getPrice()));
         binding.priceWithDiscount.setText(String.format("%.2f $", offeringDTO.getPrice() * (1 - offeringDTO.getDiscount() / 100)));
         binding.discount.setText(String.format("(%.2f%%)", offeringDTO.getDiscount()));
+        TokenManager tokenManager = new TokenManager(requireContext());
+        boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
 
-        // Availability styling - green if available, red if not
         if (offeringDTO.isAvailable()) {
             binding.isAvailable.setVisibility(View.VISIBLE);
             binding.isNotAvailable.setVisibility(View.GONE);
@@ -207,11 +208,16 @@ public class OfferingDetailsFragment extends Fragment {
             binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark));
             binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
 
-            binding.bookNowButton.setEnabled(true);
-            binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
-                    ContextCompat.getColor(requireContext(), R.color.brand_purple)
-            ));
-            binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.chocolate_brown));
+            if (isOrganizer) {
+                binding.bookNowButton.setVisibility(View.VISIBLE);
+                binding.bookNowButton.setEnabled(true);
+                binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
+                        ContextCompat.getColor(requireContext(), R.color.brand_purple)
+                ));
+                binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.chocolate_brown));
+            } else {
+                binding.bookNowButton.setVisibility(View.GONE);
+            }
         } else {
             binding.isAvailable.setVisibility(View.GONE);
             binding.isNotAvailable.setVisibility(View.VISIBLE);
@@ -219,12 +225,9 @@ public class OfferingDetailsFragment extends Fragment {
             binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark));
             binding.isNotAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
 
-            binding.bookNowButton.setEnabled(false);
-            binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
-                    ContextCompat.getColor(requireContext(), android.R.color.darker_gray)
-            ));
-            binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white));
+            binding.bookNowButton.setVisibility(View.GONE);
         }
+
 
         GetProviderDTO provider = offeringDTO.getProvider();
 
