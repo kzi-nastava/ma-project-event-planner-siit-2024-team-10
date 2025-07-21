@@ -13,11 +13,15 @@ import m3.eventplanner.models.RegisterDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface AuthService {
     @POST("auth/login")
     Call<LoginResponseDTO> login(@Body LoginRequestDTO loginRequest);
+
+    @PUT("auth/activate")
+    Call<String> activateAccount(@Query("token") String token);
 
     @POST("auth/register")
     Call<RegisterDTO> register(@Body RegisterDTO registerDTO, @Query("roleUpgrade") boolean roleUpgrade);
