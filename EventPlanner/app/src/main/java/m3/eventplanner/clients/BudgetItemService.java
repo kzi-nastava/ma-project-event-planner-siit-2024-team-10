@@ -15,7 +15,6 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-
 public interface BudgetItemService {
 
     @POST("/{eventId}/budget")
@@ -25,20 +24,14 @@ public interface BudgetItemService {
     );
 
     @PUT("/{eventId}/budget/{budgetItemId}")
-    Call<UpdatedBudgetItemDTO> updateBudgetItemAmount(
+    Call<Void> updateBudgetItemAmount(
             @Path("eventId") int eventId,
             @Path("budgetItemId") int budgetItemId,
             @Body Integer amount
     );
 
-    @PUT("/{eventId}/budget/buy/{offeringId}")
-    Call<Boolean> buy(
-            @Path("eventId") int eventId,
-            @Path("offeringId") int offeringId
-    );
-
     @DELETE("/{eventId}/budget/{budgetItemId}")
-    Call<Boolean> deleteBudgetItem(
+    Call<Void> deleteBudgetItem(
             @Path("eventId") int eventId,
             @Path("budgetItemId") int budgetItemId
     );
@@ -55,6 +48,7 @@ public interface BudgetItemService {
 
     @GET("events/organizers")
     Call<List<GetEventDTO>> findEventsByOrganizer(@Query("accountId") int accountId);
+
     @GET("/api/budget/{eventId}")
     Call<List<GetBudgetItemDTO>> getBudgetItemsForEvent(@Path("eventId") int eventId);
 }

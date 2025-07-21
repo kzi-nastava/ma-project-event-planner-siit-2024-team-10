@@ -117,4 +117,43 @@ public class BudgetManagerViewModel extends ViewModel {
                     }
                 });
     }
+    public void deleteBudgetItem(int budgetItemId, int eventId) {
+        clientUtils.getBudgetItemService().deleteBudgetItem(eventId,budgetItemId)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            successMessage.setValue("Budget item deleted successfully");
+                            loadBudgetItemsForEvent(eventId);
+                        } else {
+                            error.setValue("Failed to delete budget item");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting budget item");
+                    }
+                });
+    }
+    public void updateBudgetItemAmount(int eventId, int budgetItemId, int newAmount) {
+        clientUtils.getBudgetItemService().updateBudgetItemAmount(eventId, budgetItemId, newAmount)
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            successMessage.setValue("Budget item updated successfully");
+                            loadBudgetItemsForEvent(eventId);
+                        } else {
+                            error.setValue("Failed to update budget item");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        error.setValue(t.getMessage() != null ? t.getMessage() : "Error updating budget item");
+                    }
+                });
+    }
+
 }

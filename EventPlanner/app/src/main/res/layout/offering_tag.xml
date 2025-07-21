@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_margin="4dp">
+
+    <TextView
+        android:id="@+id/textViewOffering"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Offering Name"
+        android:background="#fee7ca"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp" />
+
+    <TextView
+        android:id="@+id/textViewOfferingPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1000 RSD"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:layout_marginStart="6dp" />
+
+</LinearLayout>
