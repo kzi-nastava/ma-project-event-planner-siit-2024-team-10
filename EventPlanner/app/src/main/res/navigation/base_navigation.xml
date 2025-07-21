@@ -145,6 +145,11 @@
         android:name="m3.eventplanner.fragments.comment.CommentApprovalFragment"
         android:label="Comment Manager"
         tools:layout="@layout/fragment_comment_approval" />
+    <fragment
+        android:id="@+id/budgetItemFragment"
+        android:name="m3.eventplanner.fragments.budget.BudgetManagerFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_budget_manager" />
 
     <fragment
         android:id="@+id/invitationFragment"
