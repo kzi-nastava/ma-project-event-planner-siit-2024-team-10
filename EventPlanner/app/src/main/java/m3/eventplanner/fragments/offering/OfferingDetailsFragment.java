@@ -199,7 +199,7 @@ public class OfferingDetailsFragment extends Fragment {
         binding.priceWithDiscount.setText(String.format("%.2f $", offeringDTO.getPrice() * (1 - offeringDTO.getDiscount() / 100)));
         binding.discount.setText(String.format("(%.2f%%)", offeringDTO.getDiscount()));
         TokenManager tokenManager = new TokenManager(requireContext());
-        boolean isOrganizer = "ORGANIZER".equals(tokenManager.getRole());
+        boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
 
         if (offeringDTO.isAvailable()) {
             binding.isAvailable.setVisibility(View.VISIBLE);
