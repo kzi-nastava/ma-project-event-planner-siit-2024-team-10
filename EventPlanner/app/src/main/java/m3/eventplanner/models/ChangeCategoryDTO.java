@@ -1,17 +1,17 @@
 package m3.eventplanner.models;
 
 public class ChangeCategoryDTO {
-    private int newCategoryId;
+    private int categoryId;
 
     public ChangeCategoryDTO(int newCategoryId) {
-        this.newCategoryId = newCategoryId;
+        this.categoryId = newCategoryId;
     }
 
     public int getNewCategoryId() {
-        return newCategoryId;
+        return categoryId;
     }
 
     public void setNewCategoryId(int newCategoryId) {
-        this.newCategoryId = newCategoryId;
+        this.categoryId = newCategoryId;
     }
 }
