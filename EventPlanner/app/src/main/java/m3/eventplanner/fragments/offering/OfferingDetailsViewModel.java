@@ -215,8 +215,8 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
-    public void buyProduct(int eventId) {
-        clientUtils.getBudgetItemService().buyOffering(eventId, offering.getValue().getId(),new BuyRequestDTO(false)).enqueue(new Callback<Boolean>() {
+    public void buyOffering(int eventId) {
+        clientUtils.getBudgetItemService().buyOffering(eventId, offering.getValue().getId()).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {

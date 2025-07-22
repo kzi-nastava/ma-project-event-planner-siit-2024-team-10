@@ -1,7 +1,6 @@
 package m3.eventplanner.fragments.offering;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ import java.util.List;
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentOfferingDetailsBinding;
+import m3.eventplanner.fragments.reservation.CreateReservationFragment;
+import m3.eventplanner.fragments.reservation.CreateReservationViewModel;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProviderDTO;
@@ -67,8 +69,8 @@ public class OfferingDetailsFragment extends Fragment {
             int offeringId = getArguments().getInt("selectedServiceId");
             TokenManager tokenManager = new TokenManager(requireContext());
             int accountId = tokenManager.getAccountId();
-            int userId = tokenManager.getUserId();  // ID trenutno ulogovanog korisnika (organizatora)
-            isAdmin = tokenManager.getRole() != null && tokenManager.getRole().equals("ADMIN");
+            int userId = tokenManager.getUserId();
+            isAdmin = "ADMIN".equals(tokenManager.getRole());
 
             if (accountId == 0) {
                 binding.favouriteButton.setVisibility(View.GONE);
@@ -76,7 +78,6 @@ public class OfferingDetailsFragment extends Fragment {
 
             viewModel.loadOfferingDetails(offeringId, accountId, userId);
 
-            // Učitaj evente samo ako postoji validan userId
             if (userId != 0) {
                 viewModel.loadEventsForOrganizer(userId);
             }
@@ -120,7 +121,11 @@ public class OfferingDetailsFragment extends Fragment {
     private void setupClickListeners() {
         binding.bookNowButton.setOnClickListener(v -> {
             if (offering instanceof GetServiceDTO) {
-                Toast.makeText(requireContext(), "Booking services is not yet implemented", Toast.LENGTH_SHORT).show();
+                CreateReservationFragment dialog = new CreateReservationFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("selectedServiceId", offering.getId());
+                dialog.setArguments(bundle);
+                dialog.show(getParentFragmentManager(), "create_reservation_dialog");
                 return;
             }
 
@@ -149,7 +154,7 @@ public class OfferingDetailsFragment extends Fragment {
                         int selectedPosition = spinner.getSelectedItemPosition();
                         if (selectedPosition >= 0 && selectedPosition < events.size()) {
                             int selectedEventId = events.get(selectedPosition).getId();
-                            viewModel.buyProduct(selectedEventId);
+                            viewModel.buyOffering(selectedEventId);
                         } else {
                             Toast.makeText(requireContext(), "Invalid event selected", Toast.LENGTH_SHORT).show();
                         }
@@ -159,10 +164,8 @@ public class OfferingDetailsFragment extends Fragment {
         });
 
         binding.favouriteButton.setOnClickListener(v -> {
-            if (getArguments() != null) {
-                int accountId = new TokenManager(requireContext()).getAccountId();
-                viewModel.toggleFavourite(accountId);
-            }
+            int accountId = new TokenManager(requireContext()).getAccountId();
+            viewModel.toggleFavourite(accountId);
         });
 
         binding.deleteOfferingButton.setOnClickListener(v -> {
@@ -171,14 +174,12 @@ public class OfferingDetailsFragment extends Fragment {
                 return;
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
-            builder.setTitle("Confirm delete")
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Confirm delete")
                     .setMessage("Are you sure you want to delete this offering?")
                     .setPositiveButton("Confirm", (dialog, which) -> viewModel.deleteOffering())
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
-            builder.create().show();
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .show();
         });
 
         binding.editOfferingButton.setOnClickListener(v -> {
@@ -196,7 +197,6 @@ public class OfferingDetailsFragment extends Fragment {
     private void populateOfferingDetails(GetOfferingDTO offeringDTO) {
         this.offering = offeringDTO;
 
-        // Service-specific fields
         if (offeringDTO instanceof GetServiceDTO) {
             GetServiceDTO service = (GetServiceDTO) offeringDTO;
             binding.cancellationDeadline.setVisibility(View.VISIBLE);
@@ -226,7 +226,6 @@ public class OfferingDetailsFragment extends Fragment {
         if (offeringDTO.getCategory() != null) {
             binding.category.setText(offeringDTO.getCategory().getName());
             binding.category.setVisibility(View.VISIBLE);
-
             binding.category.setBackgroundResource(R.drawable.category_label_background);
             binding.category.setTextColor(ContextCompat.getColor(requireContext(), R.color.category_text_color));
         } else {
@@ -245,7 +244,6 @@ public class OfferingDetailsFragment extends Fragment {
         if (offeringDTO.isAvailable()) {
             binding.isAvailable.setVisibility(View.VISIBLE);
             binding.isNotAvailable.setVisibility(View.GONE);
-
             binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark));
             binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
 
@@ -253,8 +251,7 @@ public class OfferingDetailsFragment extends Fragment {
                 binding.bookNowButton.setVisibility(View.VISIBLE);
                 binding.bookNowButton.setEnabled(true);
                 binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
-                        ContextCompat.getColor(requireContext(), R.color.brand_purple)
-                ));
+                        ContextCompat.getColor(requireContext(), R.color.brand_purple)));
                 binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.chocolate_brown));
             } else {
                 binding.bookNowButton.setVisibility(View.GONE);
@@ -262,20 +259,16 @@ public class OfferingDetailsFragment extends Fragment {
         } else {
             binding.isAvailable.setVisibility(View.GONE);
             binding.isNotAvailable.setVisibility(View.VISIBLE);
-
             binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark));
             binding.isNotAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
-
             binding.bookNowButton.setVisibility(View.GONE);
         }
 
         GetProviderDTO provider = offeringDTO.getProvider();
 
         binding.providerName.setText(provider.getCompany().getName());
-
         if (provider.getLocation() != null) {
-            binding.providerAddress.setText(String.format("%s, %s",
-                    provider.getLocation().getCity(), provider.getLocation().getCountry()));
+            binding.providerAddress.setText(provider.getLocation().getCity() + ", " + provider.getLocation().getCountry());
         } else {
             binding.providerAddress.setText("N/A");
         }
@@ -284,9 +277,7 @@ public class OfferingDetailsFragment extends Fragment {
         binding.providerPhone.setText(provider.getPhoneNumber());
 
         if (provider.getProfilePhoto() != null) {
-            Picasso.get()
-                    .load(provider.getProfilePhoto())
-                    .into(binding.providerProfilePhoto);
+            Picasso.get().load(provider.getProfilePhoto()).into(binding.providerProfilePhoto);
         }
     }
 

@@ -50,8 +50,7 @@ public interface BudgetItemService {
     @PUT("/api/events/{eventId}/budget/buy/{offeringId}")
     Call<Boolean> buyOffering(
             @Path("eventId") int eventId,
-            @Path("offeringId") int offeringId,
-            @Body BuyRequestDTO pending
+            @Path("offeringId") int offeringId
     );
     @GET("/api/events/budget/{eventId}")
     Call<List<GetBudgetItemDTO>> getBudgetItemsForEvent(@Path("eventId") int eventId);
