@@ -1,5 +1,6 @@
 package m3.eventplanner.adapters;
 
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +25,8 @@ import java.util.Map;
 import m3.eventplanner.R;
 import m3.eventplanner.models.GetBudgetItemDTO;
 import m3.eventplanner.models.GetOfferingDTO;
+import m3.eventplanner.models.GetProductDTO;
+import m3.eventplanner.models.GetServiceDTO;
 
 public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.BudgetItemViewHolder> {
 
@@ -48,10 +53,17 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull BudgetItemViewHolder holder, int position) {
-        GetBudgetItemDTO budgetItem = budgetItems.get(position);
-        List<GetOfferingDTO> offerings = new ArrayList<>();
-        if (budgetItem.getServices() != null) offerings.addAll(budgetItem.getServices());
-        if (budgetItem.getProducts() != null) offerings.addAll(budgetItem.getProducts());
+        GetBudgetItemDTO budgetItem = budgetItems.get(position);List<GetOfferingDTO> offerings = new ArrayList<>();
+        if (budgetItem.getServices() != null) {
+            for (GetServiceDTO service : budgetItem.getServices()) {
+                offerings.add(service);
+            }
+        }
+        if (budgetItem.getProducts() != null) {
+            for (GetProductDTO product : budgetItem.getProducts()) {
+                offerings.add(product);
+            }
+        }
         holder.bind(budgetItem, offerings);
     }
 
@@ -128,7 +140,16 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
             });
 
             if (!offerings.isEmpty()) {
-                offeringsAdapter = new OfferingItemAdapter(offerings, true);
+                offeringsAdapter = new OfferingItemAdapter(
+                        offerings,
+                        true,
+                        offering -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("offering", offering);
+                            NavController navController = Navigation.findNavController(itemView);
+                            navController.navigate(R.id.action_budgetManagerFragment_to_oldOfferingDetailsFragment, bundle);
+                        }
+                );
                 recyclerViewOfferings.setAdapter(offeringsAdapter);
                 recyclerViewOfferings.setVisibility(View.VISIBLE);
                 itemView.findViewById(R.id.textViewNoOfferings).setVisibility(View.GONE);

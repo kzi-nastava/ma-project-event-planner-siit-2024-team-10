@@ -183,6 +183,6 @@
     <string name="manage_photos">Manage photos</string>
     <string name="fixed_duration">Fixed duration</string>
     <string name="min_duration">Min duration</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

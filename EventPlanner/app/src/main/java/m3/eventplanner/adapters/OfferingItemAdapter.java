@@ -18,6 +18,8 @@ import m3.eventplanner.models.GetOfferingDTO;
 public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapter.OfferingViewHolder> {
     private List<GetOfferingDTO> offerings;
     private boolean isUsedInBudget = false;
+    private OnOfferingClickListener offeringClickListener;
+
 
     public List<GetOfferingDTO> getOfferings() {
         return offerings;
@@ -28,10 +30,20 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
         this.offerings = offerings;
     }
 
+    public OfferingItemAdapter(List<GetOfferingDTO> offerings, boolean isUsedInBudget, OnOfferingClickListener offeringClickListener) {
+        this.offerings = offerings;
+        this.isUsedInBudget = isUsedInBudget;
+        this.offeringClickListener = offeringClickListener;
+    }
+
     // Constructor with budget flag
     public OfferingItemAdapter(List<GetOfferingDTO> offerings, boolean isUsedInBudget) {
         this.offerings = offerings;
         this.isUsedInBudget = isUsedInBudget;
+    }
+
+    public interface OnOfferingClickListener {
+        void onOfferingClick(GetOfferingDTO offering);
     }
 
     @NonNull
@@ -46,6 +58,11 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
     public void onBindViewHolder(@NonNull OfferingViewHolder holder, int position) {
         GetOfferingDTO offering = offerings.get(position);
         holder.bind(offering, isUsedInBudget);
+        holder.itemView.setOnClickListener(v -> {
+            if (offeringClickListener != null) {
+                offeringClickListener.onOfferingClick(offering);
+            }
+        });
     }
 
     @Override
