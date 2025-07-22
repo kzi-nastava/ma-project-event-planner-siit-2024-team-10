@@ -3,12 +3,15 @@ package m3.eventplanner.clients;
 import java.time.LocalDate;
 import java.util.Collection;
 
+import m3.eventplanner.models.ChangeCategoryDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.PagedResponse;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -61,4 +64,8 @@ public interface OfferingService {
 
     @GET("offerings/highest-prices")
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
-}
+    @GET("offerings/all-non-paged")
+    Call<Collection<GetOfferingDTO>> getNonPaged();
+    @PUT("offerings/{offeringId}/category")
+    Call<Void> changeOfferingCategory(@Path("offeringId") int offeringId,@Body ChangeCategoryDTO changeCategoryDTO);
+    }

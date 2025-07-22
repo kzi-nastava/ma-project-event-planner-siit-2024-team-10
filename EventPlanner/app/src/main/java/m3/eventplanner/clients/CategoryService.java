@@ -30,7 +30,8 @@ public interface CategoryService {
     Call<UpdatedCategoryDTO> editCategory(@Path("id") int id, @Body UpdateCategoryDTO categoryDTO);
 
     @DELETE("categories/{id}")
-    Call<Void> deleteCategory(@Path("id") int id);
+    Call<Boolean> deleteCategory(@Path("id") int categoryId);
+
     @PUT("categories/{id}/approve")
     Call<Void> approve(@Path("id") int id);
 
