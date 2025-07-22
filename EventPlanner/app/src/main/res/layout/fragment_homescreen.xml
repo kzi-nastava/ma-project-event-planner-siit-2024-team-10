@@ -87,35 +87,40 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <!-- TextView for "No events found" message -->
-    <TextView
-        android:id="@+id/noCardsFoundTextView"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_marginTop="200dp"
-        android:layout_marginBottom="200dp"
-        android:padding="16dp"
-        android:text="@string/no_events"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/see_all_events_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/see_all_events"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/noCardsFoundTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_events"
+            android:textSize="18sp"
+            android:layout_marginTop="50dp"
+            android:textStyle="bold"
+            android:paddingBottom="24dp"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/see_all_offerings_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/see_all_offerings"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/see_all_events_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/see_all_events"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/see_all_offerings_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/see_all_offerings"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView
