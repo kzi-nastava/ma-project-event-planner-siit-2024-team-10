@@ -33,6 +33,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
         messages.add(message);
         notifyItemInserted(messages.size() - 1);
     }
+    public void clear() {
+        messages.clear();
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemViewType(int position) {

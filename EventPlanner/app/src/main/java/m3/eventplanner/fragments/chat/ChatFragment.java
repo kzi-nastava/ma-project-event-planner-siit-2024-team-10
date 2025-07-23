@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import m3.eventplanner.adapters.ChatAdapter;
+import m3.eventplanner.adapters.ChatContactAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentChatBinding;
 import m3.eventplanner.models.GetMessageDTO;
@@ -25,6 +26,7 @@ public class ChatFragment extends Fragment {
     private FragmentChatBinding binding;
     private ChatViewModel viewModel;
     private ChatAdapter adapter;
+    private ChatContactAdapter contactAdapter;
 
     private int senderId;
     private int receiverId;
@@ -46,6 +48,16 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        contactAdapter = new ChatContactAdapter(contact -> {
+            receiverId = contact.getUser();
+            adapter.clear();
+            viewModel.loadMessages(senderId, receiverId);
+            viewModel.subscribeToSocket(receiverId);
+        });
+
+        binding.contactRecyclerView.setLayoutManager(
+                new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.contactRecyclerView.setAdapter(contactAdapter);
 
         viewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         viewModel.initialize(new m3.eventplanner.clients.ClientUtils(requireContext())); // ✅ OBAVEZNO pre korišćenja viewModel-a
@@ -62,10 +74,13 @@ public class ChatFragment extends Fragment {
 
         viewModel.loadMessages(senderId, receiverId);
         viewModel.subscribeToSocket(receiverId);
+        viewModel.loadContacts(senderId);
     }
 
 
     private void setupObservers() {
+        viewModel.getContacts().observe(getViewLifecycleOwner(), contactAdapter::setContacts);
+
         viewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
             adapter.setMessages(messages);
             binding.recyclerView.scrollToPosition(messages.size() - 1);

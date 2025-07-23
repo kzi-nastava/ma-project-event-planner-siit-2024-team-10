@@ -6,7 +6,7 @@ public class GetChatContact {
     private int user;
     private String name;
     private String content;
-    private LocalDateTime dateTime;
+    private String dateTime;
 
     public int getUser() {
         return user;
@@ -32,11 +32,11 @@ public class GetChatContact {
         this.content = content;
     }
 
-    public LocalDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 }

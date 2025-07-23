@@ -21,6 +21,7 @@ import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.clients.MessageService;
 import m3.eventplanner.models.CreateMessageDTO;
 import m3.eventplanner.models.CreatedMessageDTO;
+import m3.eventplanner.models.GetChatContact;
 import m3.eventplanner.models.GetMessageDTO;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -36,10 +37,12 @@ public class ChatViewModel extends ViewModel {
     private final MutableLiveData<GetMessageDTO> newMessage = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
-
     private ClientUtils clientUtils;
     private StompClient stompClient;
-
+    private final MutableLiveData<List<GetChatContact>> contacts = new MutableLiveData<>();
+    public LiveData<List<GetChatContact>> getContacts() {
+        return contacts;
+    }
     public void initialize(ClientUtils clientUtils) {
         this.clientUtils = clientUtils;
 
@@ -171,5 +174,22 @@ public class ChatViewModel extends ViewModel {
             stompClient.disconnect();
         }
         super.onCleared();
+    }
+    public void loadContacts(int userId) {
+        clientUtils.getMessageService().getChatContacts(userId).enqueue(new Callback<List<GetChatContact>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<GetChatContact>> call, @NotNull Response<List<GetChatContact>> response) {
+                if (response.isSuccessful()) {
+                    contacts.setValue(response.body());
+                } else {
+                    error.postValue("Failed to load contacts");
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<GetChatContact>> call, @NotNull Throwable t) {
+                error.postValue(t.getMessage());
+            }
+        });
     }
 }

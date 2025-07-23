@@ -6,6 +6,7 @@ import java.util.List;
 
 import m3.eventplanner.models.CreateMessageDTO;
 import m3.eventplanner.models.CreatedMessageDTO;
+import m3.eventplanner.models.GetChatContact;
 import m3.eventplanner.models.GetMessageDTO;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -22,4 +23,6 @@ public interface MessageService {
 
     @POST("messages")
     Call<CreatedMessageDTO> createMessage(@Body CreateMessageDTO dto);
+    @GET("messages/{userId}")
+    Call<List<GetChatContact>> getChatContacts(@Path("userId") int userId);
 }
