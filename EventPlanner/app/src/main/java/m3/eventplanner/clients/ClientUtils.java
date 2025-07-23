@@ -31,6 +31,7 @@ public class ClientUtils {
     private NotificationService notificationService;
     private ImageUploadService imageUploadService;
     private CommentService commentService;
+    private MessageService messageService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -65,6 +66,7 @@ public class ClientUtils {
         userService = retrofit.create(UserService.class);
         notificationService = retrofit.create(NotificationService.class);
         commentService = retrofit.create(CommentService.class);
+        messageService = retrofit.create(MessageService.class);
     }
 
     public EventService getEventService() {
@@ -96,4 +98,6 @@ public class ClientUtils {
     }
     public NotificationService getNotificationService() { return notificationService; }
     public CommentService getCommentService() { return commentService; }
+
+    public MessageService getMessageService() { return messageService; }
 }
