@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Space;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +63,6 @@ public class HomeScreenFragment extends Fragment {
     private Boolean initialEventLoad = true;
     private Boolean initialOfferingLoad = true;
     private Button seeAllEvents, seeAllOfferings;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         clientUtils = new ClientUtils(requireContext());
@@ -93,6 +93,8 @@ public class HomeScreenFragment extends Fragment {
                 eventAdapter.notifyDataSetChanged();
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 topEventsTextView.setVisibility(View.VISIBLE);
                 topOfferingsTextView.setVisibility(View.GONE);
             } else {
@@ -107,6 +109,8 @@ public class HomeScreenFragment extends Fragment {
                 offeringAdapter.notifyDataSetChanged();
                 contentRecyclerView.setVisibility(View.VISIBLE);
                 noCardsFoundTextView.setVisibility(View.GONE);
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.VISIBLE);
             } else {
@@ -131,6 +135,7 @@ public class HomeScreenFragment extends Fragment {
             } else {
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
+                seeAllEvents.setVisibility(View.VISIBLE);
                 handleNoDataFound(true);
             }
         });
@@ -152,6 +157,7 @@ public class HomeScreenFragment extends Fragment {
             } else {
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.VISIBLE);
                 handleNoDataFound(false);
             }
         });
@@ -434,10 +440,8 @@ public class HomeScreenFragment extends Fragment {
     private void handleNoDataFound(Boolean isEvent) {
         if (isEvent){
             noCardsFoundTextView.setText(R.string.no_events);
-            seeAllEvents.setVisibility(View.VISIBLE);
         }else{
             noCardsFoundTextView.setText(R.string.no_offerings);
-            seeAllOfferings.setVisibility(View.VISIBLE);
         }
         noCardsFoundTextView.setVisibility(View.VISIBLE);
         contentRecyclerView.setVisibility(View.GONE);
