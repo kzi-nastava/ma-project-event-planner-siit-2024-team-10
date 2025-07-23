@@ -108,6 +108,17 @@ public class OfferingDetailsFragment extends Fragment {
     }
 
     private void setupClickListeners() {
+        binding.btnContactProvider.setOnClickListener(v -> {
+            if (offering != null && offering.getProvider() != null) {
+                int receiverId = offering.getProvider().getId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("receiverId", receiverId);
+                Navigation.findNavController(v).navigate(R.id.chatFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Provider info unavailable", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.favouriteButton.setOnClickListener(v -> {
             if (getArguments() != null) {
                 int accountId = new TokenManager(requireContext()).getAccountId();
