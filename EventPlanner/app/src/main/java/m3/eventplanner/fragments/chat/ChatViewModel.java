@@ -1,5 +1,7 @@
 package m3.eventplanner.fragments.chat;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.clients.MessageService;
 import m3.eventplanner.models.CreateMessageDTO;
@@ -115,6 +118,7 @@ public class ChatViewModel extends ViewModel {
                 if (!response.isSuccessful()) {
                     error.setValue("Failed to send message via REST");
                 }
+                loadMessages(senderId,receiverId);
             }
 
             @Override
@@ -150,7 +154,7 @@ public class ChatViewModel extends ViewModel {
                         json.getInt("senderId"),
                         json.getInt("receiverId"),
                         json.getString("content"),
-                        LocalDateTime.parse(json.getString("timestamp"), DateTimeFormatter.ISO_DATE_TIME)
+                        json.getString("timestamp")
                 );
                 newMessage.postValue(msg);
             } catch (JSONException e) {

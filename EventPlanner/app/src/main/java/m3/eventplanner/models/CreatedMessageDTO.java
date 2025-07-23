@@ -7,7 +7,6 @@ public class CreatedMessageDTO {
     private int sender;
     private int receiver;
     private String content;
-    private LocalDateTime timestamp;
 
     public int getId() {
         return id;
@@ -39,13 +38,5 @@ public class CreatedMessageDTO {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 }

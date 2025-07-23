@@ -6,8 +6,8 @@ public class GetMessageDTO {
     private int senderId;
     private int receiverId;
     private String content;
-    private LocalDateTime timestamp;
-    public GetMessageDTO(int senderId, int receiverId, String content, LocalDateTime timestamp) {
+    private String timestamp;
+    public GetMessageDTO(int senderId, int receiverId, String content, String timestamp) {
         this.senderId = senderId;
         this.receiverId = receiverId;
         this.content = content;
@@ -38,11 +38,11 @@ public class GetMessageDTO {
         this.content = content;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 }

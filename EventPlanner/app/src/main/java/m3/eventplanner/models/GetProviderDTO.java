@@ -24,6 +24,8 @@ public class GetProviderDTO implements Parcelable, Serializable {
     private GetLocationDTO location;
     @SerializedName("company")
     private GetCompanyDTO company;
+    @SerializedName("accountId")
+    private int accountId;
 
     public GetProviderDTO() {
     }
@@ -140,5 +142,13 @@ public class GetProviderDTO implements Parcelable, Serializable {
 
     public void setCompany(GetCompanyDTO company) {
         this.company = company;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 }

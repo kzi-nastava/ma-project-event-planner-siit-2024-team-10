@@ -92,6 +92,8 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     }
 
     private void setupObservers() {
+        binding.btnContactOrganizer.setVisibility(View.GONE);
+
         viewModel.getEvent().observe(getViewLifecycleOwner(), this::populateEventDetails);
 
         viewModel.getAgenda().observe(getViewLifecycleOwner(), agendaItems -> {
@@ -155,10 +157,22 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         {
             binding.attendButton.setText("You're going!");
             binding.attendButton.setEnabled(false);
+            binding.btnContactOrganizer.setVisibility(View.VISIBLE);
         });
     }
 
     private void setupClickListeners() {
+        binding.btnContactOrganizer.setOnClickListener(v -> {
+            if (event != null && event.getOrganizer() != null) {
+                int receiverId = event.getOrganizer().getAccountId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("receiverId", receiverId);
+                Navigation.findNavController(v).navigate(R.id.chatFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Organizer info unavailable", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.favouriteButton.setOnClickListener(v -> {
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");

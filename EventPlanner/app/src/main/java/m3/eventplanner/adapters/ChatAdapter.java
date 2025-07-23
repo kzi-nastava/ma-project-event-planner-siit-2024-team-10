@@ -51,9 +51,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
     public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
         GetMessageDTO message = messages.get(position);
         holder.messageText.setText(message.getContent());
-
-        // Dodajte ovo za debug - proverite da li se poziva
-        Log.d("ChatAdapter", "Binding message at position " + position + ": " + message.getContent());
     }
 
     @Override

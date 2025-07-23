@@ -50,7 +50,7 @@ public class ChatFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         viewModel.initialize(new m3.eventplanner.clients.ClientUtils(requireContext())); // ✅ OBAVEZNO pre korišćenja viewModel-a
 
-        senderId = new TokenManager(requireContext()).getUserId();
+        senderId = new TokenManager(requireContext()).getAccountId();
         receiverId = requireArguments().getInt("receiverId");
 
         adapter = new ChatAdapter(new ArrayList<>(), senderId);
