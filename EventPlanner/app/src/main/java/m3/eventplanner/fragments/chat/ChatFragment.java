@@ -34,8 +34,10 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().containsKey("receiverId")) {
             receiverId = getArguments().getInt("receiverId");
+        } else {
+            receiverId = -1;
         }
     }
 
@@ -45,10 +47,10 @@ public class ChatFragment extends Fragment {
         binding = FragmentChatBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         contactAdapter = new ChatContactAdapter(contact -> {
             receiverId = contact.getUser();
             adapter.clear();
@@ -61,10 +63,9 @@ public class ChatFragment extends Fragment {
         binding.contactRecyclerView.setAdapter(contactAdapter);
 
         viewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-        viewModel.initialize(new m3.eventplanner.clients.ClientUtils(requireContext())); // ✅ OBAVEZNO pre korišćenja viewModel-a
+        viewModel.initialize(new m3.eventplanner.clients.ClientUtils(requireContext()));
 
         senderId = new TokenManager(requireContext()).getAccountId();
-        receiverId = requireArguments().getInt("receiverId");
 
         adapter = new ChatAdapter(new ArrayList<>(), senderId);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -73,9 +74,12 @@ public class ChatFragment extends Fragment {
         setupObservers();
         setupListeners();
 
-        viewModel.loadMessages(senderId, receiverId);
-        viewModel.subscribeToSocket(receiverId);
         viewModel.loadContacts(senderId);
+
+        if (receiverId != -1) {
+            viewModel.loadMessages(senderId, receiverId);
+            viewModel.subscribeToSocket(receiverId);
+        }
     }
 
 
@@ -90,6 +94,7 @@ public class ChatFragment extends Fragment {
         viewModel.getNewMessage().observe(getViewLifecycleOwner(), message -> {
             adapter.addMessage(message);
             binding.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            viewModel.loadContacts(senderId);
         });
 
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
@@ -103,6 +108,7 @@ public class ChatFragment extends Fragment {
             if (!TextUtils.isEmpty(text)) {
                 viewModel.sendMessage(senderId, receiverId, text);
                 binding.messageInput.setText("");
+                viewModel.loadContacts(senderId);
             }
         });
     }
