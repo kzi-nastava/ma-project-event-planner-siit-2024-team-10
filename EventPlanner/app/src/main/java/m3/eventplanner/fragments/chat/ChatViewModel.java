@@ -137,7 +137,7 @@ public class ChatViewModel extends ViewModel {
             obj.put("toId", receiverId);
             obj.put("message", content);
 
-            stompClient.send("/app/send/message", obj.toString()).subscribe(
+            stompClient.send("/socket-subscriber/send/message", obj.toString()).subscribe(
                     () -> Log.d("STOMP", "Message sent"),
                     throwable -> error.postValue("STOMP send error: " + throwable.getMessage())
             );
@@ -153,12 +153,12 @@ public class ChatViewModel extends ViewModel {
             try {
                 JSONObject json = new JSONObject(topicMessage.getPayload());
 
-                GetMessageDTO msg = new GetMessageDTO(
-                        json.getInt("senderId"),
-                        json.getInt("receiverId"),
-                        json.getString("content"),
-                        json.getString("timestamp")
-                );
+                int senderId = json.has("senderId") ? json.getInt("senderId") : json.getInt("fromId");
+                int receiverId = json.has("receiverId") ? json.getInt("receiverId") : json.getInt("toId");
+                String content = json.has("content") ? json.getString("content") : json.getString("message");
+                String timestamp = json.optString("timestamp", LocalDateTime.now().toString());
+
+                GetMessageDTO msg = new GetMessageDTO(senderId, receiverId, content, timestamp);
                 newMessage.postValue(msg);
             } catch (JSONException e) {
                 error.postValue("Receive parse error: " + e.getMessage());
