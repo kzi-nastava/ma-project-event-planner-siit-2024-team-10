@@ -64,8 +64,13 @@ public class OfferingDetailsFragment extends Fragment {
             int accountId = tokenManager.getAccountId();
             int userId = tokenManager.getUserId();
             isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
+
+            boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
+            binding.btnContactProvider.setVisibility(isOrganizer ? View.VISIBLE : View.GONE);
+
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
+
             viewModel.loadOfferingDetails(offeringId, accountId, userId);
         }
     }
