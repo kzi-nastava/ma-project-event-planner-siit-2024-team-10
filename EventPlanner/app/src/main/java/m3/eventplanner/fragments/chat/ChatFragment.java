@@ -30,6 +30,7 @@ public class ChatFragment extends Fragment {
 
     private int senderId;
     private int receiverId;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
