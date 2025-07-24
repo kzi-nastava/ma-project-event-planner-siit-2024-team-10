@@ -89,8 +89,11 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
 
         public void bind(GetOfferingDTO offering, boolean isUsedInBudget) {
             offeringName.setText(offering.getName());
-            offeringPrice.setText(String.format("%.0f RSD", offering.getPrice()));
+            double price = offering.getPrice();
+            double discountPercent = offering.getDiscount();
+            double discountedPrice = price * (1 - discountPercent / 100);
 
+            offeringPrice.setText(String.format("%.0f $", discountedPrice));
             // Set background color based on usage context
             if (isUsedInBudget) {
                 offeringItem.setBackgroundColor(Color.parseColor("#fee9ce")); // light yellow
