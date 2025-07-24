@@ -23,6 +23,9 @@ public class GetOfferingCategoryDTO implements Parcelable, Serializable {
     @SerializedName("pending")
     private boolean pending;
 
+    @SerializedName("creatorId")
+    private int creatorId;
+
     public GetOfferingCategoryDTO() {
     }
 
@@ -33,6 +36,7 @@ public class GetOfferingCategoryDTO implements Parcelable, Serializable {
         dest.writeString(description);
         dest.writeByte((byte) (isDeleted ? 1 : 0));
         dest.writeByte((byte) (pending ? 1 : 0));
+        dest.writeInt(creatorId);
     }
 
     public static final Creator<GetOfferingCategoryDTO> CREATOR = new Creator<GetOfferingCategoryDTO>() {
@@ -58,6 +62,7 @@ public class GetOfferingCategoryDTO implements Parcelable, Serializable {
         description = in.readString();
         isDeleted = in.readByte() != 0;
         pending = in.readByte() != 0;
+        creatorId = in.readInt();
     }
 
     public int getId() {
