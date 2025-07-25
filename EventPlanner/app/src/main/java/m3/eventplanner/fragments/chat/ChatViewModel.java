@@ -48,7 +48,7 @@ public class ChatViewModel extends ViewModel {
 
         // Init STOMP client
         OkHttpClient okHttpClient = new OkHttpClient();
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://192.168.1.16:8080/socket/websocket", null, okHttpClient);
+        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://localhost:8080/socket/websocket", null, okHttpClient);
 
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
