@@ -92,8 +92,6 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     }
 
     private void setupObservers() {
-        binding.btnContactOrganizer.setVisibility(View.GONE);
-
         viewModel.getEvent().observe(getViewLifecycleOwner(), this::populateEventDetails);
 
         viewModel.getAgenda().observe(getViewLifecycleOwner(), agendaItems -> {
@@ -157,7 +155,6 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         {
             binding.attendButton.setText("You're going!");
             binding.attendButton.setEnabled(false);
-            binding.btnContactOrganizer.setVisibility(View.VISIBLE);
         });
     }
 
