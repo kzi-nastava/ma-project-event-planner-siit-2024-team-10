@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import m3.eventplanner.BuildConfig;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.clients.MessageService;
@@ -48,7 +49,13 @@ public class ChatViewModel extends ViewModel {
 
         // Init STOMP client
         OkHttpClient okHttpClient = new OkHttpClient();
-        stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "ws://localhost:8080/socket/websocket", null, okHttpClient);
+        String socketUrl = "ws://" + BuildConfig.IP_ADDR + ":8080/socket/websocket";
+        stompClient = Stomp.over(
+                Stomp.ConnectionProvider.OKHTTP,
+                socketUrl,
+                null,
+                okHttpClient
+        );
 
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
