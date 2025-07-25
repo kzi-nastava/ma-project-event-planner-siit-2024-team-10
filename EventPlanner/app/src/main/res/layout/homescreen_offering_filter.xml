@@ -127,20 +127,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/send_offering_filter"
+                android:id="@+id/restart_offering_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/filter_offerings">
+                android:text="@string/restart_filter">
             </Button>
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
             <Button
-                android:id="@+id/restart_offering_filter"
+                android:id="@+id/send_offering_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/restart_filter">
+                android:text="@string/filter_offerings">
             </Button>
         </LinearLayout>
 
