@@ -43,6 +43,7 @@ public class GetEventDTO implements Parcelable, Serializable {
     @SerializedName("participantsCount")
     private int participantsCount;
 
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE;
 
     public GetEventDTO() {

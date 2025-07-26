@@ -32,6 +32,7 @@ public class ClientUtils {
     private ImageUploadService imageUploadService;
     private CommentService commentService;
     private MessageService messageService;
+    private BudgetItemService budgetItemService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -66,6 +67,7 @@ public class ClientUtils {
         userService = retrofit.create(UserService.class);
         notificationService = retrofit.create(NotificationService.class);
         commentService = retrofit.create(CommentService.class);
+        budgetItemService=retrofit.create(BudgetItemService.class);
         messageService = retrofit.create(MessageService.class);
     }
 
@@ -91,7 +93,9 @@ public class ClientUtils {
     }
     public ImageUploadService getImageUploadService() { return imageUploadService; }
     public ReservationService getReservationService() { return reservationService; }
+
     public ServiceService getServiceService() { return serviceService; }
+    public BudgetItemService getBudgetItemService() { return budgetItemService; }
 
     public UserService getUserService() {
         return userService;

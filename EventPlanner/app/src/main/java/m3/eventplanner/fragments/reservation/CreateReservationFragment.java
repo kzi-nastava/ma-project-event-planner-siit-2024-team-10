@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -38,7 +39,7 @@ import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetServiceDTO;
 
-public class CreateReservationFragment extends Fragment {
+public class CreateReservationFragment extends DialogFragment {
     private FragmentCreateReservationBinding binding;
     private ClientUtils clientUtils;
     private CreateReservationViewModel viewModel;
@@ -48,6 +49,14 @@ public class CreateReservationFragment extends Fragment {
     private GetServiceDTO service;
     private int organizerId, eventId;
     private ArrayAdapter<GetEventDTO> eventAdapter;
+    private OnReservationCompleteListener reservationCompleteListener;
+
+    public void setOnReservationCompleteListener(OnReservationCompleteListener listener) {
+        this.reservationCompleteListener = listener;
+    }
+    public interface OnReservationCompleteListener {
+        void onReservationComplete(int eventId);
+    }
 
 
     @Override
@@ -91,8 +100,7 @@ public class CreateReservationFragment extends Fragment {
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            NavController navController = Navigation.findNavController(requireView());
-                            navController.navigateUp();
+                            dismiss();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -124,17 +132,21 @@ public class CreateReservationFragment extends Fragment {
         viewModel.getNotification().observe(getViewLifecycleOwner(), notification -> {
             Toast.makeText(getContext(), notification, Toast.LENGTH_SHORT).show();
         });
-        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->{
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
             binding.error.setVisibility(View.GONE);
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+
+            if (reservationCompleteListener != null) {
+                reservationCompleteListener.onReservationComplete(eventId);
+            }
+
             try {
                 NavController navController = NavHostFragment.findNavController(CreateReservationFragment.this);
                 navController.navigate(R.id.homeScreenFragment);
             } catch (Exception e) {
                 Log.e("NavigationError", "Failed to navigate", e);
             }
-                }
-        );
+        });
 
     }
         private void setupEventSpinner() {

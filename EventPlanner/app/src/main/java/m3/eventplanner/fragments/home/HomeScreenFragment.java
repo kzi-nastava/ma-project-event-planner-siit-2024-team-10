@@ -503,7 +503,7 @@ public class HomeScreenFragment extends Fragment {
                 String startDateStr = dateParts[0].trim();
                 String endDateStr = dateParts[1].trim();
 
-                SimpleDateFormat inputDateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+                SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd. MM. yyyy.", Locale.ENGLISH);
 
                 try {
                     Date startDate = inputDateFormat.parse(startDateStr);

@@ -151,12 +151,25 @@
         android:name="m3.eventplanner.fragments.reservation.ReservationConfirmationFragment"
         android:label="Reservation Confirmation"
         tools:layout="@layout/fragment_reservation_confirmation" />
-
+    <fragment
+        android:id="@+id/oldOfferingDetailsFragment"
+        android:name="m3.eventplanner.fragments.budget.OldOfferingDetailsFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_old_offering_details" />
     <fragment
         android:id="@+id/commentApprovalFragment"
         android:name="m3.eventplanner.fragments.comment.CommentApprovalFragment"
         android:label="Comment Manager"
         tools:layout="@layout/fragment_comment_approval" />
+    <fragment
+        android:id="@+id/budgetItemFragment"
+        android:name="m3.eventplanner.fragments.budget.BudgetManagerFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_budget_manager">
+        <action
+            android:id="@+id/action_budgetManagerFragment_to_oldOfferingDetailsFragment"
+            app:destination="@id/oldOfferingDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/invitationFragment"

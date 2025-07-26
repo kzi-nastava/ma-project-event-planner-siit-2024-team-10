@@ -1,8 +1,10 @@
 package m3.eventplanner.adapters;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,12 +17,33 @@ import m3.eventplanner.models.GetOfferingDTO;
 
 public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapter.OfferingViewHolder> {
     private List<GetOfferingDTO> offerings;
+    private boolean isUsedInBudget = false;
+    private OnOfferingClickListener offeringClickListener;
+
+
     public List<GetOfferingDTO> getOfferings() {
         return offerings;
     }
 
+    // Constructor without budget flag (default use)
     public OfferingItemAdapter(List<GetOfferingDTO> offerings) {
         this.offerings = offerings;
+    }
+
+    public OfferingItemAdapter(List<GetOfferingDTO> offerings, boolean isUsedInBudget, OnOfferingClickListener offeringClickListener) {
+        this.offerings = offerings;
+        this.isUsedInBudget = isUsedInBudget;
+        this.offeringClickListener = offeringClickListener;
+    }
+
+    // Constructor with budget flag
+    public OfferingItemAdapter(List<GetOfferingDTO> offerings, boolean isUsedInBudget) {
+        this.offerings = offerings;
+        this.isUsedInBudget = isUsedInBudget;
+    }
+
+    public interface OnOfferingClickListener {
+        void onOfferingClick(GetOfferingDTO offering);
     }
 
     @NonNull
@@ -34,7 +57,12 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
     @Override
     public void onBindViewHolder(@NonNull OfferingViewHolder holder, int position) {
         GetOfferingDTO offering = offerings.get(position);
-        holder.bind(offering);
+        holder.bind(offering, isUsedInBudget);
+        holder.itemView.setOnClickListener(v -> {
+            if (offeringClickListener != null) {
+                offeringClickListener.onOfferingClick(offering);
+            }
+        });
     }
 
     @Override
@@ -48,19 +76,30 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
     }
 
     static class OfferingViewHolder extends RecyclerView.ViewHolder {
-        private TextView offeringName;
-        private TextView offeringPrice;
-        private TextView offeringType;
+        private final TextView offeringName;
+        private final LinearLayout offeringItem;
+        private final TextView offeringPrice;
 
         public OfferingViewHolder(@NonNull View itemView) {
             super(itemView);
             offeringName = itemView.findViewById(R.id.offering_name);
+            offeringItem = itemView.findViewById(R.id.offering_item);
             offeringPrice = itemView.findViewById(R.id.offering_price);
         }
 
-        public void bind(GetOfferingDTO offering) {
+        public void bind(GetOfferingDTO offering, boolean isUsedInBudget) {
             offeringName.setText(offering.getName());
-            offeringPrice.setText(String.format("$%.2f", offering.getPrice()));
+            double price = offering.getPrice();
+            double discountPercent = offering.getDiscount();
+            double discountedPrice = price * (1 - discountPercent / 100);
+
+            offeringPrice.setText(String.format("%.0f $", discountedPrice));
+            // Set background color based on usage context
+            if (isUsedInBudget) {
+                offeringItem.setBackgroundColor(Color.parseColor("#fee9ce")); // light yellow
+                offeringPrice.setTextColor(Color.parseColor("#c17664"));
+                offeringPrice.setTextColor(Color.parseColor("#78c3a0"));
+            }
         }
     }
 }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,11 +17,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentOfferingDetailsBinding;
+import m3.eventplanner.fragments.reservation.CreateReservationFragment;
+import m3.eventplanner.fragments.reservation.CreateReservationViewModel;
+import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProviderDTO;
 import m3.eventplanner.models.GetServiceDTO;
@@ -57,7 +66,6 @@ public class OfferingDetailsFragment extends Fragment {
         setupObservers();
         setupClickListeners();
 
-        // Load initial data
         if (getArguments() != null) {
             int offeringId = getArguments().getInt("selectedServiceId");
             TokenManager tokenManager = new TokenManager(requireContext());
@@ -70,8 +78,11 @@ public class OfferingDetailsFragment extends Fragment {
 
             if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
-
             viewModel.loadOfferingDetails(offeringId, accountId, userId);
+
+            if (userId != 0) {
+                viewModel.loadEventsForOrganizer(userId);
+            }
         }
     }
 
@@ -83,13 +94,11 @@ public class OfferingDetailsFragment extends Fragment {
                         R.drawable.heart_filled : R.drawable.heart_outline)
         );
 
-        viewModel.getNavigateHome().observe(getViewLifecycleOwner(), navigateHome ->
-                {
-                    if(navigateHome){
-                        Navigation.findNavController(binding.getRoot()).navigate(R.id.homeScreenFragment);
-                    }
-                }
-        );
+        viewModel.getNavigateHome().observe(getViewLifecycleOwner(), navigateHome -> {
+            if (navigateHome) {
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.homeScreenFragment);
+            }
+        });
 
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
@@ -99,10 +108,9 @@ public class OfferingDetailsFragment extends Fragment {
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
         );
 
-        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
-        {
-            this.isOwner=isOwner;
-            if(isOwner || isAdmin){
+        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner -> {
+            this.isOwner = isOwner;
+            if (isOwner || isAdmin) {
                 binding.deleteOfferingButton.setVisibility(View.VISIBLE);
                 binding.editOfferingButton.setVisibility(View.VISIBLE);
             } else {
@@ -122,6 +130,50 @@ public class OfferingDetailsFragment extends Fragment {
             } else {
                 Toast.makeText(getContext(), "Provider info unavailable", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        binding.bookNowButton.setOnClickListener(v -> {
+            if (offering instanceof GetServiceDTO) {
+                CreateReservationFragment dialog = new CreateReservationFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("selectedServiceId", offering.getId());
+                dialog.setArguments(bundle);
+                dialog.show(getParentFragmentManager(), "create_reservation_dialog");
+                return;
+            }
+
+            List<GetEventDTO> events = viewModel.getEvents().getValue();
+            if (events == null || events.isEmpty()) {
+                Toast.makeText(requireContext(), "No events found for booking", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            List<String> eventNames = new ArrayList<>();
+            for (GetEventDTO event : events) {
+                eventNames.add(event.getName());
+            }
+
+            View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_event_selection, null);
+            Spinner spinner = dialogView.findViewById(R.id.spinnerEvents);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, eventNames);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Select Event for Booking")
+                    .setView(dialogView)
+                    .setPositiveButton("Book", (dialog, which) -> {
+                        int selectedPosition = spinner.getSelectedItemPosition();
+                        if (selectedPosition >= 0 && selectedPosition < events.size()) {
+                            int selectedEventId = events.get(selectedPosition).getId();
+                            viewModel.buyOffering(selectedEventId);
+                        } else {
+                            Toast.makeText(requireContext(), "Invalid event selected", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
 
         binding.favouriteButton.setOnClickListener(v -> {
@@ -171,18 +223,17 @@ public class OfferingDetailsFragment extends Fragment {
     private void populateOfferingDetails(GetOfferingDTO offeringDTO) {
         this.offering = offeringDTO;
 
-        // Service-specifična polja
         if (offeringDTO instanceof GetServiceDTO) {
             GetServiceDTO service = (GetServiceDTO) offeringDTO;
             binding.cancellationDeadline.setVisibility(View.VISIBLE);
             binding.reservationDeadline.setVisibility(View.VISIBLE);
 
-            binding.cancellationDeadline.setText(String.valueOf(service.getCancellationPeriod())+"hours");
-            binding.reservationDeadline.setText(String.valueOf(service.getReservationPeriod())+"hours");
+            binding.cancellationDeadline.setText(service.getCancellationPeriod() + " hours");
+            binding.reservationDeadline.setText(service.getReservationPeriod() + " hours");
 
             binding.specification.setText(service.getSpecification());
             if (service.isAutoConfirm()) {
-                binding.duration.setText(String.valueOf(service.getMinDuration())+"hours");
+                binding.duration.setText(service.getMinDuration() + " hours");
             } else {
                 binding.duration.setText(String.format("%dh - %dh", service.getMinDuration(), service.getMaxDuration()));
             }
@@ -201,8 +252,6 @@ public class OfferingDetailsFragment extends Fragment {
         if (offeringDTO.getCategory() != null) {
             binding.category.setText(offeringDTO.getCategory().getName());
             binding.category.setVisibility(View.VISIBLE);
-
-            // Set category label styling (default blue/gray styling)
             binding.category.setBackgroundResource(R.drawable.category_label_background);
             binding.category.setTextColor(ContextCompat.getColor(requireContext(), R.color.category_text_color));
         } else {
@@ -220,7 +269,6 @@ public class OfferingDetailsFragment extends Fragment {
         if (offeringDTO.isAvailable()) {
             binding.isAvailable.setVisibility(View.VISIBLE);
             binding.isNotAvailable.setVisibility(View.GONE);
-
             binding.isAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.green_dark));
             binding.isAvailable.setBackgroundResource(R.drawable.availability_label_background);
 
@@ -237,25 +285,20 @@ public class OfferingDetailsFragment extends Fragment {
         } else {
             binding.isAvailable.setVisibility(View.GONE);
             binding.isNotAvailable.setVisibility(View.VISIBLE);
-
             binding.isNotAvailable.setTextColor(ContextCompat.getColor(requireContext(), R.color.red_dark));
             binding.isNotAvailable.setBackgroundResource(R.drawable.unavailability_label_background);
-
             binding.bookNowButton.setVisibility(View.GONE);
         }
-
 
         GetProviderDTO provider = offeringDTO.getProvider();
 
         binding.providerName.setText(provider.getCompany().getName());
-
         if (provider.getLocation() != null) {
             binding.providerAddress.setText(String.format("%s, %s",
                     provider.getLocation().getCity(), provider.getLocation().getCountry()));
         } else {
             binding.providerAddress.setText("N/A");
         }
-
 
         binding.providerEmail.setText(provider.getEmail());
         binding.providerPhone.setText(provider.getPhoneNumber());
