@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         topLevelDestinations.add(R.id.loginFragment);
         topLevelDestinations.add(R.id.homeScreenFragment);
         topLevelDestinations.add(R.id.manageOfferingsFragment);
-        topLevelDestinations.add(R.id.chatFragment);
         topLevelDestinations.add(R.id.notificationFragment);
         topLevelDestinations.add(R.id.eventTypesFragment);
         topLevelDestinations.add(R.id.createProductFragment);

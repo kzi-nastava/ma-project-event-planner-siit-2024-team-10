@@ -28,6 +28,8 @@ public class GetOrganizerDTO implements Parcelable, Serializable {
 
     @SerializedName("location")
     private GetLocationDTO location;
+    @SerializedName("accountId")
+    private int accountId;
 
     public GetOrganizerDTO() {
     }
@@ -125,5 +127,13 @@ public class GetOrganizerDTO implements Parcelable, Serializable {
 
     public void setLocation(GetLocationDTO location) {
         this.location = location;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 }

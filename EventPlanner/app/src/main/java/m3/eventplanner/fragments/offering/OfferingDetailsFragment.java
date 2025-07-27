@@ -1,6 +1,7 @@
 package m3.eventplanner.fragments.offering;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,12 +71,13 @@ public class OfferingDetailsFragment extends Fragment {
             TokenManager tokenManager = new TokenManager(requireContext());
             int accountId = tokenManager.getAccountId();
             int userId = tokenManager.getUserId();
-            isAdmin = "ADMIN".equals(tokenManager.getRole());
+            isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
 
-            if (accountId == 0) {
+            boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
+            binding.btnContactProvider.setVisibility(isOrganizer ? View.VISIBLE : View.GONE);
+
+            if(accountId==0)
                 binding.favouriteButton.setVisibility(View.GONE);
-            }
-
             viewModel.loadOfferingDetails(offeringId, accountId, userId);
 
             if (userId != 0) {
@@ -119,6 +121,17 @@ public class OfferingDetailsFragment extends Fragment {
     }
 
     private void setupClickListeners() {
+        binding.btnContactProvider.setOnClickListener(v -> {
+            if (offering != null && offering.getProvider() != null) {
+                int receiverId = offering.getProvider().getAccountId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("receiverId", receiverId);
+                Navigation.findNavController(v).navigate(R.id.chatFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Provider info unavailable", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.bookNowButton.setOnClickListener(v -> {
             if (offering instanceof GetServiceDTO) {
                 CreateReservationFragment dialog = new CreateReservationFragment();
@@ -164,25 +177,38 @@ public class OfferingDetailsFragment extends Fragment {
         });
 
         binding.favouriteButton.setOnClickListener(v -> {
-            int accountId = new TokenManager(requireContext()).getAccountId();
-            viewModel.toggleFavourite(accountId);
+            if (getArguments() != null) {
+                int accountId = new TokenManager(requireContext()).getAccountId();
+                viewModel.toggleFavourite(accountId);
+            }
         });
 
-        binding.deleteOfferingButton.setOnClickListener(v -> {
+        binding.deleteOfferingButton.setOnClickListener(v->{
             if (!isOwner && !isAdmin) {
                 Toast.makeText(getContext(), "You cannot delete this", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Confirm delete")
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+            builder.setTitle("Confirm delete")
                     .setMessage("Are you sure you want to delete this offering?")
-                    .setPositiveButton("Confirm", (dialog, which) -> viewModel.deleteOffering())
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                    .show();
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            viewModel.deleteOffering();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
         });
 
-        binding.editOfferingButton.setOnClickListener(v -> {
+        binding.editOfferingButton.setOnClickListener(v->{
             if (!isOwner && !isAdmin) {
                 Toast.makeText(getContext(), "You cannot edit this", Toast.LENGTH_SHORT).show();
                 return;
@@ -237,7 +263,6 @@ public class OfferingDetailsFragment extends Fragment {
         binding.originalPrice.setText(String.format("%.2f $", offeringDTO.getPrice()));
         binding.priceWithDiscount.setText(String.format("%.2f $", offeringDTO.getPrice() * (1 - offeringDTO.getDiscount() / 100)));
         binding.discount.setText(String.format("(%.2f%%)", offeringDTO.getDiscount()));
-
         TokenManager tokenManager = new TokenManager(requireContext());
         boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
 
@@ -251,7 +276,8 @@ public class OfferingDetailsFragment extends Fragment {
                 binding.bookNowButton.setVisibility(View.VISIBLE);
                 binding.bookNowButton.setEnabled(true);
                 binding.bookNowButton.setBackgroundTintList(ColorStateList.valueOf(
-                        ContextCompat.getColor(requireContext(), R.color.brand_purple)));
+                        ContextCompat.getColor(requireContext(), R.color.brand_purple)
+                ));
                 binding.bookNowButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.chocolate_brown));
             } else {
                 binding.bookNowButton.setVisibility(View.GONE);
@@ -268,7 +294,8 @@ public class OfferingDetailsFragment extends Fragment {
 
         binding.providerName.setText(provider.getCompany().getName());
         if (provider.getLocation() != null) {
-            binding.providerAddress.setText(provider.getLocation().getCity() + ", " + provider.getLocation().getCountry());
+            binding.providerAddress.setText(String.format("%s, %s",
+                    provider.getLocation().getCity(), provider.getLocation().getCountry()));
         } else {
             binding.providerAddress.setText("N/A");
         }
@@ -277,7 +304,9 @@ public class OfferingDetailsFragment extends Fragment {
         binding.providerPhone.setText(provider.getPhoneNumber());
 
         if (provider.getProfilePhoto() != null) {
-            Picasso.get().load(provider.getProfilePhoto()).into(binding.providerProfilePhoto);
+            Picasso.get()
+                    .load(provider.getProfilePhoto())
+                    .into(binding.providerProfilePhoto);
         }
     }
 

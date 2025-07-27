@@ -4,6 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_navigation"
     app:startDestination="@id/homeScreenFragment">
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="m3.eventplanner.fragments.chat.ChatFragment"
+        android:label="Chat">
+        <argument
+            android:name="receiverId"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/loginFragment"
@@ -45,6 +53,10 @@
         <action
             android:id="@+id/action_manageOfferingsFragment_to_editServiceFragment"
             app:destination="@id/editServiceFragment"
+            app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_manageOfferingsFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
             app:launchSingleTop="true" />
     </fragment>
 

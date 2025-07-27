@@ -31,6 +31,7 @@ public class ClientUtils {
     private NotificationService notificationService;
     private ImageUploadService imageUploadService;
     private CommentService commentService;
+    private MessageService messageService;
     private BudgetItemService budgetItemService;
 
     public ClientUtils(Context context){
@@ -67,6 +68,7 @@ public class ClientUtils {
         notificationService = retrofit.create(NotificationService.class);
         commentService = retrofit.create(CommentService.class);
         budgetItemService=retrofit.create(BudgetItemService.class);
+        messageService = retrofit.create(MessageService.class);
     }
 
     public EventService getEventService() {
@@ -100,4 +102,6 @@ public class ClientUtils {
     }
     public NotificationService getNotificationService() { return notificationService; }
     public CommentService getCommentService() { return commentService; }
+
+    public MessageService getMessageService() { return messageService; }
 }

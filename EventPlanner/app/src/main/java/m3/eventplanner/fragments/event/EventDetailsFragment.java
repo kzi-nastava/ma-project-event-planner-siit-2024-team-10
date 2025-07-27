@@ -120,15 +120,24 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
         );
 
-        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner->
-        {
-            this.isOwner=isOwner;
-            if(isOwner){
+        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner -> {
+            this.isOwner = isOwner;
+
+            TokenManager tokenManager = new TokenManager(requireContext());
+            boolean isLoggedIn = tokenManager.getAccountId() != 0;
+
+            if (isLoggedIn && !isOwner) {
+                binding.btnContactOrganizer.setVisibility(View.VISIBLE);
+            } else {
+                binding.btnContactOrganizer.setVisibility(View.GONE);
+            }
+
+            if (isOwner) {
                 binding.deleteEventButton.setVisibility(View.VISIBLE);
                 binding.addAgendaItemButton.setVisibility(View.VISIBLE);
                 binding.editEventButton.setVisibility(View.VISIBLE);
 
-                if(!event.isOpen()){
+                if (!event.isOpen()) {
                     binding.viewGuestListButton.setVisibility(View.VISIBLE);
                     binding.viewGuestListButton.setOnClickListener(v -> {
                         Bundle bundle = new Bundle();
@@ -136,17 +145,15 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
                         Navigation.findNavController(requireView()).navigate(R.id.guestListFragment, bundle);
                     });
                 }
-            }
-            else{
+            } else {
                 binding.addAgendaItemButton.setVisibility(View.GONE);
                 binding.editEventButton.setVisibility(View.GONE);
                 binding.viewGuestListButton.setVisibility(View.GONE);
             }
 
-            if( (isOwner||isAdmin) && event.isOpen()) {
+            if ((isOwner || isAdmin) && event.isOpen()) {
                 binding.openEventReportButton.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 binding.openEventReportButton.setVisibility(View.GONE);
             }
         });
@@ -159,6 +166,17 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     }
 
     private void setupClickListeners() {
+        binding.btnContactOrganizer.setOnClickListener(v -> {
+            if (event != null && event.getOrganizer() != null) {
+                int receiverId = event.getOrganizer().getAccountId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("receiverId", receiverId);
+                Navigation.findNavController(v).navigate(R.id.chatFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Organizer info unavailable", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         binding.favouriteButton.setOnClickListener(v -> {
             if (getArguments() != null) {
                 int eventId = getArguments().getInt("selectedEventId");
