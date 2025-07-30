@@ -17,6 +17,7 @@ import m3.eventplanner.adapters.ChatAdapter;
 import m3.eventplanner.adapters.ChatContactAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentChatBinding;
+import m3.eventplanner.fragments.reportandblock.ReportFragment;
 import m3.eventplanner.models.GetMessageDTO;
 
 import java.util.ArrayList;
@@ -110,6 +111,16 @@ public class ChatFragment extends Fragment {
                 binding.messageInput.setText("");
                 viewModel.loadContacts(senderId);
             }
+        });
+
+        binding.reportBtn.setOnClickListener(v -> {
+            if (receiverId == -1) {
+                Toast.makeText(requireContext(), "No user selected to report.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ReportFragment dialog = ReportFragment.newInstance(senderId, receiverId);
+            dialog.show(getParentFragmentManager(), "report_dialog");
         });
     }
 
