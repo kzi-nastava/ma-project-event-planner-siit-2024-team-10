@@ -186,4 +186,11 @@
     <string name="min_duration">Min duration</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user">User</string>
+    <string name="report">Report</string>
+    <string name="block">Block</string>
+    <string name="please_describe_the_reason_for_reporting_this_user">Please describe the reason for reporting this user</string>
+    <string name="minimum_10_characters_required">Minimum 10 characters required</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="report_user">Report User</string>
 </resources>

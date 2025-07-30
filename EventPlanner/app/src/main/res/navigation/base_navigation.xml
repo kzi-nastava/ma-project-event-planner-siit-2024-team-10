@@ -14,6 +14,20 @@
     </fragment>
 
     <fragment
+        android:id="@+id/reportFragment"
+        android:name="m3.eventplanner.fragments.reportandblock.ReportFragment"
+        android:label="Report User"
+        tools:layout="@layout/fragment_report_user">
+        <argument
+            android:name="reporterId"
+            app:argType="integer" />
+        <argument
+            android:name="reporteeId"
+            app:argType="integer" />
+    </fragment>
+
+
+    <fragment
         android:id="@+id/loginFragment"
         android:name="m3.eventplanner.fragments.LoginFragment"
         android:label="@string/login" />
