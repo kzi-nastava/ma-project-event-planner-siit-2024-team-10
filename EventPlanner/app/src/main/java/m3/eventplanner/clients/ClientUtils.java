@@ -71,6 +71,8 @@ public class ClientUtils {
         commentService = retrofit.create(CommentService.class);
         budgetItemService=retrofit.create(BudgetItemService.class);
         messageService = retrofit.create(MessageService.class);
+        pricelistService = retrofit.create(PricelistService.class);
+        accountReportService = retrofit.create(AccountReportService.class);
     }
 
     public EventService getEventService() {
