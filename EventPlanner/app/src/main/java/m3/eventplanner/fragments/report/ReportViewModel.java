@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments.reportandblock;
+package m3.eventplanner.fragments.report;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/reportFragment"
-        android:name="m3.eventplanner.fragments.reportandblock.ReportFragment"
+        android:name="m3.eventplanner.fragments.report.ReportFragment"
         android:label="Report User"
         tools:layout="@layout/fragment_report_user">
         <argument

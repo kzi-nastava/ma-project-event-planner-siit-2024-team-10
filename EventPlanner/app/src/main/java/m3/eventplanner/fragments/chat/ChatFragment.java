@@ -17,8 +17,7 @@ import m3.eventplanner.adapters.ChatAdapter;
 import m3.eventplanner.adapters.ChatContactAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentChatBinding;
-import m3.eventplanner.fragments.reportandblock.ReportFragment;
-import m3.eventplanner.models.GetMessageDTO;
+import m3.eventplanner.fragments.report.ReportFragment;
 
 import java.util.ArrayList;
 

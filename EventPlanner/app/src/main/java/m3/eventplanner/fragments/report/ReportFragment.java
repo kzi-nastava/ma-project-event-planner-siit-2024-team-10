@@ -1,4 +1,4 @@
-package m3.eventplanner.fragments.reportandblock;
+package m3.eventplanner.fragments.report;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import m3.eventplanner.R;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.fragments.reservation.CreateReservationViewModel;
 import m3.eventplanner.models.CreateAccountReportDTO;
 
 public class ReportFragment extends DialogFragment {
