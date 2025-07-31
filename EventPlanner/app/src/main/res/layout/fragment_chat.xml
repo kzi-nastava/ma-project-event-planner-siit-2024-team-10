@@ -59,11 +59,41 @@
 
 
     <!-- Chat messages - fiksna visina -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="match_parent"
         android:overScrollMode="never" />
+
+    <LinearLayout
+        android:id="@+id/blockedOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B3FFFFFF"
+        android:gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/blockedTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/you_have_been_blocked"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:elevation="10dp"/>
+    </LinearLayout>
+
+    </FrameLayout>
+
 
     <!-- Input and send - fiksna visina -->
     <LinearLayout
