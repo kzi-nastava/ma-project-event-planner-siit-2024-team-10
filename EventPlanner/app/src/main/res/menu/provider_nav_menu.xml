@@ -15,8 +15,13 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_offering"/>
             <item
+                android:id="@+id/pricelistFragment"
+                android:title="@string/pricelist"
+                android:checkable="true"
+                android:icon="@drawable/ic_dollar"/>
+            <item
                 android:id="@+id/createOfferingFragment"
-                android:title="Create service"
+                android:title="@string/create_service"
                 android:checkable="true"
                 android:icon="@drawable/ic_plus_service"/>
             <item
