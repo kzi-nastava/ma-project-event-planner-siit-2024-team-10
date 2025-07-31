@@ -11,15 +11,15 @@ import retrofit2.http.*;
 
 public interface PricelistService {
 
-    @GET("api/pricelists")
+    @GET("pricelists")
     Call<List<GetPricelistItemDTO>> getPricelist();
 
-    @PUT("api/pricelists/{offeringId}")
+    @PUT("pricelists/{offeringId}")
     Call<UpdatedPricelistItemDTO> updatePricing(
             @Path("offeringId") int offeringId,
             @Body UpdatePricelistItemDTO dto
     );
 
-    @GET("api/pricelists/report")
+    @GET("pricelists/report")
     Call<ResponseBody> getPricelistReport();
 }

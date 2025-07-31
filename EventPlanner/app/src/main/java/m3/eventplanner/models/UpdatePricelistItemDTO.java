@@ -5,7 +5,9 @@ public class UpdatePricelistItemDTO {
     private double price;
     private double discount;
 
-    public UpdatePricelistItemDTO() {
+    public UpdatePricelistItemDTO(double price,double discount) {
+        this.price=price;
+        this.discount=discount;
     }
 
     public double getPrice() {
