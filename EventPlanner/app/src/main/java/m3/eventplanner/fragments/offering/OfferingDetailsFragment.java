@@ -47,7 +47,7 @@ public class OfferingDetailsFragment extends Fragment {
     private OfferingDetailsViewModel viewModel;
     private boolean isOwner;
     private boolean isAdmin;
-    private int accountId;
+    private int userId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +77,8 @@ public class OfferingDetailsFragment extends Fragment {
         if (getArguments() != null) {
             int offeringId = getArguments().getInt("selectedServiceId");
             TokenManager tokenManager = new TokenManager(requireContext());
-            int userId = tokenManager.getUserId();
-            accountId = tokenManager.getAccountId();
+            userId = tokenManager.getUserId();
+            int accountId = tokenManager.getAccountId();
             isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
 
             boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
@@ -98,11 +98,8 @@ public class OfferingDetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(commentAdapter);
 
-        // Load comments nakon što imaš offeringId
         if (getArguments() != null) {
             int offeringId = getArguments().getInt("selectedServiceId");
-
-            // load comments preko ViewModel-a ili direktno
             viewModel.loadComments(offeringId);
         }
 
@@ -126,6 +123,28 @@ public class OfferingDetailsFragment extends Fragment {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
             }
         });
+        if (getArguments() != null) {
+            int offeringId = getArguments().getInt("selectedServiceId");
+            TokenManager tokenManager = new TokenManager(requireContext());
+            int userId = tokenManager.getUserId();
+
+            binding.addNewCommentSectionId.setVisibility(View.GONE);
+            binding.submitCommentButton.setVisibility(View.GONE);
+            binding.newCommentText.setVisibility(View.GONE);
+            binding.newCommentRating.setVisibility(View.GONE);
+
+            if("EVENT_ORGANIZER".equals(tokenManager.getRole())){
+                viewModel.checkIfUserPurchasedOffering(userId, offeringId);
+                viewModel.getHasPurchased().observe(getViewLifecycleOwner(), hasPurchased -> {
+                    if (hasPurchased != null && hasPurchased) {
+                        binding.addNewCommentSectionId.setVisibility(View.VISIBLE);
+                        binding.submitCommentButton.setVisibility(View.VISIBLE);
+                        binding.newCommentText.setVisibility(View.VISIBLE);
+                        binding.newCommentRating.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        }
     }
 
     private void setupObservers() {
@@ -376,7 +395,7 @@ public class OfferingDetailsFragment extends Fragment {
 
         if (getArguments() != null) {
             int offeringId = getArguments().getInt("selectedServiceId");
-            CreateCommentDTO commentDTO = new CreateCommentDTO(commentText,accountId,rating);
+            CreateCommentDTO commentDTO = new CreateCommentDTO(commentText,userId,rating);
 
             viewModel.createComment(offeringId, commentDTO);
 

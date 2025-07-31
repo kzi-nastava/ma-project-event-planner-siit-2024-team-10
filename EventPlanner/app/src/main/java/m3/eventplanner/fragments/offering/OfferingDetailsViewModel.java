@@ -40,7 +40,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     private final MutableLiveData<List<GetEventDTO>> events = new MutableLiveData<>();
     private ClientUtils clientUtils;
     private PdfUtils pdfUtils;
-
+    private final MutableLiveData<Boolean> hasPurchased = new MutableLiveData<>();
 
     public void initialize(Context context) {
         navigateHome.setValue(false);
@@ -53,7 +53,9 @@ public class OfferingDetailsViewModel extends ViewModel {
     public LiveData<GetOfferingDTO> getOffering() {
         return offering;
     }
-
+    public LiveData<Boolean> getHasPurchased() {
+        return hasPurchased;
+    }
     public LiveData<Boolean> getIsFavourite() {
         return isFavourite;
     }
@@ -262,7 +264,7 @@ public class OfferingDetailsViewModel extends ViewModel {
             @Override
             public void onResponse(Call<CreatedCommentDTO> call, Response<CreatedCommentDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    successMessage.setValue("Comment created successfully");
+                    successMessage.setValue("Comment created successfully, wait for admin approval");
                     loadComments(offeringId);
                 } else {
                     error.setValue("Failed to create comment");
@@ -275,4 +277,23 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+    public void checkIfUserPurchasedOffering(int userId, int offeringId) {
+        clientUtils.getOfferingService().hasUserPurchasedOffering(userId, offeringId)
+                .enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            hasPurchased.setValue(response.body());
+                        } else {
+                            error.setValue("Failed to check if offering has been purchased.");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        error.setValue("Error: " + t.getMessage());
+                    }
+                });
+    }
+
 }

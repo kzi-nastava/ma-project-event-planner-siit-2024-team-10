@@ -2,6 +2,7 @@ package m3.eventplanner.clients;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 import m3.eventplanner.models.ChangeCategoryDTO;
 import m3.eventplanner.models.CreateCommentDTO;
@@ -25,8 +26,8 @@ public interface OfferingService {
             @Query("accountId") Integer accountId
     );
     Call<Collection<GetOfferingDTO>> getTopOfferings();
-    @GET("offerings/{providerId}")
-    Call<Collection<GetOfferingDTO>> getProvidersOfferings(@Path("providerId") int providerId);
+    @GET("provider/{providerId}")
+    Call<List<GetOfferingDTO>> getOfferingsByProviderId(@Path("providerId") int providerId);
     @GET("offerings/all")
     Call<Collection<GetOfferingDTO>> getOfferings(
             @Query("isServiceFilter") Boolean isServiceFilter,
@@ -88,4 +89,9 @@ public interface OfferingService {
     Call<Collection<GetCommentDTO>> getPendingComments();
     @GET("offerings/{offeringId}/comments")
     Call<Collection<GetCommentDTO>> getComments(@Path("offeringId") int offeringId);
+    @GET("offerings/{userId}/purchased/{offeringId}")
+    Call<Boolean> hasUserPurchasedOffering(
+            @Path("userId") int userId,
+            @Path("offeringId") int offeringId
+    );
 }
