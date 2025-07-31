@@ -45,8 +45,10 @@ public class PricelistViewModel extends ViewModel {
         clientUtils.getPricelistService().getPricelist().enqueue(new Callback<List<GetPricelistItemDTO>>() {
             @Override
             public void onResponse(Call<List<GetPricelistItemDTO>> call, Response<List<GetPricelistItemDTO>> response) {
-                if (response.isSuccessful()) {
-                    items.postValue(response.body());
+                if (response.isSuccessful() && response.body() != null) {
+                    List<GetPricelistItemDTO> sortedList = response.body();
+                    sortedList.sort((item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
+                    items.postValue(sortedList);
                 }
             }
 

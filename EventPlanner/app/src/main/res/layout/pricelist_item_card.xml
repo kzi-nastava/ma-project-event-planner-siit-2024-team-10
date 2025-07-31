@@ -1,43 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
     android:layout_height="wrap_content"
-    android:elevation="4dp">
+    android:layout_margin="12dp"
+    android:elevation="6dp"
+    android:radius="16dp"
+    android:backgroundTint="#FFFFFF"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="12dp">
+        android:padding="16dp"
+        android:background="#FAF9F8">
 
         <TextView
             android:id="@+id/textName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Naziv"
+            android:text="Naziv stavke"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textColor="#252629"
+            android:textStyle="bold"
+            tools:text="Premium usluga" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price ($)"
+            android:textSize="14sp"
+            android:textColor="#9c555d"
+            android:layout_marginTop="8dp"/>
 
         <EditText
             android:id="@+id/editPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Cena"
-            android:inputType="numberDecimal" />
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            android:inputType="numberDecimal"
+            android:textColor="#252629"
+            android:hint="$ Price"
+            android:textSize="15sp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Discount (%)"
+            android:textSize="14sp"
+            android:textColor="#a88957" />
 
         <EditText
             android:id="@+id/editDiscount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Popust (%)"
-            android:inputType="numberDecimal" />
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            android:inputType="numberDecimal"
+            android:textColor="#252629"
+            android:hint="% Discount"
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp"/>
 
         <Button
             android:id="@+id/buttonUpdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
-            android:layout_gravity="end"/>
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/brand_purple"
+            android:layout_gravity="end"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
