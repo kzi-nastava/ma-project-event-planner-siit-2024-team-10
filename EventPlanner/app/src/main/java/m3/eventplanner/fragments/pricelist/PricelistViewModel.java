@@ -49,6 +49,8 @@ public class PricelistViewModel extends ViewModel {
                     List<GetPricelistItemDTO> sortedList = response.body();
                     sortedList.sort((item1, item2) -> item1.getName().compareToIgnoreCase(item2.getName()));
                     items.postValue(sortedList);
+                } else {
+                    error.setValue("Failed to load pricelist");
                 }
             }
 
@@ -66,6 +68,8 @@ public class PricelistViewModel extends ViewModel {
             public void onResponse(Call<UpdatedPricelistItemDTO> call, Response<UpdatedPricelistItemDTO> response) {
                 if (response.isSuccessful()) {
                     fetchItems();
+                } else {
+                    error.setValue("Failed to update pricelist");
                 }
             }
 
