@@ -35,6 +35,11 @@
                 android:checkable="true"
                 android:icon="@drawable/ic_reply"/>
             <item
+                android:id="@+id/reportConfirmationFragment"
+                android:title="@string/report_management"
+                android:checkable="true"
+                android:icon="@drawable/ic_report"/>
+            <item
                 android:id="@+id/userDetailsFragment"
                 android:title="@string/account_details"
                 android:checkable="true"

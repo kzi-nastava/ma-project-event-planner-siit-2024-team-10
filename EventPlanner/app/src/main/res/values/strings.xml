@@ -187,4 +187,17 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pricelist">Pricelist</string>
+    <string name="user">User</string>
+    <string name="report">Report</string>
+    <string name="block">Block</string>
+    <string name="please_describe_the_reason_for_reporting_this_user">Please describe the reason for reporting this user</string>
+    <string name="minimum_10_characters_required">Minimum 10 characters required</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="report_user">Report User</string>
+    <string name="reportee_reportee_example_com">Reportee: reportee@example.com</string>
+    <string name="reported_by_user_example_com">Reported By: user@example.com</string>
+    <string name="this_user_violated_the_event_rules_by">This user violated the event rules by...</string>
+    <string name="reports">Reports</string>
+    <string name="no_reports_to_confirm">No reports to confirm</string>
+    <string name="report_management">Report Management</string>
 </resources>

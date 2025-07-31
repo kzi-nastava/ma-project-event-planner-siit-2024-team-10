@@ -9,34 +9,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import m3.eventplanner.R;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateReservationBinding;
-import m3.eventplanner.fragments.event.CreateEventFragment;
 import m3.eventplanner.models.CreateReservationDTO;
 import m3.eventplanner.models.GetEventDTO;
-import m3.eventplanner.models.GetEventTypeDTO;
 import m3.eventplanner.models.GetServiceDTO;
 
 public class CreateReservationFragment extends DialogFragment {
@@ -139,13 +132,7 @@ public class CreateReservationFragment extends DialogFragment {
             if (reservationCompleteListener != null) {
                 reservationCompleteListener.onReservationComplete(eventId);
             }
-
-            try {
-                NavController navController = NavHostFragment.findNavController(CreateReservationFragment.this);
-                navController.navigate(R.id.homeScreenFragment);
-            } catch (Exception e) {
-                Log.e("NavigationError", "Failed to navigate", e);
-            }
+            dismiss();
         });
 
     }
