@@ -332,11 +332,10 @@
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
 
-                <ImageView
+                <WebView
+                    android:id="@+id/mapWebView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/map" />
+                    android:layout_height="match_parent" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Add New Comment Section -->

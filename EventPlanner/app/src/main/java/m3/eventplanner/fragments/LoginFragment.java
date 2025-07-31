@@ -34,6 +34,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.IOException;
+
 import m3.eventplanner.R;
 import m3.eventplanner.activities.MainActivity;
 import m3.eventplanner.auth.TokenManager;
@@ -152,6 +154,12 @@ public class LoginFragment extends Fragment {
                         navController.navigate(R.id.homeScreenFragment);
                     }
                 } else {
+                    try {
+                        String error = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        loginError.setText(error);
+                    } catch (IOException e) {
+                        loginError.setText("Error parsing server response");
+                    }
                     loginError.setVisibility(View.VISIBLE);
                 }
             }

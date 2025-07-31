@@ -14,6 +14,20 @@
     </fragment>
 
     <fragment
+        android:id="@+id/reportFragment"
+        android:name="m3.eventplanner.fragments.report.CreateReportFragment"
+        android:label="Report User"
+        tools:layout="@layout/fragment_report_user">
+        <argument
+            android:name="reporterId"
+            app:argType="integer" />
+        <argument
+            android:name="reporteeId"
+            app:argType="integer" />
+    </fragment>
+
+
+    <fragment
         android:id="@+id/loginFragment"
         android:name="m3.eventplanner.fragments.LoginFragment"
         android:label="@string/login" />
@@ -161,6 +175,11 @@
         android:name="m3.eventplanner.fragments.comment.CommentApprovalFragment"
         android:label="Comment Manager"
         tools:layout="@layout/fragment_comment_approval" />
+    <fragment
+        android:id="@+id/reportConfirmationFragment"
+        android:name="m3.eventplanner.fragments.report.ReportConfirmationFragment"
+        android:label="Report Manager"
+        tools:layout="@layout/fragment_report_confirmation" />
     <fragment
         android:id="@+id/budgetItemFragment"
         android:name="m3.eventplanner.fragments.budget.BudgetManagerFragment"

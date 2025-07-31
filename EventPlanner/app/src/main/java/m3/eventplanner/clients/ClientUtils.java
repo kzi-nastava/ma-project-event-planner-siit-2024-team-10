@@ -34,6 +34,7 @@ public class ClientUtils {
     private MessageService messageService;
     private BudgetItemService budgetItemService;
     private PricelistService pricelistService;
+    private AccountReportService accountReportService;
 
     public ClientUtils(Context context){
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -71,6 +72,7 @@ public class ClientUtils {
         budgetItemService=retrofit.create(BudgetItemService.class);
         messageService = retrofit.create(MessageService.class);
         pricelistService = retrofit.create(PricelistService.class);
+        accountReportService = retrofit.create(AccountReportService.class);
     }
 
     public EventService getEventService() {
@@ -107,4 +109,5 @@ public class ClientUtils {
 
     public MessageService getMessageService() { return messageService; }
     public PricelistService getPricelistService() { return pricelistService; }
+    public AccountReportService getAccountReportService() { return accountReportService; }
 }

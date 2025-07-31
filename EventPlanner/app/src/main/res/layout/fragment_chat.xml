@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,6 +13,50 @@
         android:orientation="horizontal"
         android:paddingBottom="8dp"
         android:overScrollMode="never"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <ImageButton
+                android:id="@+id/blockBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_block"
+                android:contentDescription="@string/block"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/black" />
+
+            <ImageButton
+                android:id="@+id/reportBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_report"
+                android:contentDescription="@string/report"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/vibrant_red" />
+        </LinearLayout>
+    </LinearLayout>
+
 
     <!-- Chat messages - fiksna visina -->
     <androidx.recyclerview.widget.RecyclerView

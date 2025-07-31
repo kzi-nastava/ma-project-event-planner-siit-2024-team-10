@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
@@ -57,6 +59,8 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
     private GetEventDTO event;
     private boolean isOwner;
     private boolean isAdmin;
+    private WebView mapWebView;
+
 
 
     @Override
@@ -276,6 +280,17 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
         } else {
             binding.viewGuestListButton.setVisibility(View.GONE);
         }
+
+        mapWebView = binding.mapWebView;
+
+        mapWebView.getSettings().setJavaScriptEnabled(true);
+
+        if (event.getLocation() != null){
+            String address = event.getLocation().getCountry()+", "+
+                    event.getLocation().getCity()+", "+
+                    event.getLocation().getStreet()+" "+ event.getLocation().getHouseNumber();
+            loadMap(address);
+        }
     }
 
     @Override
@@ -295,4 +310,59 @@ public class EventDetailsFragment extends Fragment implements AgendaItemFormFrag
             viewModel.updateAgendaItem(id,agendaItemDTO);
         }
     }
+
+    private void loadErrorMessage(){
+        String html = "<h2 style=\"text-align:center;margin-top:50px;\">This location cannot be displayed</h2>";
+        mapWebView.loadData(html, "text/html", "UTF-8");
+    }
+
+    private void loadMap(String address){
+        try {
+            String encodedAddress = URLEncoder.encode(address, "UTF-8").replace("+", "%20");
+            String html = generateHtml(encodedAddress);
+            mapWebView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+        } catch (Exception e){
+            e.printStackTrace();
+            loadErrorMessage();
+        }
+    }
+
+    private String generateHtml(String encodedAddress) {
+        return "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "  <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.css\" />\n" +
+                "  <script src=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.js\"></script>\n" +
+                "  <style> #map { height: 100vh; margin: 0; padding: 0; } </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<div id=\"map\"></div>\n" +
+                "<script>\n" +
+                "  var encodedAddress = '" + encodedAddress + "';\n" +
+                "  var decodedAddress = decodeURIComponent(encodedAddress);\n" +
+                "  var map = L.map('map').setView([0, 0], 2);\n" +
+                "  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
+                "    attribution: '&copy; OpenStreetMap contributors'\n" +
+                "  }).addTo(map);\n" +
+                "  fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodedAddress)\n" +
+                "    .then(response => response.json())\n" +
+                "    .then(data => {\n" +
+                "      if(data && data.length > 0){\n" +
+                "        var lat = data[0].lat;\n" +
+                "        var lon = data[0].lon;\n" +
+                "        map.setView([lat, lon], 15);\n" +
+                "        L.marker([lat, lon]).addTo(map).bindPopup(decodedAddress).openPopup();\n" +
+                "      } else {\n" +
+                "        document.body.innerHTML = '<p style=\"text-align:center;margin-top:100px;\">This location cannot be displayed</p>';\n" +
+                "      }\n" +
+                "    })\n" +
+                "    .catch(() => {\n" +
+                "      document.body.innerHTML = '<p style=\"text-align:center;margin-top:100px;\">This location cannot be displayed</p>';\n" +
+                "    });\n" +
+                "</script>\n" +
+                "</body>\n" +
+                "</html>";
+    }
+
 }
