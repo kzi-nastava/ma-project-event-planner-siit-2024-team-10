@@ -18,16 +18,20 @@ import java.util.ArrayList;
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.PricelistItemAdapter;
 import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.databinding.FragmentOpenEventReportBinding;
+import m3.eventplanner.databinding.FragmentPricelistBinding;
 
 public class PricelistFragment extends Fragment {
-
+    private FragmentPricelistBinding binding;
     private PricelistViewModel viewModel;
     private PricelistItemAdapter adapter;
     private ClientUtils clientUtils;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pricelist, container, false);
+        binding = FragmentPricelistBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -42,9 +46,11 @@ public class PricelistFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(PricelistViewModel.class);
-
+        binding.exportToPdfButton.setOnClickListener(v->{
+            viewModel.exportToPdf();
+        });
         clientUtils = new ClientUtils(requireContext());
-        viewModel.initialize(clientUtils);
+        viewModel.initialize(requireContext(),clientUtils);
 
         viewModel.getItems().observe(getViewLifecycleOwner(), adapter::updateItems);
         viewModel.fetchItems();
