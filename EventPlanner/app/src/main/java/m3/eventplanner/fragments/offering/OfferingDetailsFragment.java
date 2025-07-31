@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,29 +19,35 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import m3.eventplanner.R;
+import m3.eventplanner.adapters.CommentAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentOfferingDetailsBinding;
 import m3.eventplanner.fragments.reservation.CreateReservationFragment;
 import m3.eventplanner.fragments.reservation.CreateReservationViewModel;
+import m3.eventplanner.models.CreateCommentDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProviderDTO;
 import m3.eventplanner.models.GetServiceDTO;
 
 public class OfferingDetailsFragment extends Fragment {
-
+    private CommentAdapter commentAdapter;
     private GetOfferingDTO offering;
     private FragmentOfferingDetailsBinding binding;
     private OfferingDetailsViewModel viewModel;
     private boolean isOwner;
     private boolean isAdmin;
+    private int accountId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +77,8 @@ public class OfferingDetailsFragment extends Fragment {
         if (getArguments() != null) {
             int offeringId = getArguments().getInt("selectedServiceId");
             TokenManager tokenManager = new TokenManager(requireContext());
-            int accountId = tokenManager.getAccountId();
             int userId = tokenManager.getUserId();
+            accountId = tokenManager.getAccountId();
             isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
 
             boolean isOrganizer = "EVENT_ORGANIZER".equals(tokenManager.getRole());
@@ -84,6 +92,40 @@ public class OfferingDetailsFragment extends Fragment {
                 viewModel.loadEventsForOrganizer(userId);
             }
         }
+        // comments
+        commentAdapter = new CommentAdapter();
+        RecyclerView recyclerView = view.findViewById(R.id.comments_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(commentAdapter);
+
+        // Load comments nakon što imaš offeringId
+        if (getArguments() != null) {
+            int offeringId = getArguments().getInt("selectedServiceId");
+
+            // load comments preko ViewModel-a ili direktno
+            viewModel.loadComments(offeringId);
+        }
+
+        Button submitButton = view.findViewById(R.id.submit_comment_button);
+        submitButton.setOnClickListener(v -> {
+            submitComment();
+        });
+
+        viewModel.getComments().observe(getViewLifecycleOwner(), comments -> {
+            commentAdapter.setComments(comments);
+        });
+
+        viewModel.getError().observe(getViewLifecycleOwner(), errorMsg -> {
+            if (errorMsg != null) {
+                Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
+            if (message != null) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupObservers() {
@@ -315,4 +357,32 @@ public class OfferingDetailsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+    private void submitComment() {
+        RatingBar ratingBar = requireView().findViewById(R.id.new_comment_rating);
+        TextInputEditText commentTextInput = requireView().findViewById(R.id.new_comment_text);
+
+        int rating = (int) ratingBar.getRating();
+        String commentText = commentTextInput.getText() != null ? commentTextInput.getText().toString().trim() : "";
+
+        if (commentText.isEmpty()) {
+            Toast.makeText(requireContext(), "Please enter a comment", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (rating == 0) {
+            Toast.makeText(requireContext(), "Please provide a rating", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (getArguments() != null) {
+            int offeringId = getArguments().getInt("selectedServiceId");
+            CreateCommentDTO commentDTO = new CreateCommentDTO(commentText,accountId,rating);
+
+            viewModel.createComment(offeringId, commentDTO);
+
+            ratingBar.setRating(0);
+            commentTextInput.setText("");
+        }
+    }
+
 }

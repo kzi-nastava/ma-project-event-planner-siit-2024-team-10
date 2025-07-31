@@ -8,13 +8,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.AddFavouriteOfferingDTO;
 import m3.eventplanner.models.BuyRequestDTO;
+import m3.eventplanner.models.CreateCommentDTO;
+import m3.eventplanner.models.CreatedCommentDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
+import m3.eventplanner.models.GetCommentDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProductDTO;
@@ -25,22 +30,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OfferingDetailsViewModel extends ViewModel {
-    private final MutableLiveData<GetOfferingDTO> offering = new MutableLiveData<>();
+    private MutableLiveData<GetOfferingDTO> offering = new MutableLiveData<>();
+    private MutableLiveData<List<GetCommentDTO>> comments = new MutableLiveData<>();
+    private MutableLiveData<String> error = new MutableLiveData<>();
+    private MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isFavourite = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isOwner = new MutableLiveData<>();
     private final MutableLiveData<Boolean> navigateHome = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
-    private final MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<List<GetEventDTO>> events = new MutableLiveData<>();
     private ClientUtils clientUtils;
     private PdfUtils pdfUtils;
+
 
     public void initialize(Context context) {
         navigateHome.setValue(false);
         this.clientUtils = new ClientUtils(context);
         this.pdfUtils = new PdfUtils(context);
     }
-
+    public LiveData<List<GetCommentDTO>> getComments() {
+        return comments;
+    }
     public LiveData<GetOfferingDTO> getOffering() {
         return offering;
     }
@@ -85,7 +94,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     }
 
     public void loadOfferingDetails(int offeringId, int accountId, int userId) {
-        // Prvo pokušaj da učitaš kao Service
+        loadComments(offeringId);
         clientUtils.getServiceService().getService(offeringId).enqueue(new Callback<GetServiceDTO>() {
             @Override
             public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
@@ -106,11 +115,9 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
 
-        // Ako nije ulogovan korisnik, ne proveravaj favorite
         if (accountId == 0)
             return;
 
-        // Proveri da li je favorit
         clientUtils.getAccountService().getFavouriteOffering(accountId, offeringId).enqueue(new Callback<GetOfferingDTO>() {
             @Override
             public void onResponse(Call<GetOfferingDTO> call, Response<GetOfferingDTO> response) {
@@ -232,5 +239,40 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+    public void loadComments(int offeringId) {
+        clientUtils.getOfferingService().getComments(offeringId).enqueue(new Callback<Collection<GetCommentDTO>>() {
+            @Override
+            public void onResponse(Call<Collection<GetCommentDTO>> call, Response<Collection<GetCommentDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    comments.setValue(new ArrayList<>(response.body()));
+                } else {
+                    error.setValue("Failed to load comments");
+                }
+            }
 
+            @Override
+            public void onFailure(Call<Collection<GetCommentDTO>> call, Throwable t) {
+                error.setValue("Error loading comments: " + t.getMessage());
+            }
+        });
+    }
+
+    public void createComment(int offeringId, CreateCommentDTO comment) {
+        clientUtils.getOfferingService().createComment(offeringId, comment).enqueue(new Callback<CreatedCommentDTO>() {
+            @Override
+            public void onResponse(Call<CreatedCommentDTO> call, Response<CreatedCommentDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    successMessage.setValue("Comment created successfully");
+                    loadComments(offeringId);
+                } else {
+                    error.setValue("Failed to create comment");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedCommentDTO> call, Throwable t) {
+                error.setValue("Error creating comment: " + t.getMessage());
+            }
+        });
+    }
 }
