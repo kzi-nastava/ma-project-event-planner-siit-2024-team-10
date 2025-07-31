@@ -33,6 +33,7 @@ public class ClientUtils {
     private CommentService commentService;
     private MessageService messageService;
     private BudgetItemService budgetItemService;
+    private PricelistService pricelistService;
     private AccountReportService accountReportService;
 
     public ClientUtils(Context context){
@@ -70,7 +71,6 @@ public class ClientUtils {
         commentService = retrofit.create(CommentService.class);
         budgetItemService=retrofit.create(BudgetItemService.class);
         messageService = retrofit.create(MessageService.class);
-        accountReportService = retrofit.create(AccountReportService.class);
     }
 
     public EventService getEventService() {
@@ -106,5 +106,6 @@ public class ClientUtils {
     public CommentService getCommentService() { return commentService; }
 
     public MessageService getMessageService() { return messageService; }
+    public PricelistService getPricelistService() { return pricelistService; }
     public AccountReportService getAccountReportService() { return accountReportService; }
 }

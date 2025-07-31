@@ -198,4 +198,8 @@
         android:name="m3.eventplanner.fragments.user.ActivateAccountFragment"
         android:label="@string/processing_activation"
         tools:layout="@layout/fragment_activate_account" />
+    <fragment
+        android:id="@+id/pricelistFragment"
+        android:name="m3.eventplanner.fragments.pricelist.PricelistFragment"
+        android:label="Pricelist" />
 </navigation>
