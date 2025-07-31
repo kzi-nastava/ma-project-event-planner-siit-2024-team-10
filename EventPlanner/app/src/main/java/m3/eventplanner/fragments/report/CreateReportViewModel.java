@@ -13,7 +13,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReportViewModel extends ViewModel {
+public class CreateReportViewModel extends ViewModel {
 
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();

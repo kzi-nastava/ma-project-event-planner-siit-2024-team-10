@@ -17,7 +17,7 @@ import m3.eventplanner.adapters.ChatAdapter;
 import m3.eventplanner.adapters.ChatContactAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentChatBinding;
-import m3.eventplanner.fragments.report.ReportFragment;
+import m3.eventplanner.fragments.report.CreateReportFragment;
 
 import java.util.ArrayList;
 
@@ -118,7 +118,7 @@ public class ChatFragment extends Fragment {
                 return;
             }
 
-            ReportFragment dialog = ReportFragment.newInstance(senderId, receiverId);
+            CreateReportFragment dialog = CreateReportFragment.newInstance(senderId, receiverId);
             dialog.show(getParentFragmentManager(), "report_dialog");
         });
     }

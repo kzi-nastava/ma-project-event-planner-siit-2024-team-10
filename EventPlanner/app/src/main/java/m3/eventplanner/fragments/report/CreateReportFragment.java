@@ -18,16 +18,16 @@ import m3.eventplanner.R;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.CreateAccountReportDTO;
 
-public class ReportFragment extends DialogFragment {
+public class CreateReportFragment extends DialogFragment {
 
     private EditText descriptionInput;
     private Button cancelButton, submitButton;
     private int reporterId, reporteeId;
-    private ReportViewModel viewModel;
+    private CreateReportViewModel viewModel;
     private ClientUtils clientUtils;
 
-    public static ReportFragment newInstance(int reporterId, int reporteeId) {
-        ReportFragment fragment = new ReportFragment();
+    public static CreateReportFragment newInstance(int reporterId, int reporteeId) {
+        CreateReportFragment fragment = new CreateReportFragment();
         Bundle args = new Bundle();
         args.putInt("reporterId", reporterId);
         args.putInt("reporteeId", reporteeId);
@@ -44,7 +44,7 @@ public class ReportFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(ReportViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CreateReportViewModel.class);
         clientUtils = new ClientUtils(requireContext());
         viewModel.initialize(clientUtils);
         descriptionInput = view.findViewById(R.id.descriptionInput);
