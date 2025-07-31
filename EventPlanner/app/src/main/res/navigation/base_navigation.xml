@@ -188,4 +188,9 @@
         android:id="@+id/pricelistFragment"
         android:name="m3.eventplanner.fragments.pricelist.PricelistFragment"
         android:label="Pricelist" />
+    <fragment
+        android:id="@+id/providerOfferingsFragment"
+        android:name="m3.eventplanner.fragments.offering.ProviderOfferingsFragment"
+        android:label="Provider details"
+        tools:layout="@layout/fragment_provider_offerings"/>
 </navigation>
