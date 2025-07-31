@@ -56,6 +56,7 @@ public interface OfferingService {
             @Query("sortBy") String sortBy,
             @Query("sortDirection") String sortDirection,
             @Query("accountId") Integer accountId,
+            @Query("initLoad") Boolean initLoad,
             @Query("providerId") Integer providerId
             );
 
