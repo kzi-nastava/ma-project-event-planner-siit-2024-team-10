@@ -162,42 +162,65 @@ public class OfferingDetailsViewModel extends ViewModel {
 
     public void toggleFavourite(int accountId) {
         Boolean currentFavStatus = isFavourite.getValue();
-        if (currentFavStatus == null) return;
+        GetOfferingDTO currentOffering = offering.getValue();
+
+        if (currentFavStatus == null || currentOffering == null) {
+            error.setValue("Cannot toggle favourite status");
+            return;
+        }
 
         if (currentFavStatus) {
-            clientUtils.getAccountService().removeOfferingFromFavourites(accountId, this.offering.getValue().getId()).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        isFavourite.setValue(false);
-                        successMessage.setValue("Event removed from favourites");
-                    } else {
-                        error.setValue("Failed to remove from favourites");
-                    }
-                }
+            // Remove from favourites
+            clientUtils.getAccountService().removeOfferingFromFavourites(accountId, currentOffering.getId())
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                isFavourite.setValue(false);
+                                successMessage.setValue("Offering removed from favourites");
+                            } else {
+                                // Log response details for debugging
+                                Log.e("FavouriteToggle", "Remove failed: " + response.code() + " " + response.message());
+                                try {
+                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                    error.setValue("Failed to remove from favourites: " + errorBody);
+                                } catch (IOException e) {
+                                    error.setValue("Failed to remove from favourites");
+                                }
+                            }
+                        }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error removing from favourites");
-                }
-            });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("FavouriteToggle", "Remove failure", t);
+                            error.setValue(t.getMessage() != null ? t.getMessage() : "Network error removing from favourites");
+                        }
+                    });
         } else {
-            clientUtils.getAccountService().addOfferingToFavourites(accountId, new AddFavouriteOfferingDTO(this.offering.getValue().getId())).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        isFavourite.setValue(true);
-                        successMessage.setValue("Offering added to favourites");
-                    } else {
-                        error.setValue("Failed to add to favourites");
-                    }
-                }
+            // Add to favourites
+            clientUtils.getAccountService().addOfferingToFavourites(accountId, currentOffering.getId())
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                isFavourite.setValue(true);
+                                successMessage.setValue("Offering added to favourites");
+                            } else {
+                                try {
+                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                    error.setValue("Failed to add to favourites: " + errorBody);
+                                } catch (IOException e) {
+                                    error.setValue("Failed to add to favourites");
+                                }
+                            }
+                        }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error adding to favourites");
-                }
-            });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("FavouriteToggle", "Add failure", t);
+                            error.setValue(t.getMessage() != null ? t.getMessage() : "Network error adding to favourites");
+                        }
+                    });
         }
     }
     public void deleteOffering(){

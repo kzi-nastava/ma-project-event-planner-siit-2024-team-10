@@ -44,8 +44,8 @@ public interface AccountService {
     })
     @POST("accounts/{accountId}/favourite-events")
     Call<Void> addEventToFavourites(@Path("accountId") int accountId, @Body AddFavouriteEventDTO addFavouriteEventDTO);
-    @POST("accounts/{accountId}/favourite-offerings")
-    Call<Void> addOfferingToFavourites(@Path("accountId") int accountId, @Body AddFavouriteOfferingDTO addFavouriteOfferingDTO);
+    @POST("accounts/{accountId}/favourite-offerings/{offeringId}")
+    Call<Void> addOfferingToFavourites(@Path("accountId") int accountId, @Path("offeringId") int offeringId);
 
     @Headers({
             "User-Agent: Mobile-Android",
