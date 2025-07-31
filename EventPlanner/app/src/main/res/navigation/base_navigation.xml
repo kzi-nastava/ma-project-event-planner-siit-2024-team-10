@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/reportFragment"
-        android:name="m3.eventplanner.fragments.report.ReportFragment"
+        android:name="m3.eventplanner.fragments.report.CreateReportFragment"
         android:label="Report User"
         tools:layout="@layout/fragment_report_user">
         <argument
@@ -175,6 +175,11 @@
         android:name="m3.eventplanner.fragments.comment.CommentApprovalFragment"
         android:label="Comment Manager"
         tools:layout="@layout/fragment_comment_approval" />
+    <fragment
+        android:id="@+id/reportConfirmationFragment"
+        android:name="m3.eventplanner.fragments.report.ReportConfirmationFragment"
+        android:label="Report Manager"
+        tools:layout="@layout/fragment_report_confirmation" />
     <fragment
         android:id="@+id/budgetItemFragment"
         android:name="m3.eventplanner.fragments.budget.BudgetManagerFragment"
