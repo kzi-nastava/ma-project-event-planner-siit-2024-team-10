@@ -168,7 +168,7 @@ public class EventTypeFormFragment extends DialogFragment {
                         if (b) {
                             recommendedCategories.add(categories.get(i));
                         } else {
-                            recommendedCategories.remove(categories.get(i));
+                            recommendedCategories.removeIf(category -> category.getId() == categories.get(i).getId());
                         }
                     }
                 });
