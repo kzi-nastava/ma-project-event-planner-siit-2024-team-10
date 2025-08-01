@@ -8,13 +8,18 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.AddFavouriteOfferingDTO;
 import m3.eventplanner.models.BuyRequestDTO;
+import m3.eventplanner.models.CreateCommentDTO;
+import m3.eventplanner.models.CreatedCommentDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
+import m3.eventplanner.models.GetCommentDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
 import m3.eventplanner.models.GetProductDTO;
@@ -25,26 +30,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OfferingDetailsViewModel extends ViewModel {
-    private final MutableLiveData<GetOfferingDTO> offering = new MutableLiveData<>();
+    private MutableLiveData<GetOfferingDTO> offering = new MutableLiveData<>();
+    private MutableLiveData<List<GetCommentDTO>> comments = new MutableLiveData<>();
+    private MutableLiveData<String> error = new MutableLiveData<>();
+    private MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isFavourite = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isOwner = new MutableLiveData<>();
     private final MutableLiveData<Boolean> navigateHome = new MutableLiveData<>();
-    private final MutableLiveData<String> error = new MutableLiveData<>();
-    private final MutableLiveData<String> successMessage = new MutableLiveData<>();
     private final MutableLiveData<List<GetEventDTO>> events = new MutableLiveData<>();
     private ClientUtils clientUtils;
     private PdfUtils pdfUtils;
+    private final MutableLiveData<Boolean> hasPurchased = new MutableLiveData<>();
 
     public void initialize(Context context) {
         navigateHome.setValue(false);
         this.clientUtils = new ClientUtils(context);
         this.pdfUtils = new PdfUtils(context);
     }
-
+    public LiveData<List<GetCommentDTO>> getComments() {
+        return comments;
+    }
     public LiveData<GetOfferingDTO> getOffering() {
         return offering;
     }
-
+    public LiveData<Boolean> getHasPurchased() {
+        return hasPurchased;
+    }
     public LiveData<Boolean> getIsFavourite() {
         return isFavourite;
     }
@@ -85,7 +96,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     }
 
     public void loadOfferingDetails(int offeringId, int accountId, int userId) {
-        // Prvo pokušaj da učitaš kao Service
+        loadComments(offeringId);
         clientUtils.getServiceService().getService(offeringId).enqueue(new Callback<GetServiceDTO>() {
             @Override
             public void onResponse(Call<GetServiceDTO> call, Response<GetServiceDTO> response) {
@@ -106,11 +117,9 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
 
-        // Ako nije ulogovan korisnik, ne proveravaj favorite
         if (accountId == 0)
             return;
 
-        // Proveri da li je favorit
         clientUtils.getAccountService().getFavouriteOffering(accountId, offeringId).enqueue(new Callback<GetOfferingDTO>() {
             @Override
             public void onResponse(Call<GetOfferingDTO> call, Response<GetOfferingDTO> response) {
@@ -153,42 +162,65 @@ public class OfferingDetailsViewModel extends ViewModel {
 
     public void toggleFavourite(int accountId) {
         Boolean currentFavStatus = isFavourite.getValue();
-        if (currentFavStatus == null) return;
+        GetOfferingDTO currentOffering = offering.getValue();
+
+        if (currentFavStatus == null || currentOffering == null) {
+            error.setValue("Cannot toggle favourite status");
+            return;
+        }
 
         if (currentFavStatus) {
-            clientUtils.getAccountService().removeOfferingFromFavourites(accountId, this.offering.getValue().getId()).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        isFavourite.setValue(false);
-                        successMessage.setValue("Event removed from favourites");
-                    } else {
-                        error.setValue("Failed to remove from favourites");
-                    }
-                }
+            // Remove from favourites
+            clientUtils.getAccountService().removeOfferingFromFavourites(accountId, currentOffering.getId())
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                isFavourite.setValue(false);
+                                successMessage.setValue("Offering removed from favourites");
+                            } else {
+                                // Log response details for debugging
+                                Log.e("FavouriteToggle", "Remove failed: " + response.code() + " " + response.message());
+                                try {
+                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                    error.setValue("Failed to remove from favourites: " + errorBody);
+                                } catch (IOException e) {
+                                    error.setValue("Failed to remove from favourites");
+                                }
+                            }
+                        }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error removing from favourites");
-                }
-            });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("FavouriteToggle", "Remove failure", t);
+                            error.setValue(t.getMessage() != null ? t.getMessage() : "Network error removing from favourites");
+                        }
+                    });
         } else {
-            clientUtils.getAccountService().addOfferingToFavourites(accountId, new AddFavouriteOfferingDTO(this.offering.getValue().getId())).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        isFavourite.setValue(true);
-                        successMessage.setValue("Offering added to favourites");
-                    } else {
-                        error.setValue("Failed to add to favourites");
-                    }
-                }
+            // Add to favourites
+            clientUtils.getAccountService().addOfferingToFavourites(accountId, currentOffering.getId())
+                    .enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                isFavourite.setValue(true);
+                                successMessage.setValue("Offering added to favourites");
+                            } else {
+                                try {
+                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                    error.setValue("Failed to add to favourites: " + errorBody);
+                                } catch (IOException e) {
+                                    error.setValue("Failed to add to favourites");
+                                }
+                            }
+                        }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error adding to favourites");
-                }
-            });
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Log.e("FavouriteToggle", "Add failure", t);
+                            error.setValue(t.getMessage() != null ? t.getMessage() : "Network error adding to favourites");
+                        }
+                    });
         }
     }
     public void deleteOffering(){
@@ -231,6 +263,60 @@ public class OfferingDetailsViewModel extends ViewModel {
                 error.setValue("Error: " + t.getMessage());
             }
         });
+    }
+    public void loadComments(int offeringId) {
+        clientUtils.getOfferingService().getComments(offeringId).enqueue(new Callback<Collection<GetCommentDTO>>() {
+            @Override
+            public void onResponse(Call<Collection<GetCommentDTO>> call, Response<Collection<GetCommentDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    comments.setValue(new ArrayList<>(response.body()));
+                } else {
+                    error.setValue("Failed to load comments");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection<GetCommentDTO>> call, Throwable t) {
+                error.setValue("Error loading comments: " + t.getMessage());
+            }
+        });
+    }
+
+    public void createComment(int offeringId, CreateCommentDTO comment) {
+        clientUtils.getOfferingService().createComment(offeringId, comment).enqueue(new Callback<CreatedCommentDTO>() {
+            @Override
+            public void onResponse(Call<CreatedCommentDTO> call, Response<CreatedCommentDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    successMessage.setValue("Comment created successfully, wait for admin approval");
+                    loadComments(offeringId);
+                } else {
+                    error.setValue("Failed to create comment");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreatedCommentDTO> call, Throwable t) {
+                error.setValue("Error creating comment: " + t.getMessage());
+            }
+        });
+    }
+    public void checkIfUserPurchasedOffering(int userId, int offeringId) {
+        clientUtils.getOfferingService().hasUserPurchasedOffering(userId, offeringId)
+                .enqueue(new Callback<Boolean>() {
+                    @Override
+                    public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            hasPurchased.setValue(response.body());
+                        } else {
+                            error.setValue("Failed to check if offering has been purchased.");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Boolean> call, Throwable t) {
+                        error.setValue("Error: " + t.getMessage());
+                    }
+                });
     }
 
 }

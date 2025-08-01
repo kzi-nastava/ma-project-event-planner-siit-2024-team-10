@@ -400,9 +400,9 @@
 
             <!-- Add New Comment Section -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/addNewCommentSectionId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="8dp"
@@ -462,176 +462,13 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Comment 1: Very positive review -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- RecyclerView for comments -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comments_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-
-                        <TextView
-                            android:id="@+id/comment_username1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Sarah Miller"/>
-
-                        <RatingBar
-                            android:id="@+id/comment_rating1"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="5.0"
-                            android:stepSize="0.5"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/comment_text1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="Absolutely amazing experience! The makeup artist was incredibly skilled and listened to exactly what I wanted. My hair and makeup lasted all day and looked perfect in photos. The trial session was also very helpful in getting the perfect look. Highly recommend!"/>
-
-                    <TextView
-                        android:id="@+id/comment_date1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-15"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Comment 2: Good but with some constructive feedback -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-
-                        <TextView
-                            android:id="@+id/comment_username2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Emma Thompson"/>
-
-                        <RatingBar
-                            android:id="@+id/comment_rating2"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="4.0"
-                            android:stepSize="0.5"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/comment_text2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="Good service overall. The makeup looked beautiful but I would have appreciated more time for the trial session to try different hairstyles. The final result was pretty, but scheduling was a bit inflexible. The touch-up kit provided was very helpful throughout the day."/>
-
-                    <TextView
-                        android:id="@+id/comment_date2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-10"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Comment 3: Mixed experience -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-
-                        <TextView
-                            android:id="@+id/comment_username3"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Lisa Chen"/>
-
-                        <RatingBar
-                            android:id="@+id/comment_rating3"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="3.5"
-                            android:stepSize="0.5"/>
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/comment_text3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="The makeup application was great and lasted well, but the hair styling didn't quite match what we discussed in the trial. Had to do some adjustments last minute which was stressful. The team was professional though and worked quick to fix it. Consider bringing reference photos to avoid any misunderstandings."/>
-
-                    <TextView
-                        android:id="@+id/comment_date3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-01"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
             <!-- Edit and Delete Buttons -->
             <LinearLayout

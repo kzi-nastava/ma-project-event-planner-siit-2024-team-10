@@ -40,8 +40,6 @@ import m3.eventplanner.adapters.AgendaItemListAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentEventDetailsBinding;
-import m3.eventplanner.fragments.eventtype.EventTypeFormFragment;
-import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.CreateAgendaItemDTO;
 import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetEventDTO;
