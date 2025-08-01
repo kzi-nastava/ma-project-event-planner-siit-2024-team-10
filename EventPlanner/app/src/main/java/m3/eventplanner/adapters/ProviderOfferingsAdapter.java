@@ -79,7 +79,7 @@ public class ProviderOfferingsAdapter extends RecyclerView.Adapter<ProviderOffer
             if (offering.getCategory() != null) {
                 tvCategory.setText(offering.getCategory().getName());
             } else {
-                tvCategory.setText("Nepoznata kategorija");
+                tvCategory.setText("Unknown category");
             }
 
             tvDescription.setText(offering.getDescription());
