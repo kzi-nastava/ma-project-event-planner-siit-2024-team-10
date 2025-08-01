@@ -7,6 +7,7 @@ import m3.eventplanner.models.UpdateProductDTO;
 import m3.eventplanner.models.UpdatedProductDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -21,4 +22,7 @@ public interface ProductService {
 
     @PUT("products/{id}")
     Call<UpdatedProductDTO> updateProduct(@Path("id") int id, @Body UpdateProductDTO product);
+
+    @DELETE("products/{id}")
+    Call<Void> deleteProduct(@Path("id") int id);
 }
