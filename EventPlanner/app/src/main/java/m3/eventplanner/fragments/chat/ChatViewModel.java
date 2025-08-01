@@ -12,16 +12,16 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import m3.eventplanner.BuildConfig;
-import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.clients.MessageService;
+import m3.eventplanner.models.BlockStatusDTO;
 import m3.eventplanner.models.CreateMessageDTO;
 import m3.eventplanner.models.CreatedMessageDTO;
+import m3.eventplanner.models.BlockStatusPair;
 import m3.eventplanner.models.GetChatContact;
 import m3.eventplanner.models.GetMessageDTO;
 import okhttp3.OkHttpClient;
@@ -38,6 +38,7 @@ public class ChatViewModel extends ViewModel {
     private final MutableLiveData<GetMessageDTO> newMessage = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    private final MutableLiveData<BlockStatusPair> blockStatus = new MutableLiveData<>();
     private ClientUtils clientUtils;
     private StompClient stompClient;
     private final MutableLiveData<List<GetChatContact>> contacts = new MutableLiveData<>();
@@ -90,7 +91,7 @@ public class ChatViewModel extends ViewModel {
     public LiveData<String> getError() {
         return error;
     }
-
+    public LiveData<BlockStatusPair> getBlockStatus() { return blockStatus; }
     public void loadMessages(int senderId, int receiverId) {
         Log.d("ChatViewModel", "=== loadMessages STARTED ===");
         Log.d("ChatViewModel", "senderId: " + senderId + ", receiverId: " + receiverId);
@@ -198,5 +199,60 @@ public class ChatViewModel extends ViewModel {
                 error.postValue(t.getMessage());
             }
         });
+    }
+
+    public void checkBlockStatus(int senderId, int receiverId) {
+        final boolean[] blocking = {false};
+        final boolean[] blockedBy = {false};
+
+        clientUtils.getAccountService().isAccountBlocked(senderId, receiverId)
+                .enqueue(new Callback<BlockStatusDTO>() {
+                    @Override
+                    public void onResponse(Call<BlockStatusDTO> call, Response<BlockStatusDTO> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            blocking[0] = response.body().getIsBlocked();
+                        } else {
+                            try {
+                                String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                error.postValue("Blocking check failed: " + errorMsg);
+                            } catch (IOException e) {
+                                error.postValue("Blocking check error: Error parsing server response");
+                            }
+                        }
+                        checkSecond();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BlockStatusDTO> call, Throwable t) {
+                        error.postValue("Blocking check failed: " + t.getMessage());
+                        checkSecond();
+                    }
+
+                    private void checkSecond() {
+                        clientUtils.getAccountService().isAccountBlocked(receiverId, senderId)
+                                .enqueue(new Callback<BlockStatusDTO>() {
+                                    @Override
+                                    public void onResponse(Call<BlockStatusDTO> call, Response<BlockStatusDTO> response) {
+                                        if (response.isSuccessful() && response.body() != null) {
+                                            blockedBy[0] = response.body().getIsBlocked();
+                                        } else {
+                                            try {
+                                                String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                                error.postValue("BlockedBy check failed: " + errorMsg);
+                                            } catch (IOException e) {
+                                                error.postValue("BlockedBy check error: Error parsing server response");
+                                            }
+                                        }
+                                        blockStatus.postValue(new BlockStatusPair(blocking[0], blockedBy[0]));
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<BlockStatusDTO> call, Throwable t) {
+                                        error.postValue("BlockedBy check failed: " + t.getMessage());
+                                        blockStatus.postValue(new BlockStatusPair(blocking[0], false));
+                                    }
+                                });
+                    }
+                });
     }
 }
