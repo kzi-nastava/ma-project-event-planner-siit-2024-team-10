@@ -115,12 +115,18 @@ public class UserDetailsFragment extends Fragment {
     private void populateUserDetails(GetUserDTO user){
         if(Objects.equals(user.getRole(), "ADMIN") || Objects.equals(user.getRole(), "AUTHENTICATED_USER")){
             binding.noPersonalDetailsLayout.setVisibility(View.VISIBLE);
+            binding.userHeader.setVisibility(View.GONE);
+            binding.personalDetailsCard.setVisibility(View.GONE);
+            binding.companyDetailsCard.setVisibility(View.GONE);
+            binding.companyImagesCard.setVisibility(View.GONE);
             binding.noPersonalDetailsEmail.setText(binding.noPersonalDetailsEmail.getText()+user.getEmail());
         }
 
         if(Objects.equals(user.getRole(), "EVENT_ORGANIZER") || Objects.equals(user.getRole(), "PROVIDER")) {
             binding.userHeader.setVisibility(View.VISIBLE);
             binding.personalDetailsCard.setVisibility(View.VISIBLE);
+            binding.companyDetailsCard.setVisibility(View.GONE);
+            binding.companyImagesCard.setVisibility(View.GONE);
             binding.userName.setText(user.getFirstName()+" "+user.getLastName());
             binding.userEmail.setText(user.getEmail());
             binding.userPhone.setText(user.getPhoneNumber());
