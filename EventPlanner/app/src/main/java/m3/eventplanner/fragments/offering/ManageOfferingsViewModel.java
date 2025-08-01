@@ -108,6 +108,7 @@ public class ManageOfferingsViewModel extends ViewModel {
                 sortBy,
                 sortDirection,
                 accountId,
+                false,
                 userId
 
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {

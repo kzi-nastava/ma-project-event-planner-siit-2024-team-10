@@ -79,12 +79,7 @@ public class HomeEventsViewModel extends ViewModel {
         });
     }
 
-    public void fetchPage(int page, Boolean initLoad, Integer accountId) {
-        if (Boolean.FALSE.equals(initLoad)) {
-            this.accountId=null;
-        }else{
-            this.accountId=accountId;
-        }
+    public void fetchPage(int page) {
         clientUtils.getEventService().getEvents(
                 page,
                 pageSize,
@@ -97,7 +92,8 @@ public class HomeEventsViewModel extends ViewModel {
                 searchQuery,
                 sortBy,
                 sortDirection,
-                this.accountId
+                accountId,
+                initLoad
         ).enqueue(new Callback<PagedResponse<GetEventDTO>>() {
             @Override
             public void onResponse(Call<PagedResponse<GetEventDTO>> call, Response<PagedResponse<GetEventDTO>> response) {
@@ -121,9 +117,15 @@ public class HomeEventsViewModel extends ViewModel {
         });
     }
 
+    public void loadEvents(int page, Boolean initialLoad, Integer accountId){
+        this.initLoad = initialLoad;
+        this.accountId = accountId;
+        fetchPage(page);
+    }
+
     public void fetchNextPage() {
         if (currentPage + 1 < totalPages) {
-            fetchPage(currentPage + 1, this.initLoad, this.accountId);
+            fetchPage(currentPage + 1);
         } else {
             error.setValue("No more pages to load.");
         }
@@ -131,7 +133,7 @@ public class HomeEventsViewModel extends ViewModel {
 
     public void fetchPreviousPage() {
         if (currentPage > 0) {
-            fetchPage(currentPage - 1, this.initLoad, this.accountId);
+            fetchPage(currentPage - 1);
         } else {
             error.setValue("Already on the first page.");
         }
@@ -145,23 +147,19 @@ public class HomeEventsViewModel extends ViewModel {
         this.filterStartDate = startDate;
         this.filterEndDate = endDate;
         this.initLoad = initialLoad;
-        if (!initialLoad){
-            this.accountId=null;
-        }else{
-            this.accountId=accountId;
-        }
-        fetchPage(page, this.initLoad, this.accountId);
+        this.accountId = accountId;
+        fetchPage(page);
     }
 
     public void loadSearchedEvents(int page, String query) {
         this.searchQuery = query;
-        fetchPage(page, this.initLoad, this.accountId);
+        fetchPage(page);
     }
 
     public void loadSortedEvents(int page, String sortBy, String sortDirection) {
         this.sortBy = sortBy;
         this.sortDirection = sortDirection;
-        fetchPage(page, this.initLoad, this.accountId);
+        fetchPage(page);
     }
 
     public void seeAll(){
@@ -180,7 +178,7 @@ public class HomeEventsViewModel extends ViewModel {
         this.sortBy = null;
         this.sortDirection = null;
 
-        fetchPage(0, this.initLoad, this.accountId);
+        fetchPage(0);
     }
 
     public void fetchEventTypes() {

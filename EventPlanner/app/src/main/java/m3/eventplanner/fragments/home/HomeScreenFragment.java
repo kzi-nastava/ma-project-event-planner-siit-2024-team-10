@@ -284,7 +284,7 @@ public class HomeScreenFragment extends Fragment {
                 if (checkedId == R.id.tabTopEvents) {
                     eventsViewModel.loadTopEvents(loggedInID);
                 } else if (checkedId == R.id.tabAllEvents) {
-                    eventsViewModel.fetchPage(0, initialOfferingLoad, loggedInID);
+                    eventsViewModel.loadEvents(0, initialEventLoad, loggedInID);
                 } else if (checkedId == R.id.tabTopOfferings) {
                     offeringsViewModel.loadTopOfferings(loggedInID);
                 } else if (checkedId == R.id.tabAllOfferings) {

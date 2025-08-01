@@ -58,7 +58,8 @@ public interface EventService {
             @Query("name") String name,
             @Query("sortBy") String sortBy,
             @Query("sortDirection") String sortDirection,
-            @Query("accountId") Integer accountId
+            @Query("accountId") Integer accountId,
+            @Query("initLoad") Boolean initLoad
     );
 
     @Headers({

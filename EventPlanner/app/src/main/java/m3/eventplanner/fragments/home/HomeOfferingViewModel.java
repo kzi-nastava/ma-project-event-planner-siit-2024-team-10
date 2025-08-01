@@ -87,9 +87,6 @@ public class HomeOfferingViewModel extends ViewModel {
     }
 
     public void fetchPage(int page) {
-        if(!initLoad || this.filterOfferingLocation != null){
-            accountId=null;
-        }
         clientUtils.getOfferingService().getOfferings(
                 page,
                 pageSize,
@@ -106,6 +103,7 @@ public class HomeOfferingViewModel extends ViewModel {
                 sortBy,
                 sortDirection,
                 accountId,
+                initLoad,
                 null
         ).enqueue(new Callback<PagedResponse<GetOfferingDTO>>() {
             @Override
@@ -156,11 +154,7 @@ public class HomeOfferingViewModel extends ViewModel {
         this.filterMinRating = minRating;
         this.filterIsAvailable = isAvailable;
         this.initLoad = initialLoad;
-        if (!initialLoad && this.filterOfferingLocation!=null){
-            this.accountId=null;
-        }else{
-            this.accountId=accountId;
-        }
+        this.accountId = accountId;
         fetchPage(page);
     }
 
@@ -179,11 +173,7 @@ public class HomeOfferingViewModel extends ViewModel {
     public void loadOfferings(int page, Boolean isService, Boolean initialLoad, Integer accountId){
         this.isService = isService;
         this.initLoad = initialLoad;
-        if (!initialLoad && this.filterOfferingLocation!=null){
-            this.accountId=null;
-        }else{
-            this.accountId=accountId;
-        }
+        this.accountId = accountId;
         fetchPage(page);
     }
 

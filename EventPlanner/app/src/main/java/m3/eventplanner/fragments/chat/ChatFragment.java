@@ -17,6 +17,7 @@ import m3.eventplanner.adapters.ChatAdapter;
 import m3.eventplanner.adapters.ChatContactAdapter;
 import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.databinding.FragmentChatBinding;
+import m3.eventplanner.fragments.block.BlockDialogFragment;
 import m3.eventplanner.fragments.report.CreateReportFragment;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class ChatFragment extends Fragment {
 
     private int senderId;
     private int receiverId;
+    private Boolean currentIsBlocking = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class ChatFragment extends Fragment {
             adapter.clear();
             viewModel.loadMessages(senderId, receiverId);
             viewModel.subscribeToSocket(receiverId);
+            viewModel.checkBlockStatus(senderId, receiverId);
         });
 
         binding.contactRecyclerView.setLayoutManager(
@@ -79,9 +82,17 @@ public class ChatFragment extends Fragment {
         if (receiverId != -1) {
             viewModel.loadMessages(senderId, receiverId);
             viewModel.subscribeToSocket(receiverId);
+            viewModel.checkBlockStatus(senderId, receiverId);
         }
-    }
 
+        getParentFragmentManager().setFragmentResultListener("block_result", getViewLifecycleOwner(),
+                (requestKey, bundle) -> {
+                    boolean changed = bundle.getBoolean("changed", false);
+                    if (changed) {
+                        viewModel.checkBlockStatus(senderId, receiverId);
+                    }
+                });
+    }
 
     private void setupObservers() {
         viewModel.getContacts().observe(getViewLifecycleOwner(), contactAdapter::setContacts);
@@ -100,8 +111,26 @@ public class ChatFragment extends Fragment {
         viewModel.getError().observe(getViewLifecycleOwner(), error ->
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
         );
-    }
 
+        viewModel.getBlockStatus().observe(getViewLifecycleOwner(), blockStatus -> {
+            currentIsBlocking = blockStatus.isBlockingThem();
+            if (blockStatus.isBlockedByThem()) {
+                binding.blockedOverlay.setVisibility(View.VISIBLE);
+                binding.messageInput.setEnabled(false);
+                binding.sendButton.setEnabled(false);
+                binding.blockedTxt.setText("You have been blocked by this user.");
+            } else if (blockStatus.isBlockingThem()) {
+                binding.blockedOverlay.setVisibility(View.VISIBLE);
+                binding.messageInput.setEnabled(false);
+                binding.sendButton.setEnabled(false);
+                binding.blockedTxt.setText("You have blocked this user.");
+            } else {
+                binding.blockedOverlay.setVisibility(View.GONE);
+                binding.messageInput.setEnabled(true);
+                binding.sendButton.setEnabled(true);
+            }
+        });
+    }
     private void setupListeners() {
         binding.sendButton.setOnClickListener(v -> {
             String text = binding.messageInput.getText().toString().trim();
@@ -120,6 +149,15 @@ public class ChatFragment extends Fragment {
 
             CreateReportFragment dialog = CreateReportFragment.newInstance(senderId, receiverId);
             dialog.show(getParentFragmentManager(), "report_dialog");
+        });
+        binding.blockBtn.setOnClickListener(v -> {
+            if (receiverId == -1) {
+                Toast.makeText(requireContext(), "No user selected to block.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            BlockDialogFragment dialog = BlockDialogFragment.newInstance(senderId, receiverId, currentIsBlocking);
+            dialog.show(getParentFragmentManager(), "block_dialog");
         });
     }
 

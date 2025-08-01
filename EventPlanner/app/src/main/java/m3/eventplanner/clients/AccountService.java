@@ -2,7 +2,7 @@ package m3.eventplanner.clients;
 
 import m3.eventplanner.models.AddFavouriteEventDTO;
 import m3.eventplanner.models.AddFavouriteOfferingDTO;
-import m3.eventplanner.models.Event;
+import m3.eventplanner.models.BlockStatusDTO;
 import m3.eventplanner.models.GetCalendarItemDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
@@ -13,6 +13,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -71,5 +72,27 @@ public interface AccountService {
     })
     @GET("accounts/{accountId}/calendar")
     Call<Collection<GetCalendarItemDTO>> getCalendar(@Path("accountId") int accountId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @GET("accounts/{loggedInId}/blocked-accounts/{accountToBlockId}")
+    Call<BlockStatusDTO> isAccountBlocked(@Path("loggedInId") int loggedInId, @Path("accountToBlockId") int accountToBlockId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @PUT("accounts/{loggedInId}/block/{accountToBlockId}")
+    Call<Void> blockAccount(@Path("loggedInId") int loggedInId, @Path("accountToBlockId") int accountToBlockId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
+    @DELETE("accounts/{loggedInId}/unblock/{accountToUnblockId}")
+    Call<Void> unblockAccount(@Path("loggedInId") int loggedInId, @Path("accountToUnblockId") int accountToUnblockId);
+
 }
 
