@@ -143,14 +143,10 @@ public class BudgetManagerViewModel extends ViewModel {
                     @Override
                     public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            if (response.body()) {
-                                successMessage.setValue("Budget item deleted successfully");
-                                loadBudgetItemsForEvent(eventId);
-                            } else {
-                                error.setValue("Cannot delete budget item: there are purchased items.");
-                            }
+                            successMessage.setValue("Budget item deleted successfully");
+                            loadBudgetItemsForEvent(eventId);
                         } else {
-                            error.setValue("Failed to delete budget item");
+                            error.setValue("Cannot delete budget item, as the are purchased items.");
                         }
                     }
 
