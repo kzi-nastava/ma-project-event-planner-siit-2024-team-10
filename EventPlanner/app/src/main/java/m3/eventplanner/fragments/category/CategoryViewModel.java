@@ -145,17 +145,12 @@ public class CategoryViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    Boolean deleted = response.body();
-                    if (deleted != null && deleted) {
-                        successMessage.setValue("Category deleted successfully");
-                        loadCategories();
-                    } else {
-                        error.setValue("Category cannot be deleted because it has associated services.");
-                    }
+                    successMessage.setValue("Category deleted successfully");
+                    loadCategories();
                 } else if (response.code() == 404) {
                     error.setValue("Category not found");
                 } else {
-                    error.setValue("Failed to delete category");
+                    error.setValue("Category cannot be deleted because it has associated services.");
                 }
             }
 

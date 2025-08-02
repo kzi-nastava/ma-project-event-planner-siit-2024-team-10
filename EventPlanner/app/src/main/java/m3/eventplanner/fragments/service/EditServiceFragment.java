@@ -129,9 +129,6 @@ public class EditServiceFragment extends Fragment {
         binding.price.getEditText().setText(String.valueOf(service.getPrice()));
         binding.discount.getEditText().setText(String.valueOf(service.getDiscount()));
 
-        // Radio buttons
-        binding.radioGroup.check(service.isAutoConfirm() ? R.id.auto : R.id.manual);
-
         // Checkboxes
         binding.checkboxVisible.setChecked(service.isVisible());
         binding.checkboxAvailable.setChecked(service.isAvailable());
@@ -177,7 +174,6 @@ public class EditServiceFragment extends Fragment {
         dto.setDiscount(Double.parseDouble(binding.discount.getEditText().getText().toString().trim()));
 
         // Potvrda i dostupnost
-        dto.setAutoConfirm(binding.radioGroup.getCheckedRadioButtonId() == R.id.auto);
         dto.setVisible(binding.checkboxVisible.isChecked());
         dto.setAvailable(binding.checkboxAvailable.isChecked());
 
