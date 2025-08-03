@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import m3.eventplanner.R;
 import m3.eventplanner.adapters.PricelistItemAdapter;
+import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentOpenEventReportBinding;
 import m3.eventplanner.databinding.FragmentPricelistBinding;
@@ -36,11 +37,13 @@ public class PricelistFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        TokenManager tokenManager = new TokenManager(requireContext());
+        int userId = tokenManager.getUserId();
         RecyclerView recyclerView = view.findViewById(R.id.pricelistRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         adapter = new PricelistItemAdapter(new ArrayList<>(), (offeringId, newPrice, newDiscount) -> {
-            viewModel.updateItem(offeringId, newPrice, newDiscount);
+            viewModel.updateItem(offeringId, newPrice, newDiscount,userId);
         });
 
         recyclerView.setAdapter(adapter);
@@ -53,6 +56,6 @@ public class PricelistFragment extends Fragment {
         viewModel.initialize(requireContext(),clientUtils);
 
         viewModel.getItems().observe(getViewLifecycleOwner(), adapter::updateItems);
-        viewModel.fetchItems();
+        viewModel.fetchItems(userId);
     }
 }

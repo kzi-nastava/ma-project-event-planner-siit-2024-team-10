@@ -41,8 +41,8 @@ public class PricelistViewModel extends ViewModel {
         this.clientUtils = clientUtils;
         this.pdfUtils = new PdfUtils(context);
     }
-    public void fetchItems() {
-        clientUtils.getPricelistService().getPricelist().enqueue(new Callback<List<GetPricelistItemDTO>>() {
+    public void fetchItems(int userId) {
+        clientUtils.getPricelistService().getPricelist(userId).enqueue(new Callback<List<GetPricelistItemDTO>>() {
             @Override
             public void onResponse(Call<List<GetPricelistItemDTO>> call, Response<List<GetPricelistItemDTO>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -61,13 +61,13 @@ public class PricelistViewModel extends ViewModel {
         });
     }
 
-    public void updateItem(int offeringId, double price, double discount) {
+    public void updateItem(int offeringId, double price, double discount,int userId) {
         UpdatePricelistItemDTO dto = new UpdatePricelistItemDTO(price, discount);
         clientUtils.getPricelistService().updatePricing(offeringId, dto).enqueue(new Callback<UpdatedPricelistItemDTO>() {
             @Override
             public void onResponse(Call<UpdatedPricelistItemDTO> call, Response<UpdatedPricelistItemDTO> response) {
                 if (response.isSuccessful()) {
-                    fetchItems();
+                    fetchItems(userId);
                 } else {
                     error.setValue("Failed to update pricelist");
                 }

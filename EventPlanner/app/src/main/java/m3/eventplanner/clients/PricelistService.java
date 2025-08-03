@@ -11,8 +11,8 @@ import retrofit2.http.*;
 
 public interface PricelistService {
 
-    @GET("pricelists")
-    Call<List<GetPricelistItemDTO>> getPricelist();
+    @GET("pricelists/provider/{providerId}")
+    Call<List<GetPricelistItemDTO>> getPricelist(@Path("providerId") int providerId);
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type: application/json"
