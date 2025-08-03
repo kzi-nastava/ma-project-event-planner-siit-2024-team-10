@@ -98,12 +98,14 @@ public class HomeScreenFragment extends Fragment {
                 topEventsTextView.setVisibility(View.VISIBLE);
                 topOfferingsTextView.setVisibility(View.GONE);
             } else {
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 handleNoDataFound(true);
             }
         });
 
         offeringsViewModel.getTopData().observe(getViewLifecycleOwner(), offerings -> {
-            if (offerings != null) {
+            if (offerings != null && !offerings.isEmpty()) {
                 offeringAdapter = new OfferingListAdapter(offerings);
                 contentRecyclerView.setAdapter(offeringAdapter);
                 offeringAdapter.notifyDataSetChanged();
@@ -114,6 +116,8 @@ public class HomeScreenFragment extends Fragment {
                 topEventsTextView.setVisibility(View.GONE);
                 topOfferingsTextView.setVisibility(View.VISIBLE);
             } else {
+                seeAllEvents.setVisibility(View.GONE);
+                seeAllOfferings.setVisibility(View.GONE);
                 handleNoDataFound(false);
             }
         });
