@@ -283,8 +283,15 @@ public class OfferingDetailsFragment extends Fragment {
             }
 
             Bundle bundle = new Bundle();
-            bundle.putInt("selectedServiceId", offering.getId());
-            Navigation.findNavController(v).navigate(R.id.editServiceFragment, bundle);
+            if(offering instanceof GetServiceDTO) {
+                bundle.putInt("selectedServiceId", offering.getId());
+                Navigation.findNavController(v).navigate(R.id.editServiceFragment, bundle);
+            }
+            else{
+                bundle.putInt("selectedProductId", offering.getId());
+                Navigation.findNavController(v).navigate(R.id.editProductFragment, bundle);
+            }
+
         });
     }
 

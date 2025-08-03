@@ -224,28 +224,54 @@ public class OfferingDetailsViewModel extends ViewModel {
         }
     }
     public void deleteOffering(){
-        clientUtils.getServiceService().deleteService(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    successMessage.setValue("Offering deleted successfully");
-                    navigateHome.setValue(true);
-                } else {
-                    try {
-                        String errorBody = response.errorBody().string();
-                        error.setValue(errorBody);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        error.setValue("An error occurred while parsing the error message.");
+        if (offering.getValue() instanceof GetServiceDTO) {
+            clientUtils.getServiceService().deleteService(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        successMessage.setValue("Offering deleted successfully");
+                        navigateHome.setValue(true);
+                    } else {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            error.setValue(errorBody);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            error.setValue("An error occurred while parsing the error message.");
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting offering");
-            }
-        });
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting offering");
+                }
+            });
+        }
+        else{
+            clientUtils.getProductService().deleteProduct(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        successMessage.setValue("Offering deleted successfully");
+                        navigateHome.setValue(true);
+                    } else {
+                        try {
+                            String errorBody = response.errorBody().string();
+                            error.setValue(errorBody);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            error.setValue("An error occurred while parsing the error message.");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    error.setValue(t.getMessage() != null ? t.getMessage() : "Error deleting offering");
+                }
+            });
+        }
     }
     public void buyOffering(int eventId) {
         clientUtils.getBudgetItemService().buyOffering(eventId, offering.getValue().getId()).enqueue(new Callback<Boolean>() {
