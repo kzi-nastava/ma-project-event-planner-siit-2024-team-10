@@ -80,8 +80,28 @@ public class CreateReservationFragment extends DialogFragment {
         binding.selectEndTimeButton.setOnClickListener(v -> showTimePicker(false));
 
         binding.submit.setOnClickListener(v->{
-            String startTime = binding.selectedStartTime.getText().toString();
-            String endTime = binding.selectedEndTime.getText().toString();
+            String startTime = binding.selectedStartTime.getText().toString().trim();
+            String endTime = binding.selectedEndTime.getText().toString().trim();
+
+            if (startTime.isEmpty() || startTime.equals("Not selected")) {
+                binding.error.setText("Please select a start time.");
+                binding.error.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            if (endTime.isEmpty() || endTime.equals("Not selected")) {
+                binding.error.setText("Please select an end time.");
+                binding.error.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            if (eventAdapter.isEmpty() || binding.eventSpinner.getSelectedItem() == null) {
+                binding.error.setText("Please select an event.");
+                binding.error.setVisibility(View.VISIBLE);
+                return;
+            }
+
+            binding.error.setVisibility(View.GONE);
             CreateReservationDTO reservationDTO = new CreateReservationDTO(startTime, endTime, eventId, service.getId());
             viewModel.createReservation(reservationDTO);
         });
