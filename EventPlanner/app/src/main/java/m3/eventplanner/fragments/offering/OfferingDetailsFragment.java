@@ -172,7 +172,7 @@ public class OfferingDetailsFragment extends Fragment {
 
         viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner -> {
             this.isOwner = isOwner;
-            if (isOwner || isAdmin) {
+            if (isOwner) {
                 binding.deleteOfferingButton.setVisibility(View.VISIBLE);
                 binding.editOfferingButton.setVisibility(View.VISIBLE);
             } else {
