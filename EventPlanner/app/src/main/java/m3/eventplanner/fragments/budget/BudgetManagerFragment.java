@@ -219,7 +219,7 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
         List<GetOfferingCategoryDTO> availableCategories = new ArrayList<>();
         for (GetOfferingCategoryDTO category : categoryList) {
-            if (!usedCategoryIds.contains(category.getId())) {
+            if (!usedCategoryIds.contains(category.getId()) && !category.isPending()) {
                 availableCategories.add(category);
             }
         }
