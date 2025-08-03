@@ -101,7 +101,7 @@ public class BudgetManagerViewModel extends ViewModel {
                     budgetItems.setValue(response.body());
                 } else {
                     error.setValue("Failed to load budget items");
-                    budgetItems.setValue(new ArrayList<>()); // prikaži praznu listu ako ne uspe
+                    budgetItems.setValue(new ArrayList<>());
                 }
             }
 

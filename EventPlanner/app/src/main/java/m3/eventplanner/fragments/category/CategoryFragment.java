@@ -86,7 +86,6 @@ public class CategoryFragment extends Fragment
         });
     }
 
-    // CategoryFormFragment.OnCategoryFormFilledListener implementation
     @Override
     public void onCategoryFormFilled(int id, String name, String description, boolean edit) {
         if (edit) {
@@ -96,7 +95,6 @@ public class CategoryFragment extends Fragment
         }
     }
 
-    // CategoryListAdapter.OnCategoryActionListener implementation
     @Override
     public void onApproveCategory(GetOfferingCategoryDTO category) {
         new AlertDialog.Builder(requireContext())
@@ -129,7 +127,6 @@ public class CategoryFragment extends Fragment
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-    // Updated method in CategoryFragment
     @Override
     public void onChangeCategoryOfferings(GetOfferingCategoryDTO selectedCategory, GetOfferingDTO offering) {
         List<GetOfferingCategoryDTO> allCategories = viewModel.getCategories().getValue();
@@ -160,7 +157,6 @@ public class CategoryFragment extends Fragment
         builder.setPositiveButton("Move", (dialog, which) -> {
             GetOfferingCategoryDTO targetCategory = otherCategories.get(selectedIndex[0]);
 
-            // Now pass the offering ID instead of category ID
             viewModel.changeCategory(offering.getId(), targetCategory.getId());
         });
 

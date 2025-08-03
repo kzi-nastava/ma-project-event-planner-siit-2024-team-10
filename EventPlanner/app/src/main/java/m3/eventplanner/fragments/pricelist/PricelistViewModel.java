@@ -86,13 +86,10 @@ public class PricelistViewModel extends ViewModel {
                 if (response.isSuccessful() && response.body() != null) {
                     new Thread(() -> {
                         try {
-                            // Read bytes from ResponseBody
                             byte[] pdfBytes = response.body().bytes();
 
-                            // Save the PDF file
                             File file = pdfUtils.savePdfFile(pdfBytes, "pricelist_report");
 
-                            // Open the saved PDF file on the main thread
                             new Handler(Looper.getMainLooper()).post(() -> {
                                 pdfUtils.openPdfFile(file);
                             });
