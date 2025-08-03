@@ -25,7 +25,6 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
         return offerings;
     }
 
-    // Constructor without budget flag (default use)
     public OfferingItemAdapter(List<GetOfferingDTO> offerings) {
         this.offerings = offerings;
     }
@@ -36,7 +35,6 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
         this.offeringClickListener = offeringClickListener;
     }
 
-    // Constructor with budget flag
     public OfferingItemAdapter(List<GetOfferingDTO> offerings, boolean isUsedInBudget) {
         this.offerings = offerings;
         this.isUsedInBudget = isUsedInBudget;
@@ -94,7 +92,6 @@ public class OfferingItemAdapter extends RecyclerView.Adapter<OfferingItemAdapte
             double discountedPrice = price * (1 - discountPercent / 100);
 
             offeringPrice.setText(String.format("%.0f $", discountedPrice));
-            // Set background color based on usage context
             if (isUsedInBudget) {
                 offeringItem.setBackgroundColor(Color.parseColor("#fee9ce")); // light yellow
                 offeringPrice.setTextColor(Color.parseColor("#c17664"));

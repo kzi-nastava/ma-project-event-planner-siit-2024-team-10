@@ -24,13 +24,22 @@ public interface UserService {
 
     @GET("users/{accountId}")
     Call<GetUserDTO> getUser(@Path("accountId") int accountId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("users/{accountId}")
     Call<UpdatedUserDTO> updateUser(@Path("accountId") int accountId, @Body UpdateUserDTO updateUserDTO);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("users/{accountId}/company")
     Call<UpdatedCompanyDTO> updateCompany(@Path("accountId") int accountId, @Body UpdateCompanyDTO updateCompanyDTO);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("users/{accountId}/password")
     Call<Void> changePassword(@Path("accountId") int accountId, @Body ChangePasswordDTO changePasswordDTO);
 

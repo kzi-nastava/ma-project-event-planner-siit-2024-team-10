@@ -170,12 +170,10 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             }
         });
 
-        // Observe categories
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             categoryList = categories;
         });
 
-        // Observe budget items and show "No budget items" toast if empty
         viewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
             int totalBudget = 0;
             for (GetBudgetItemDTO item : budgetItems) {

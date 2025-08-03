@@ -10,10 +10,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface NotificationService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("notifications/{accountId}")
     Call<PagedResponse<GetNotificationDTO>> getNotifications(
             @Path("accountId") Integer accountId,

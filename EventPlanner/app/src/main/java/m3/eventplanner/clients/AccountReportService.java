@@ -14,11 +14,6 @@ import retrofit2.http.Path;
 import java.util.Collection;
 
 public interface AccountReportService {
-
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("reports")
     Call<Collection<GetAccountReportDTO>> getAllPendingReports();
 
@@ -29,17 +24,9 @@ public interface AccountReportService {
     @POST("reports")
     Call<CreatedAccountReportDTO> createAccountReport(@Body CreateAccountReportDTO report);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @PUT("reports/{reportId}/accept")
     Call<Void> acceptReport(@Path("reportId") int reportId);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @PUT("reports/{reportId}/reject")
     Call<Void> rejectReport(@Path("reportId") int reportId);
 }

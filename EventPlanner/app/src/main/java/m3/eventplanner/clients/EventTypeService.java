@@ -17,16 +17,18 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface EventTypeService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
     @GET("event-types")
     Call<Collection<GetEventTypeDTO>> getEventTypes();
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("event-types")
     Call<CreatedEventTypeDTO> addEventType(@Body CreateEventTypeDTO eventType);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("event-types/{id}")
     Call<UpdatedEventTypeDTO> editEventType(@Path("id") int id, @Body UpdateEventTypeDTO eventType);
 
