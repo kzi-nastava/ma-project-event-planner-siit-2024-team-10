@@ -8,6 +8,7 @@ import m3.eventplanner.models.UpdatedServiceDTO;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
@@ -18,6 +19,10 @@ public interface ServiceService {
     Call<CreatedServiceDTO> addService(@Body CreateServiceDTO service);
     @GET("services/{id}")
     Call<GetServiceDTO> getService(@Path("id") int id);
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("services/{serviceId}")
     Call<UpdatedServiceDTO> updateService(@Path("serviceId") int serviceId, @Body UpdateServiceDTO updateServiceDTO);
     @DELETE("services/{serviceId}")

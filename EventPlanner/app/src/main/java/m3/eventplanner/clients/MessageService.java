@@ -14,13 +14,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.*;
 
 public interface MessageService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
     @GET("messages/{senderId}/{receiverId}")
     Call<List<GetMessageDTO>> getBySenderIdAndReceiverId(@Path("senderId") int senderId, @Path("receiverId") int receiverId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("messages")
     Call<CreatedMessageDTO> createMessage(@Body CreateMessageDTO dto);
     @GET("messages/{userId}")

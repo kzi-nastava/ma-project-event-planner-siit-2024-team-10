@@ -32,19 +32,12 @@ import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 
 public interface EventService {
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
+
     @GET("events/top")
     Call<Collection<GetEventDTO>> getTopEvents(
             @Query("accountId") Integer accountId
     );
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("events")
     Call<PagedResponse<GetEventDTO>> getEvents(
             @Query("page") int page,
@@ -62,26 +55,33 @@ public interface EventService {
             @Query("initLoad") Boolean initLoad
     );
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
-
     @GET("events/{eventId}")
     Call<GetEventDTO> getEvent(@Path("eventId") int eventId);
 
     @GET("events/{eventId}/agenda")
     Call<Collection<GetAgendaItemDTO>> getEventAgenda(@Path("eventId") int eventId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("events")
     Call<CreatedEventDTO> addEvent(@Body CreateEventDTO event);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("events/{eventId}/ratings")
     Call<CreatedEventRatingDTO> addRating(@Path("eventId") int eventId, @Body CreateEventRatingDTO createEventRatingDTO);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("events/{eventId}/agenda")
     Call<CreatedAgendaItemDTO> addAgendaItem(@Path("eventId") int eventId, @Body CreateAgendaItemDTO createAgendaItemDTO);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("events/{eventId}/agenda/{agendaItemId}")
     Call<UpdatedAgendaItemDTO> updateAgendaItem(@Path("eventId") int eventId, @Path("agendaItemId") int agendaItemId, @Body UpdateAgendaItemDTO updateAgendaItemDTO);
 
@@ -114,7 +114,10 @@ public interface EventService {
     })
     @Streaming
     Call<ResponseBody> getGuestlistReport(@Path("eventId") int eventId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("events/{eventId}")
     Call<UpdatedEventDTO> updateEvent(@Path("eventId") int eventId, @Body UpdateEventDTO updateEventDTO);
 
@@ -123,7 +126,10 @@ public interface EventService {
 
     @GET("events/{eventId}/guests")
     Call<GetGuestsDTO> getGuests(@Path("eventId") int eventId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("events/{eventId}/invite")
     Call<Void> sendInvitations(@Path("eventId") int eventId, @Body CreateGuestListDTO guests);
 

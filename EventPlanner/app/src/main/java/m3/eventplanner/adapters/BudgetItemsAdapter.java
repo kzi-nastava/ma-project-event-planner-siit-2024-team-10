@@ -77,11 +77,6 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
         notifyDataSetChanged();
     }
 
-    public void setOfferingsForBudgetItem(int budgetItemId, List<GetOfferingDTO> offerings) {
-        offeringsMap.put(budgetItemId, offerings);
-        notifyItemChanged(findPositionByBudgetItemId(budgetItemId));
-    }
-
     private int findPositionByBudgetItemId(int id) {
         for (int i = 0; i < budgetItems.size(); i++) {
             if (budgetItems.get(i).getId() == id) return i;
@@ -111,18 +106,15 @@ public class BudgetItemsAdapter extends RecyclerView.Adapter<BudgetItemsAdapter.
             int originalAmount = (int) budgetItem.getAmount();
             editTextAmount.setText(String.valueOf(originalAmount));
 
-            // Remove old listeners to prevent multiple triggers
             editTextAmount.setOnFocusChangeListener(null);
             editTextAmount.setOnEditorActionListener(null);
 
-            // Focus lost - apply amount change
             editTextAmount.setOnFocusChangeListener((v, hasFocus) -> {
                 if (!hasFocus) {
                     applyAmountChange(editTextAmount, budgetItem, originalAmount);
                 }
             });
 
-            // Enter key - apply amount change
             editTextAmount.setOnEditorActionListener((v, actionId, event) -> {
                 if (actionId == EditorInfo.IME_ACTION_DONE ||
                         (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER &&

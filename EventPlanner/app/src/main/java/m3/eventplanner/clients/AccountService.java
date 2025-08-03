@@ -20,20 +20,11 @@ import retrofit2.http.Query;
 import java.util.Collection;
 
 public interface AccountService {
-
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("accounts/{accountId}/favourite-events")
     Call<PagedResponse<GetEventDTO>> getFavouriteEvents(@Path("accountId") int accountId,
                                                         @Query("page") int page,
                                                         @Query("size") int size);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("accounts/{accountId}/favourite-events/{eventId}")
     Call<GetEventDTO> getFavouriteEvent(@Path("accountId") int accountId, @Path("eventId") int eventId);
     @GET("accounts/{accountId}/favourite-offerings/{offeringId}")
@@ -57,42 +48,21 @@ public interface AccountService {
     @DELETE("accounts/{accountId}/favourite-offerings/{offeringId}")
     Call<Void> removeOfferingFromFavourites(@Path("accountId") int accountId, @Path("offeringId") int offeringId);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("accounts/{accountId}/favourite-offerings")
     Call<PagedResponse<GetOfferingDTO>> getFavouriteOfferings(@Path("accountId") int accountId,
                                                               @Query("page") int page,
                                                               @Query("size") int size);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("accounts/{accountId}/calendar")
     Call<Collection<GetCalendarItemDTO>> getCalendar(@Path("accountId") int accountId);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @GET("accounts/{loggedInId}/blocked-accounts/{accountToBlockId}")
     Call<BlockStatusDTO> isAccountBlocked(@Path("loggedInId") int loggedInId, @Path("accountToBlockId") int accountToBlockId);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @PUT("accounts/{loggedInId}/block/{accountToBlockId}")
     Call<Void> blockAccount(@Path("loggedInId") int loggedInId, @Path("accountToBlockId") int accountToBlockId);
 
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type: application/json"
-    })
     @DELETE("accounts/{loggedInId}/unblock/{accountToUnblockId}")
     Call<Void> unblockAccount(@Path("loggedInId") int loggedInId, @Path("accountToUnblockId") int accountToUnblockId);
-
 }
 

@@ -32,7 +32,10 @@ public interface ReservationService {
 
     @GET("reservations/events/{organizerId}")
     Call<List<GetEventDTO>> findEventsByOrganizer(@Path("organizerId") int organizerId);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("reservations")
     Call<CreatedReservationDTO> createReservation(@Body CreateReservationDTO reservation);
 

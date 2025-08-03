@@ -50,13 +50,7 @@ public class OfferingListAdapter extends RecyclerView.Adapter<OfferingListAdapte
             bundle.putInt("selectedServiceId", offering.getId());
             int currentDestinationId = Navigation.findNavController(v).getCurrentDestination().getId();
 
-            if (currentDestinationId == R.id.homeScreenFragment) {
-                Navigation.findNavController(v).navigate(R.id.action_homeScreenFragment_to_serviceDetailsFragment, bundle);
-            } else if (currentDestinationId == R.id.manageOfferingsFragment) {
-                Navigation.findNavController(v).navigate(R.id.action_manageOfferingsFragment_to_serviceDetailsFragment, bundle);
-            } else {
-                throw new IllegalStateException("Unsupported navigation origin: " + currentDestinationId);
-            }
+            Navigation.findNavController(v).navigate(R.id.serviceDetailsFragment, bundle);
         });
 
     }

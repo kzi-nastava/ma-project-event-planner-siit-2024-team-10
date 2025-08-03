@@ -1,7 +1,6 @@
 package m3.eventplanner.fragments.service;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,26 +21,20 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import m3.eventplanner.R;
-import m3.eventplanner.adapters.SelectedImagesAdapter;
-import m3.eventplanner.auth.TokenManager;
 import m3.eventplanner.clients.ClientUtils;
 import m3.eventplanner.databinding.FragmentCreateServiceBinding;
 import m3.eventplanner.models.CreateServiceDTO;
 import m3.eventplanner.models.GetOfferingCategoryDTO;
+import m3.eventplanner.auth.TokenManager;
 
 public class CreateServiceFragment extends Fragment {
-    private static final int PICK_IMAGES_REQUEST = 1;
     private FragmentCreateServiceBinding binding;
     private ClientUtils clientUtils;
     private CreateServiceViewModel viewModel;
@@ -51,8 +43,6 @@ public class CreateServiceFragment extends Fragment {
     private boolean isVisible = false;
     private boolean autoConfirm = false;
     private GetOfferingCategoryDTO category;
-    private List<Uri> selectedImageUris = new ArrayList<>();
-    private SelectedImagesAdapter imagesAdapter;
 
     public CreateServiceFragment() {
     }
@@ -70,42 +60,11 @@ public class CreateServiceFragment extends Fragment {
         clientUtils = new ClientUtils(requireContext());
         viewModel.initialize(clientUtils);
 
-        setupRecyclerView();
         setupObservers();
         setupListeners();
         setupValidation();
-        setupImageSelection();
 
         binding.submit.setOnClickListener(v -> onSubmitButtonClick());
-    }
-
-    private void setupRecyclerView() {
-        RecyclerView recyclerView = binding.selectedImagesRecycler;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
-                LinearLayoutManager.HORIZONTAL, false));
-        imagesAdapter = new SelectedImagesAdapter();
-        recyclerView.setAdapter(imagesAdapter);
-
-        imagesAdapter.setOnImageRemoveListener(position -> {
-            selectedImageUris.remove(position);
-            imagesAdapter.setImages(selectedImageUris);
-        });
-    }
-
-    private void setupImageSelection() {
-        binding.addPhoto.setOnClickListener(v -> {
-            if (selectedImageUris.size() >= 10) {
-                Toast.makeText(requireContext(), "Maximum 10 images allowed",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            startActivityForResult(Intent.createChooser(intent, "Select Images"),
-                    PICK_IMAGES_REQUEST);
-        });
     }
 
     private void setupListeners() {
@@ -144,7 +103,6 @@ public class CreateServiceFragment extends Fragment {
         binding.checkboxVisible.setOnCheckedChangeListener((buttonView, isChecked) -> {
             isVisible = isChecked;
         });
-
     }
 
     private void setupObservers() {
@@ -159,14 +117,6 @@ public class CreateServiceFragment extends Fragment {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             NavController navController = NavHostFragment.findNavController(CreateServiceFragment.this);
             navController.navigate(R.id.homeScreenFragment);
-        });
-
-        viewModel.getUploadedImagePaths().observe(getViewLifecycleOwner(), paths -> {
-            if (paths != null && !paths.isEmpty()) {
-                CreateServiceDTO service = createServiceDTO();
-                service.setPhotos(paths);
-                viewModel.createService(service);
-            }
         });
     }
 
@@ -240,92 +190,68 @@ public class CreateServiceFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            if (data.getClipData() != null) {
-                ClipData clipData = data.getClipData();
-                int count = Math.min(clipData.getItemCount(), 10 - selectedImageUris.size());
-                for (int i = 0; i < count; i++) {
-                    Uri imageUri = clipData.getItemAt(i).getUri();
-                    if (!selectedImageUris.contains(imageUri)) {
-                        selectedImageUris.add(imageUri);
-                    }
-                }
-            } else if (data.getData() != null) {
-                Uri imageUri = data.getData();
-                if (!selectedImageUris.contains(imageUri)) {
-                    selectedImageUris.add(imageUri);
-                }
-            }
-            imagesAdapter.setImages(selectedImageUris);
-        }
-    }
-
     private void onSubmitButtonClick() {
-        if (!isFormValid())
-            return;
+        if (!isFormValid()) return;
 
-        if (!selectedImageUris.isEmpty()) {
-            viewModel.uploadImages(selectedImageUris, requireContext());
-        } else {
-            CreateServiceDTO service = createServiceDTO();
-            service.setPhotos(new ArrayList<>());
-            viewModel.createService(service);
-        }
+        CreateServiceDTO service = createServiceDTO();
+        if (service == null) return;
+
+        // Since we do NOT upload images, photos list is empty:
+        service.setPhotos(new ArrayList<>());
+
+        viewModel.createService(service);
     }
 
     private CreateServiceDTO createServiceDTO() {
-        String name = binding.name.getEditText().getText().toString().trim();
-        String description = binding.description.getEditText().getText().toString().trim();
-        String specification = binding.specification.getEditText().getText().toString().trim();
-        String categoryName = createCategory ? binding.categoryName.getEditText().getText().toString().trim() : null;
-        String categoryDescription = createCategory ? binding.categoryDescription.getEditText().getText().toString().trim() : null;
-        double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
-        double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
-        int providerId = new TokenManager(requireContext()).getUserId();
+        try {
+            String name = binding.name.getEditText().getText().toString().trim();
+            String description = binding.description.getEditText().getText().toString().trim();
+            String specification = binding.specification.getEditText().getText().toString().trim();
+            String categoryName = createCategory ? binding.categoryName.getEditText().getText().toString().trim() : null;
+            String categoryDescription = createCategory ? binding.categoryDescription.getEditText().getText().toString().trim() : null;
 
-        int minDuration, maxDuration;
-        if (binding.fixedDurationCheckbox.isChecked()) {
-            minDuration = maxDuration = Integer.parseInt(binding.fixedDuration.getEditText().getText().toString().trim());
-            autoConfirm = true;
-        } else {
-            minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
-            maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
-            autoConfirm = false;
+            double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
+            double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
+
+            int providerId = new TokenManager(requireContext()).getUserId();
+
+            int minDuration, maxDuration;
+            if (binding.fixedDurationCheckbox.isChecked()) {
+                int fixed = Integer.parseInt(binding.fixedDuration.getEditText().getText().toString().trim());
+                minDuration = maxDuration = fixed;
+                autoConfirm = true;
+            } else {
+                minDuration = Integer.parseInt(binding.minDuration.getEditText().getText().toString().trim());
+                maxDuration = Integer.parseInt(binding.maxDuration.getEditText().getText().toString().trim());
+                autoConfirm = false;
+            }
+
+            int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
+            int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
+
+            return new CreateServiceDTO(
+                    createCategory ? 0 : category.getId(),
+                    categoryName,
+                    categoryDescription,
+                    providerId,
+                    name,
+                    description,
+                    specification,
+                    price,
+                    discount,
+                    new ArrayList<>(),
+                    isVisible,
+                    isAvailable,
+                    minDuration,
+                    maxDuration,
+                    reservationDeadline,
+                    cancellationDeadline,
+                    autoConfirm
+            );
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "Please enter valid numbers", Toast.LENGTH_SHORT).show();
+            return null;
         }
-
-        binding.checkboxAvailable.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isAvailable = isChecked;
-        });
-
-        binding.checkboxVisible.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isVisible = isChecked;
-        });
-
-        int reservationDeadline = Integer.parseInt(binding.reservationDeadline.getEditText().getText().toString().trim());
-        int cancellationDeadline = Integer.parseInt(binding.cancellationDeadline.getEditText().getText().toString().trim());
-
-        return new CreateServiceDTO(
-                createCategory ? 0 : category.getId(),
-                categoryName,
-                categoryDescription,
-                providerId,
-                name,
-                description,
-                specification,
-                price,
-                discount,
-                new ArrayList<>(),
-                isVisible,
-                isAvailable,
-                minDuration,
-                maxDuration,
-                reservationDeadline,
-                cancellationDeadline,
-                autoConfirm
-        );
     }
 
     private boolean validateDuration() {
@@ -416,6 +342,7 @@ public class CreateServiceFragment extends Fragment {
 
         return isValid;
     }
+
     private boolean validateRequiredField(TextInputLayout textInputLayout) {
         if (TextUtils.isEmpty(textInputLayout.getEditText().getText())) {
             textInputLayout.setError("Required field");
@@ -426,14 +353,13 @@ public class CreateServiceFragment extends Fragment {
         }
     }
 
-    private boolean validateCategory(){
-        if(createCategory)
+    private boolean validateCategory() {
+        if (createCategory)
             return true;
-        if(category.getId()==-1){
+        if (category == null || category.getId() == -1) {
             binding.categoryError.setVisibility(View.VISIBLE);
             return false;
-        }
-        else{
+        } else {
             binding.categoryError.setVisibility(View.GONE);
             return true;
         }

@@ -83,14 +83,12 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
         Button buttonAdd = binding.buttonAddBudgetItem;
         recyclerViewBudgetItems = binding.recyclerViewBudgetItems;
 
-        // Setup RecyclerView
         recyclerViewBudgetItems.setLayoutManager(new LinearLayoutManager(requireContext()));
         budgetItemsAdapter = new BudgetItemsAdapter(new ArrayList<>(), this);
         recyclerViewBudgetItems.setAdapter(budgetItemsAdapter);
 
         buttonAdd.setOnClickListener(v -> showAddBudgetItemDialog());
 
-        // Listen to spinner selection to load budget items for selected event and update recommended categories
         spinnerEvents.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -98,7 +96,6 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
                     currentEventId = eventList.get(position).getId();
                     viewModel.loadBudgetItemsForEvent(currentEventId);
 
-                    // Prikaz preporučenih kategorija
                     GetEventDTO selectedEvent = eventList.get(position);
                     List<GetOfferingCategoryDTO> recommended = selectedEvent.getEventType() != null
                             ? selectedEvent.getEventType().getRecommendedCategories()
@@ -113,7 +110,7 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
                         for (GetOfferingCategoryDTO cat : recommended) {
                             TextView chip = new TextView(requireContext());
                             chip.setText(cat.getName());
-                            chip.setBackgroundResource(R.drawable.chip_background); // Ako nemaš, napravi ili ukloni
+                            chip.setBackgroundResource(R.drawable.chip_background);
                             chip.setPadding(16, 8, 16, 8);
                             chip.setTextColor(getResources().getColor(android.R.color.white));
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -146,7 +143,6 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
 
     private void setupObservers() {
-        // Observe events and update spinner
         viewModel.getEvents().observe(getViewLifecycleOwner(), events -> {
             eventList = events;
 
@@ -163,19 +159,16 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             binding.spinnerEvents.setAdapter(adapter);
 
-            // Optionally select first event on load
             if (!events.isEmpty()) {
                 currentEventId = events.get(0).getId();
                 viewModel.loadBudgetItemsForEvent(currentEventId);
             }
         });
 
-        // Observe categories
         viewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             categoryList = categories;
         });
 
-        // Observe budget items and show "No budget items" toast if empty
         viewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
             int totalBudget = 0;
             for (GetBudgetItemDTO item : budgetItems) {
@@ -191,7 +184,6 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             }
         });
 
-        // Observe error messages
         viewModel.getError().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
@@ -199,7 +191,6 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
             }
         });
 
-        // Observe success messages
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message -> {
             if (message != null) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
@@ -228,7 +219,7 @@ public class BudgetManagerFragment extends Fragment implements BudgetItemsAdapte
 
         List<GetOfferingCategoryDTO> availableCategories = new ArrayList<>();
         for (GetOfferingCategoryDTO category : categoryList) {
-            if (!usedCategoryIds.contains(category.getId())) {
+            if (!usedCategoryIds.contains(category.getId()) && !category.isPending()) {
                 availableCategories.add(category);
             }
         }

@@ -13,19 +13,28 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+
 public interface BudgetItemService {
 
-
+    @Headers({
+            "Content-Type: application/json",
+            "User-Agent: Mobile-Android"
+    })
     @POST("/api/events/{eventId}/budget")
     Call<CreatedBudgetItemDTO> createBudgetItem(
             @Path("eventId") int eventId,
             @Body CreateBudgetItemDTO createBudgetItemDTO
     );
 
+    @Headers({
+            "Content-Type: application/json",
+            "User-Agent: Mobile-Android"
+    })
     @PUT("/api/events/{eventId}/budget/{budgetItemId}")
     Call<UpdatedBudgetItemDTO> updateBudgetItemAmount(
             @Path("eventId") int eventId,

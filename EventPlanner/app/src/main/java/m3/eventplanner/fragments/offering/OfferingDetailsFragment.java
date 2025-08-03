@@ -172,7 +172,7 @@ public class OfferingDetailsFragment extends Fragment {
 
         viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner -> {
             this.isOwner = isOwner;
-            if (isOwner || isAdmin) {
+            if (isOwner) {
                 binding.deleteOfferingButton.setVisibility(View.VISIBLE);
                 binding.editOfferingButton.setVisibility(View.VISIBLE);
             } else {
@@ -235,6 +235,7 @@ public class OfferingDetailsFragment extends Fragment {
                         int selectedPosition = spinner.getSelectedItemPosition();
                         if (selectedPosition >= 0 && selectedPosition < events.size()) {
                             int selectedEventId = events.get(selectedPosition).getId();
+                            viewModel.setUserId(userId);
                             viewModel.buyOffering(selectedEventId);
                         } else {
                             Toast.makeText(requireContext(), "Invalid event selected", Toast.LENGTH_SHORT).show();

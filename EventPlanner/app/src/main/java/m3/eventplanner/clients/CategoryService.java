@@ -17,14 +17,18 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface CategoryService {
+    @GET("categories")
+    Call<Collection<GetOfferingCategoryDTO>> getCategories();
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("categories")
-    Call<Collection<GetOfferingCategoryDTO>> getCategories();
     @POST("categories")
     Call<CreatedCategoryDTO> addCategory(@Body CreateCategoryDTO categoryDTO);
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
 
     @PUT("categories/{id}")
     Call<UpdatedCategoryDTO> editCategory(@Path("id") int id, @Body UpdateCategoryDTO categoryDTO);

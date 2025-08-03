@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -68,9 +69,16 @@ public interface OfferingService {
     Call<Double> getHighestPrice(@Query("isService") Boolean isService);
     @GET("offerings/all-non-paged")
     Call<Collection<GetOfferingDTO>> getNonPaged();
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @PUT("offerings/{offeringId}/category")
     Call<Void> changeOfferingCategory(@Path("offeringId") int offeringId,@Body ChangeCategoryDTO changeCategoryDTO);
-
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type: application/json"
+    })
     @POST("offerings/{offeringId}/comments")
     Call<CreatedCommentDTO> createComment(
             @Path("offeringId") int offeringId,
