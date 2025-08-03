@@ -13,12 +13,8 @@ import java.util.Collection;
 import java.util.List;
 
 import m3.eventplanner.clients.ClientUtils;
-import m3.eventplanner.models.AddFavouriteEventDTO;
-import m3.eventplanner.models.AddFavouriteOfferingDTO;
-import m3.eventplanner.models.BuyRequestDTO;
 import m3.eventplanner.models.CreateCommentDTO;
 import m3.eventplanner.models.CreatedCommentDTO;
-import m3.eventplanner.models.GetAgendaItemDTO;
 import m3.eventplanner.models.GetCommentDTO;
 import m3.eventplanner.models.GetEventDTO;
 import m3.eventplanner.models.GetOfferingDTO;
@@ -42,20 +38,30 @@ public class OfferingDetailsViewModel extends ViewModel {
     private PdfUtils pdfUtils;
     private final MutableLiveData<Boolean> hasPurchased = new MutableLiveData<>();
 
+    private int userId;
+
     public void initialize(Context context) {
         navigateHome.setValue(false);
         this.clientUtils = new ClientUtils(context);
         this.pdfUtils = new PdfUtils(context);
     }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public LiveData<List<GetCommentDTO>> getComments() {
         return comments;
     }
+
     public LiveData<GetOfferingDTO> getOffering() {
         return offering;
     }
+
     public LiveData<Boolean> getHasPurchased() {
         return hasPurchased;
     }
+
     public LiveData<Boolean> getIsFavourite() {
         return isFavourite;
     }
@@ -67,9 +73,11 @@ public class OfferingDetailsViewModel extends ViewModel {
     public LiveData<String> getError() {
         return error;
     }
+
     public LiveData<List<GetEventDTO>> getEvents() {
         return events;
     }
+
     public LiveData<Boolean> getNavigateHome() {
         return navigateHome;
     }
@@ -77,6 +85,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     public LiveData<String> getSuccessMessage() {
         return successMessage;
     }
+
     public void loadEventsForOrganizer(int organizerId) {
         clientUtils.getBudgetItemService().findEventsByOrganizer(organizerId).enqueue(new Callback<List<GetEventDTO>>() {
             @Override
@@ -96,6 +105,7 @@ public class OfferingDetailsViewModel extends ViewModel {
     }
 
     public void loadOfferingDetails(int offeringId, int accountId, int userId) {
+        this.userId = userId;
         loadComments(offeringId);
         clientUtils.getServiceService().getService(offeringId).enqueue(new Callback<GetServiceDTO>() {
             @Override
@@ -104,7 +114,6 @@ public class OfferingDetailsViewModel extends ViewModel {
                     offering.setValue(response.body());
                     isOwner.setValue(response.body().getProvider().getId() == userId);
                 } else if (response.code() == 404) {
-                    // Ako nije Service, probaj kao Product
                     loadProductOffering(offeringId, userId);
                 } else {
                     error.setValue("Failed to load service details");
@@ -159,7 +168,6 @@ public class OfferingDetailsViewModel extends ViewModel {
         });
     }
 
-
     public void toggleFavourite(int accountId) {
         Boolean currentFavStatus = isFavourite.getValue();
         GetOfferingDTO currentOffering = offering.getValue();
@@ -170,7 +178,6 @@ public class OfferingDetailsViewModel extends ViewModel {
         }
 
         if (currentFavStatus) {
-            // Remove from favourites
             clientUtils.getAccountService().removeOfferingFromFavourites(accountId, currentOffering.getId())
                     .enqueue(new Callback<Void>() {
                         @Override
@@ -179,25 +186,16 @@ public class OfferingDetailsViewModel extends ViewModel {
                                 isFavourite.setValue(false);
                                 successMessage.setValue("Offering removed from favourites");
                             } else {
-                                // Log response details for debugging
-                                Log.e("FavouriteToggle", "Remove failed: " + response.code() + " " + response.message());
-                                try {
-                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                                    error.setValue("Failed to remove from favourites: " + errorBody);
-                                } catch (IOException e) {
-                                    error.setValue("Failed to remove from favourites");
-                                }
+                                error.setValue("Failed to remove from favourites");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            Log.e("FavouriteToggle", "Remove failure", t);
                             error.setValue(t.getMessage() != null ? t.getMessage() : "Network error removing from favourites");
                         }
                     });
         } else {
-            // Add to favourites
             clientUtils.getAccountService().addOfferingToFavourites(accountId, currentOffering.getId())
                     .enqueue(new Callback<Void>() {
                         @Override
@@ -206,24 +204,19 @@ public class OfferingDetailsViewModel extends ViewModel {
                                 isFavourite.setValue(true);
                                 successMessage.setValue("Offering added to favourites");
                             } else {
-                                try {
-                                    String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                                    error.setValue("Failed to add to favourites: " + errorBody);
-                                } catch (IOException e) {
-                                    error.setValue("Failed to add to favourites");
-                                }
+                                error.setValue("Failed to add to favourites");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            Log.e("FavouriteToggle", "Add failure", t);
                             error.setValue(t.getMessage() != null ? t.getMessage() : "Network error adding to favourites");
                         }
                     });
         }
     }
-    public void deleteOffering(){
+
+    public void deleteOffering() {
         clientUtils.getServiceService().deleteService(this.offering.getValue().getId()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -231,13 +224,7 @@ public class OfferingDetailsViewModel extends ViewModel {
                     successMessage.setValue("Offering deleted successfully");
                     navigateHome.setValue(true);
                 } else {
-                    try {
-                        String errorBody = response.errorBody().string();
-                        error.setValue(errorBody);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        error.setValue("An error occurred while parsing the error message.");
-                    }
+                    error.setValue("Failed to delete offering");
                 }
             }
 
@@ -247,12 +234,15 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+
     public void buyOffering(int eventId) {
-        clientUtils.getBudgetItemService().buyOffering(eventId, offering.getValue().getId()).enqueue(new Callback<Boolean>() {
+        int offeringId = offering.getValue().getId();
+        clientUtils.getBudgetItemService().buyOffering(eventId, offeringId).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     successMessage.setValue("Product successfully purchased.");
+                    checkIfUserPurchasedOffering(userId, offeringId); // <- Poziv za prikaz forme
                 } else {
                     error.setValue("Failed to purchase product.");
                 }
@@ -264,6 +254,7 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+
     public void loadComments(int offeringId) {
         clientUtils.getOfferingService().getComments(offeringId).enqueue(new Callback<Collection<GetCommentDTO>>() {
             @Override
@@ -300,6 +291,7 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+
     public void checkIfUserPurchasedOffering(int userId, int offeringId) {
         clientUtils.getOfferingService().hasUserPurchasedOffering(userId, offeringId)
                 .enqueue(new Callback<Boolean>() {
@@ -318,5 +310,4 @@ public class OfferingDetailsViewModel extends ViewModel {
                     }
                 });
     }
-
 }

@@ -235,6 +235,7 @@ public class OfferingDetailsFragment extends Fragment {
                         int selectedPosition = spinner.getSelectedItemPosition();
                         if (selectedPosition >= 0 && selectedPosition < events.size()) {
                             int selectedEventId = events.get(selectedPosition).getId();
+                            viewModel.setUserId(userId);
                             viewModel.buyOffering(selectedEventId);
                         } else {
                             Toast.makeText(requireContext(), "Invalid event selected", Toast.LENGTH_SHORT).show();
