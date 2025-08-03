@@ -212,4 +212,8 @@
         android:name="m3.eventplanner.fragments.offering.ProviderOfferingsFragment"
         android:label="Provider details"
         tools:layout="@layout/fragment_provider_offerings"/>
+    <fragment
+        android:id="@+id/editProductFragment"
+        android:name="m3.eventplanner.fragments.product.EditProductFragment"
+        android:label="@string/edit_product" />
 </navigation>

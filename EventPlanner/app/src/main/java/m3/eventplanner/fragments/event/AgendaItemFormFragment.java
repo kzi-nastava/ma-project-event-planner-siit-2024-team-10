@@ -98,6 +98,7 @@ public class AgendaItemFormFragment extends DialogFragment{
         if(agendaItem!=null) {
             timePickerBuilder.setHour(agendaItem.getStartTime().getHour()).setMinute(agendaItem.getStartTime().getMinute());
             binding.startTimeInput.getEditText().setText(agendaItem.getStartTime().toString());
+            this.startTime=agendaItem.getStartTime();
         }
 
         startTimePicker = timePickerBuilder.setTitleText("Start time").build();
@@ -117,6 +118,7 @@ public class AgendaItemFormFragment extends DialogFragment{
         if(agendaItem!=null) {
             timePickerBuilder.setHour(agendaItem.getEndTime().getHour()).setMinute(agendaItem.getEndTime().getMinute());
             binding.endTimeInput.getEditText().setText(agendaItem.getEndTime().toString());
+            this.endTime=agendaItem.getEndTime();
         }
 
 
