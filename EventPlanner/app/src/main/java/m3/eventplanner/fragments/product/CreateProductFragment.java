@@ -82,7 +82,6 @@ public class CreateProductFragment extends Fragment {
             double price = Double.parseDouble(binding.price.getEditText().getText().toString().trim());
             double discount = Double.parseDouble(binding.discount.getEditText().getText().toString().trim());
             int providerId=new TokenManager(requireContext()).getUserId();
-            //TODO: implement photo upload
             CreateProductDTO product = new CreateProductDTO(createCategory?0:category.getId(),categoryName,categoryDescription,providerId,name,description,price,discount, new ArrayList<String>(),isVisible,isAvailable);
             viewModel.createProduct(product);
         });

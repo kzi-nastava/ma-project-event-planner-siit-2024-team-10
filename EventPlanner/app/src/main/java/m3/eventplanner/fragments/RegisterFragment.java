@@ -45,8 +45,8 @@ public class RegisterFragment extends Fragment {
     private RadioGroup roleRadioGroup;
     private LinearLayout companyInfoContainer;
     private Button submitButton;
-    private TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, profilePhotoLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
-    private EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, profilePhotoInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
+    private TextInputLayout emailLayout, passwordLayout, passwordAgainLayout, firstNameLayout, lastNameLayout, countryLayout, cityLayout, streetLayout, houseNumberLayout, phoneLayout, companyEmailLayout, companyNameLayout, companyCountryLayout, companyCityLayout, companyStreetLayout, companyHouseNumberLayout, companyPhoneLayout, companyDescriptionLayout, companyPhotosLayout;
+    private EditText emailInput, passwordInput, passwordAgainInput, firstNameInput, lastNameInput, countryInput, cityInput, streetInput, houseNumberInput, phoneInput, companyEmailInput, companyNameInput, companyCountryInput, companyCityInput, companyStreetInput, companyHouseNumberInput, companyPhoneInput, companyDescriptionInput, companyPhotosInput;
     private ClientUtils clientUtils;
     private boolean roleUpgrade;
     private TokenManager tokenManager;
@@ -107,9 +107,6 @@ public class RegisterFragment extends Fragment {
 
         lastNameLayout = view.findViewById(R.id.last_name);
         lastNameInput = lastNameLayout.getEditText();
-
-        profilePhotoLayout = view.findViewById(R.id.profile_photo);
-        profilePhotoInput = profilePhotoLayout.getEditText();
 
         countryLayout = view.findViewById(R.id.country);
         countryInput = countryLayout.getEditText();
@@ -474,7 +471,6 @@ public class RegisterFragment extends Fragment {
         String firstName = firstNameInput.getText().toString().trim();
         String lastName = lastNameInput.getText().toString().trim();
         String phone = phoneInput.getText().toString().trim();
-        String profilePhoto = profilePhotoInput.getText().toString().trim();
         String country = countryInput.getText().toString().trim();
         String city = cityInput.getText().toString().trim();
         String street = streetInput.getText().toString().trim();
@@ -500,7 +496,6 @@ public class RegisterFragment extends Fragment {
         registerDTO.setFirstName(firstName);
         registerDTO.setLastName(lastName);
         registerDTO.setPhoneNumber(phone);
-        registerDTO.setProfilePhoto(profilePhoto);
         registerDTO.setLocation(location);
 
         // Check if role is Product Service Provider
