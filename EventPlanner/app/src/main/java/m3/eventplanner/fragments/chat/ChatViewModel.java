@@ -1,0 +1,258 @@
+package m3.eventplanner.fragments.chat;
+
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import m3.eventplanner.BuildConfig;
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.models.BlockStatusDTO;
+import m3.eventplanner.models.CreateMessageDTO;
+import m3.eventplanner.models.CreatedMessageDTO;
+import m3.eventplanner.models.BlockStatusPair;
+import m3.eventplanner.models.GetChatContact;
+import m3.eventplanner.models.GetMessageDTO;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompClient;
+
+
+public class ChatViewModel extends ViewModel {
+
+    private final MutableLiveData<List<GetMessageDTO>> messages = new MutableLiveData<>();
+    private final MutableLiveData<GetMessageDTO> newMessage = new MutableLiveData<>();
+    private final MutableLiveData<String> error = new MutableLiveData<>();
+    private final MutableLiveData<String> successMessage = new MutableLiveData<>();
+    private final MutableLiveData<BlockStatusPair> blockStatus = new MutableLiveData<>();
+    private ClientUtils clientUtils;
+    private StompClient stompClient;
+    private final MutableLiveData<List<GetChatContact>> contacts = new MutableLiveData<>();
+    public LiveData<List<GetChatContact>> getContacts() {
+        return contacts;
+    }
+    public void initialize(ClientUtils clientUtils) {
+        this.clientUtils = clientUtils;
+
+        // Init STOMP client
+        OkHttpClient okHttpClient = new OkHttpClient();
+        String socketUrl = "ws://" + BuildConfig.IP_ADDR + ":8080/socket/websocket";
+        stompClient = Stomp.over(
+                Stomp.ConnectionProvider.OKHTTP,
+                socketUrl,
+                null,
+                okHttpClient
+        );
+
+        stompClient.lifecycle().subscribe(lifecycleEvent -> {
+            switch (lifecycleEvent.getType()) {
+                case OPENED:
+                    Log.d("STOMP", "Connection opened");
+                    break;
+                case ERROR:
+                    Log.e("STOMP", "Error", lifecycleEvent.getException());
+                    error.postValue("WebSocket error: " + lifecycleEvent.getException().getMessage());
+                    break;
+                case CLOSED:
+                    Log.d("STOMP", "Connection closed");
+                    break;
+            }
+        });
+
+        stompClient.connect();
+    }
+
+    public LiveData<String> getSuccessMessage() {
+        return successMessage;
+    }
+
+    public LiveData<List<GetMessageDTO>> getMessages() {
+        return messages;
+    }
+
+    public LiveData<GetMessageDTO> getNewMessage() {
+        return newMessage;
+    }
+
+    public LiveData<String> getError() {
+        return error;
+    }
+    public LiveData<BlockStatusPair> getBlockStatus() { return blockStatus; }
+    public void loadMessages(int senderId, int receiverId) {
+        Log.d("ChatViewModel", "=== loadMessages STARTED ===");
+        Log.d("ChatViewModel", "senderId: " + senderId + ", receiverId: " + receiverId);
+        clientUtils.getMessageService().getBySenderIdAndReceiverId(senderId, receiverId).enqueue(new Callback<List<GetMessageDTO>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<GetMessageDTO>> call, @NotNull Response<List<GetMessageDTO>> response) {
+                if (response.isSuccessful()) {
+                    messages.setValue(response.body());
+                    if (response.body() != null) {
+                        for (GetMessageDTO message : response.body()) {
+                            Log.d("ChatViewModel", "Message from " + message.getSenderId() +
+                                    " to " + message.getReceiverId() + ": " + message.getContent());
+                        }
+                    }else{
+                        Log.d("nema","nema");
+                    }
+                } else {
+                    error.setValue("Failed to load messages");
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<GetMessageDTO>> call, @NotNull Throwable t) {
+                error.setValue("Connection error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void sendMessage(int senderId, int receiverId, String content) {
+        CreateMessageDTO dto = new CreateMessageDTO(senderId, receiverId, content);
+
+        clientUtils.getMessageService().createMessage(dto).enqueue(new Callback<CreatedMessageDTO>() {
+            @Override
+            public void onResponse(@NotNull Call<CreatedMessageDTO> call, @NotNull Response<CreatedMessageDTO> response) {
+                if (!response.isSuccessful()) {
+                    error.setValue("Failed to send message via REST");
+                }
+                loadMessages(senderId,receiverId);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<CreatedMessageDTO> call, @NotNull Throwable t) {
+                error.setValue("Send error (REST): " + t.getMessage());
+            }
+        });
+
+        // Send via STOMP
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("fromId", senderId);
+            obj.put("toId", receiverId);
+            obj.put("message", content);
+
+            stompClient.send("/socket-subscriber/send/message", obj.toString()).subscribe(
+                    () -> Log.d("STOMP", "Message sent"),
+                    throwable -> error.postValue("STOMP send error: " + throwable.getMessage())
+            );
+        } catch (JSONException e) {
+            error.setValue("JSON error: " + e.getMessage());
+        }
+    }
+
+    public void subscribeToSocket(int userId) {
+        String topic = "/socket-publisher/" + userId;
+
+        stompClient.topic(topic).subscribe(topicMessage -> {
+            try {
+                JSONObject json = new JSONObject(topicMessage.getPayload());
+
+                int senderId = json.has("senderId") ? json.getInt("senderId") : json.getInt("fromId");
+                int receiverId = json.has("receiverId") ? json.getInt("receiverId") : json.getInt("toId");
+                String content = json.has("content") ? json.getString("content") : json.getString("message");
+                String timestamp = json.optString("timestamp", LocalDateTime.now().toString());
+
+                GetMessageDTO msg = new GetMessageDTO(senderId, receiverId, content, timestamp);
+                newMessage.postValue(msg);
+            } catch (JSONException e) {
+                error.postValue("Receive parse error: " + e.getMessage());
+            }
+        }, throwable -> {
+            error.postValue("Subscribe error: " + throwable.getMessage());
+        });
+    }
+
+    @Override
+    protected void onCleared() {
+        if (stompClient != null) {
+            stompClient.disconnect();
+        }
+        super.onCleared();
+    }
+    public void loadContacts(int userId) {
+        clientUtils.getMessageService().getChatContacts(userId).enqueue(new Callback<List<GetChatContact>>() {
+            @Override
+            public void onResponse(@NotNull Call<List<GetChatContact>> call, @NotNull Response<List<GetChatContact>> response) {
+                if (response.isSuccessful()) {
+                    contacts.setValue(response.body());
+                } else {
+                    error.postValue("Failed to load contacts");
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<List<GetChatContact>> call, @NotNull Throwable t) {
+                error.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void checkBlockStatus(int senderId, int receiverId) {
+        final boolean[] blocking = {false};
+        final boolean[] blockedBy = {false};
+
+        clientUtils.getAccountService().isAccountBlocked(senderId, receiverId)
+                .enqueue(new Callback<BlockStatusDTO>() {
+                    @Override
+                    public void onResponse(Call<BlockStatusDTO> call, Response<BlockStatusDTO> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            blocking[0] = response.body().getIsBlocked();
+                        } else {
+                            try {
+                                String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                error.postValue("Blocking check failed: " + errorMsg);
+                            } catch (IOException e) {
+                                error.postValue("Blocking check error: Error parsing server response");
+                            }
+                        }
+                        checkSecond();
+                    }
+
+                    @Override
+                    public void onFailure(Call<BlockStatusDTO> call, Throwable t) {
+                        error.postValue("Blocking check failed: " + t.getMessage());
+                        checkSecond();
+                    }
+
+                    private void checkSecond() {
+                        clientUtils.getAccountService().isAccountBlocked(receiverId, senderId)
+                                .enqueue(new Callback<BlockStatusDTO>() {
+                                    @Override
+                                    public void onResponse(Call<BlockStatusDTO> call, Response<BlockStatusDTO> response) {
+                                        if (response.isSuccessful() && response.body() != null) {
+                                            blockedBy[0] = response.body().getIsBlocked();
+                                        } else {
+                                            try {
+                                                String errorMsg = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                                                error.postValue("BlockedBy check failed: " + errorMsg);
+                                            } catch (IOException e) {
+                                                error.postValue("BlockedBy check error: Error parsing server response");
+                                            }
+                                        }
+                                        blockStatus.postValue(new BlockStatusPair(blocking[0], blockedBy[0]));
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<BlockStatusDTO> call, Throwable t) {
+                                        error.postValue("BlockedBy check failed: " + t.getMessage());
+                                        blockStatus.postValue(new BlockStatusPair(blocking[0], false));
+                                    }
+                                });
+                    }
+                });
+    }
+}

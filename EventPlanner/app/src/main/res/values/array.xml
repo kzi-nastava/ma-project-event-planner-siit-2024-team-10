@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="initial_slider_values">
+        <item>200.0</item>
+        <item>700.0</item>
+    </array>
+    <array name="categories">
+        <item>Makeup</item>
+        <item>Music</item>
+        <item>Catering</item>
+    </array>
+    <array name="event_types">
+        <item>Wedding</item>
+        <item>Graduation</item>
+        <item>Prom</item>
+        <item>Concert</item>
+    </array>
+    <array name="sort_directions">
+        <item>Ascending</item>
+        <item>Descending</item>
+    </array>
+    <array name="offering_sort_criteria">
+        <item>Any</item>
+        <item>Name</item>
+        <item>Average Rating</item>
+        <item>Price</item>
+        <item>City</item>
+    </array>
+    <array name="event_sort_criteria">
+        <item>Any</item>
+        <item>Name</item>
+        <item>Date</item>
+        <item>Average Rating</item>
+        <item>City</item>
+    </array>
+</resources>

@@ -9,11 +9,11 @@
         android:id="@+id/offering_card"
         android:clickable="true"
         android:focusable="true"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         app:cardElevation="4dp"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:background="@color/white"
+            android:padding="10dp">
 
             <!-- Product Image -->
             <ImageView
@@ -51,7 +52,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/event_card_organizer"
+                android:text="Provider"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="#747474"
                 app:layout_constraintTop_toBottomOf="@id/offering_card_title"
@@ -60,22 +61,22 @@
 
             <!-- Rating -->
             <TextView
-                android:id="@+id/offering_card_rating"
+                android:id="@+id/offering_card_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/rating"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:text="Price"
+                android:textSize="20sp"
                 android:textColor="?android:attr/textColorSecondary"
                 app:layout_constraintTop_toBottomOf="@id/offering_card_provider"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/offering_card_image" />
+                app:layout_constraintEnd_toStartOf="@id/offering_card_image"/>
 
             <!-- Tags and Actions -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/offering_card_rating"
+                app:layout_constraintTop_toBottomOf="@id/offering_card_price"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -84,10 +85,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@string/product_capital"
+                    android:text="PRODUCT"
                     android:textSize="12sp"
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
+                    android:layout_marginBottom="2dp"
                     android:background="@drawable/small_border"
                     android:gravity="center" />
 
@@ -97,34 +99,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="2dp"
-                    android:text="@string/event_type_capital"
+                    android:layout_marginBottom="2dp"
+                    android:text="CATEGORY"
                     android:textSize="12sp"
                     android:paddingStart="7dp"
                     android:paddingEnd="7dp"
                     android:background="@drawable/small_border"
                     android:gravity="center" />
 
+                <TextView
+                    android:id="@+id/offering_card_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="Rating"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
 
-                <TextView
-                    android:id="@+id/offering_card_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    android:text="500e"
-                    android:textSize="20sp"
-                    android:textColor="?android:attr/textColorSecondary" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/offering_see_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textFontWeight="600"
-                    android:text="@string/event_card_button"
-                    style="?attr/borderlessButtonStyle" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

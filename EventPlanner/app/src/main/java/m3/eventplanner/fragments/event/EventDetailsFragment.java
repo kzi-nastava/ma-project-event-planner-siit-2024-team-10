@@ -1,0 +1,368 @@
+package m3.eventplanner.fragments.event;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.media.session.MediaSession;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.time.LocalTime;
+import java.util.Collection;
+import java.util.List;
+
+import m3.eventplanner.R;
+import m3.eventplanner.adapters.AgendaItemListAdapter;
+import m3.eventplanner.auth.TokenManager;
+import m3.eventplanner.clients.ClientUtils;
+import m3.eventplanner.databinding.FragmentEventDetailsBinding;
+import m3.eventplanner.models.CreateAgendaItemDTO;
+import m3.eventplanner.models.GetAgendaItemDTO;
+import m3.eventplanner.models.GetEventDTO;
+import m3.eventplanner.models.GetOrganizerDTO;
+import m3.eventplanner.models.UpdateAgendaItemDTO;
+import m3.eventplanner.models.UpdateEventTypeDTO;
+import m3.eventplanner.utils.PdfUtils;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class EventDetailsFragment extends Fragment implements AgendaItemFormFragment.OnAgendaItemFormFilledListener {
+    private FragmentEventDetailsBinding binding;
+    private EventDetailsViewModel viewModel;
+    private ClientUtils clientUtils;
+    private GetEventDTO event;
+    private boolean isOwner;
+    private boolean isAdmin;
+    private WebView mapWebView;
+
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentEventDetailsBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
+        viewModel.initialize(requireContext());
+
+        setupObservers();
+        setupClickListeners();
+
+        // Load initial data
+        if (getArguments() != null) {
+            int eventId = getArguments().getInt("selectedEventId");
+            TokenManager tokenManager = new TokenManager(requireContext());
+            int accountId = tokenManager.getAccountId();
+            int userId = tokenManager.getUserId();
+            isAdmin = tokenManager.getRole()!=null && tokenManager.getRole().equals("ADMIN");
+            if(accountId==0)
+                binding.favouriteButton.setVisibility(View.GONE);
+            viewModel.loadEventDetails(eventId, accountId, userId);
+        }
+    }
+
+    private void setupObservers() {
+        viewModel.getEvent().observe(getViewLifecycleOwner(), this::populateEventDetails);
+
+        viewModel.getAgenda().observe(getViewLifecycleOwner(), agendaItems -> {
+            binding.agendaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            binding.agendaRecyclerView.setAdapter(new AgendaItemListAdapter(agendaItems,this,isOwner));
+        });
+
+        viewModel.getIsFavourite().observe(getViewLifecycleOwner(), isFavourite ->
+                binding.favouriteButton.setImageResource(isFavourite ?
+                        R.drawable.heart_filled : R.drawable.heart_outline)
+        );
+
+        viewModel.getNavigateHome().observe(getViewLifecycleOwner(), navigateHome ->
+            {
+                if(navigateHome){
+                    Navigation.findNavController(binding.getRoot()).navigate(R.id.homeScreenFragment);
+                }
+            }
+        );
+
+        viewModel.getError().observe(getViewLifecycleOwner(), error ->
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), message ->
+                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show()
+        );
+
+        viewModel.getIsOwner().observe(getViewLifecycleOwner(), isOwner -> {
+            this.isOwner = isOwner;
+
+            TokenManager tokenManager = new TokenManager(requireContext());
+            boolean isLoggedIn = tokenManager.getAccountId() != 0;
+
+            if (isLoggedIn && !isOwner) {
+                binding.btnContactOrganizer.setVisibility(View.VISIBLE);
+            } else {
+                binding.btnContactOrganizer.setVisibility(View.GONE);
+            }
+
+            if (isOwner) {
+                binding.deleteEventButton.setVisibility(View.VISIBLE);
+                binding.addAgendaItemButton.setVisibility(View.VISIBLE);
+                binding.editEventButton.setVisibility(View.VISIBLE);
+
+                if (!event.isOpen()) {
+                    binding.viewGuestListButton.setVisibility(View.VISIBLE);
+                    binding.viewGuestListButton.setOnClickListener(v -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("eventId", event.getId());
+                        Navigation.findNavController(requireView()).navigate(R.id.guestListFragment, bundle);
+                    });
+                }
+            } else {
+                binding.addAgendaItemButton.setVisibility(View.GONE);
+                binding.editEventButton.setVisibility(View.GONE);
+                binding.viewGuestListButton.setVisibility(View.GONE);
+            }
+
+            if ((isOwner || isAdmin) && event.isOpen()) {
+                binding.openEventReportButton.setVisibility(View.VISIBLE);
+            } else {
+                binding.openEventReportButton.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.getIsParticipating().observe(getViewLifecycleOwner(), isParticipating->
+        {
+            binding.attendButton.setText("You're going!");
+            binding.attendButton.setEnabled(false);
+        });
+    }
+
+    private void setupClickListeners() {
+        binding.btnContactOrganizer.setOnClickListener(v -> {
+            if (event != null && event.getOrganizer() != null) {
+                int receiverId = event.getOrganizer().getAccountId();
+                Bundle bundle = new Bundle();
+                bundle.putInt("receiverId", receiverId);
+                Navigation.findNavController(v).navigate(R.id.chatFragment, bundle);
+            } else {
+                Toast.makeText(getContext(), "Organizer info unavailable", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.favouriteButton.setOnClickListener(v -> {
+            if (getArguments() != null) {
+                int eventId = getArguments().getInt("selectedEventId");
+                int accountId = new TokenManager(requireContext()).getAccountId();
+                viewModel.toggleFavourite(accountId);
+            }
+        });
+
+        binding.submitCommentButton.setOnClickListener(v -> {
+            int rating = (int) binding.newRating.getRating();
+            if (rating > 0) {
+                int eventId = getArguments().getInt("selectedEventId");
+                viewModel.submitRating(rating);
+                Toast.makeText(getContext(), "Rating submitted successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        binding.addAgendaItemButton.setOnClickListener(v->{
+            AgendaItemFormFragment dialog = new AgendaItemFormFragment();
+            dialog.show(getChildFragmentManager(), "AgendaItemFormFragment");
+        });
+
+        binding.deleteEventButton.setOnClickListener(v->{
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+            builder.setTitle("Confirm delete")
+                    .setMessage("Are you sure you want to delete this event?")
+                    .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            viewModel.deleteEvent();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
+        });
+
+        binding.openEventReportButton.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", event.getId());
+            Navigation.findNavController(v).navigate(R.id.openEventReportFragment, bundle);
+        });
+
+        binding.editEventButton.setOnClickListener(v->{
+            Bundle bundle = new Bundle();
+            bundle.putInt("selectedEventId", event.getId());
+            Navigation.findNavController(v).navigate(R.id.editEventFragment, bundle);
+        });
+
+        binding.attendButton.setOnClickListener(v->{
+            viewModel.addParticipant();
+        });
+
+        binding.exportToPdfButton.setOnClickListener(v->{
+            viewModel.exportToPdf();
+        });
+    }
+
+    private void populateEventDetails(GetEventDTO event) {
+        this.event=event;
+
+        binding.eventName.setText(event.getName());
+        if(event.getEventType()!=null)
+            binding.eventType.setText(event.getEventType().getName());
+        else {
+            binding.eventTypeTitle.setVisibility(View.GONE);
+            binding.eventType.setVisibility(View.GONE);
+        }
+        binding.eventDescription.setText(event.getDescription());
+        binding.eventLocation.setText(event.getLocation().toString());
+        binding.eventDate.setText(event.getDate());
+        binding.averageRating.setText("★ "+event.getAverageRating());
+        binding.participantsCount.setText(String.valueOf(event.getParticipantsCount()));
+
+        // Populate organizer details
+        GetOrganizerDTO organizer = event.getOrganizer();
+        binding.eventOrganizerName.setText(String.format("%s %s",
+                organizer.getFirstName(), organizer.getLastName()));
+        binding.eventOrganizerLocation.setText(String.format("%s, %s",
+                organizer.getLocation().getCity(), organizer.getLocation().getCountry()));
+        binding.eventOrganizerEmail.setText(organizer.getEmail());
+        binding.eventOrganizerPhone.setText(organizer.getPhoneNumber());
+
+        if (organizer.getProfilePhoto() != null) {
+            Picasso.get().load(organizer.getProfilePhoto())
+                    .into(binding.eventOrganizerProfilePhoto);
+        }
+
+        if(!event.isOpen()){
+            binding.participantsTitle.setVisibility(View.GONE);
+            binding.participantsSection.setVisibility(View.GONE);
+        } else {
+            binding.viewGuestListButton.setVisibility(View.GONE);
+        }
+
+        mapWebView = binding.mapWebView;
+
+        mapWebView.getSettings().setJavaScriptEnabled(true);
+
+        if (event.getLocation() != null){
+            String address = event.getLocation().getCountry()+", "+
+                    event.getLocation().getCity()+", "+
+                    event.getLocation().getStreet()+" "+ event.getLocation().getHouseNumber();
+            loadMap(address);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onAgendaItemFormFilled(int id, String name, String description, LocalTime startTime, LocalTime endTime, String location, boolean edit) {
+        if(!edit){
+            CreateAgendaItemDTO agendaItemDTO = new CreateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.addAgendaItem(agendaItemDTO);
+        }
+        else {
+            UpdateAgendaItemDTO agendaItemDTO =new UpdateAgendaItemDTO(name,description,location,startTime.toString(),endTime.toString());
+            viewModel.updateAgendaItem(id,agendaItemDTO);
+        }
+    }
+
+    private void loadErrorMessage(){
+        String html = "<h2 style=\"text-align:center;margin-top:50px;\">This location cannot be displayed</h2>";
+        mapWebView.loadData(html, "text/html", "UTF-8");
+    }
+
+    private void loadMap(String address){
+        try {
+            String encodedAddress = URLEncoder.encode(address, "UTF-8").replace("+", "%20");
+            String html = generateHtml(encodedAddress);
+            mapWebView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+        } catch (Exception e){
+            e.printStackTrace();
+            loadErrorMessage();
+        }
+    }
+
+    private String generateHtml(String encodedAddress) {
+        return "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "  <link rel=\"stylesheet\" href=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.css\" />\n" +
+                "  <script src=\"https://unpkg.com/leaflet@1.7.1/dist/leaflet.js\"></script>\n" +
+                "  <style> #map { height: 100vh; margin: 0; padding: 0; } </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<div id=\"map\"></div>\n" +
+                "<script>\n" +
+                "  var encodedAddress = '" + encodedAddress + "';\n" +
+                "  var decodedAddress = decodeURIComponent(encodedAddress);\n" +
+                "  var map = L.map('map').setView([0, 0], 2);\n" +
+                "  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {\n" +
+                "    attribution: '&copy; OpenStreetMap contributors'\n" +
+                "  }).addTo(map);\n" +
+                "  fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodedAddress)\n" +
+                "    .then(response => response.json())\n" +
+                "    .then(data => {\n" +
+                "      if(data && data.length > 0){\n" +
+                "        var lat = data[0].lat;\n" +
+                "        var lon = data[0].lon;\n" +
+                "        map.setView([lat, lon], 15);\n" +
+                "        L.marker([lat, lon]).addTo(map).bindPopup(decodedAddress).openPopup();\n" +
+                "      } else {\n" +
+                "        document.body.innerHTML = '<p style=\"text-align:center;margin-top:100px;\">This location cannot be displayed</p>';\n" +
+                "      }\n" +
+                "    })\n" +
+                "    .catch(() => {\n" +
+                "      document.body.innerHTML = '<p style=\"text-align:center;margin-top:100px;\">This location cannot be displayed</p>';\n" +
+                "    });\n" +
+                "</script>\n" +
+                "</body>\n" +
+                "</html>";
+    }
+
+}

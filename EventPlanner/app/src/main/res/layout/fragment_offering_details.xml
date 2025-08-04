@@ -9,7 +9,8 @@
     <!-- Main ScrollView Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:padding="16dp">
 
             <!-- CardView for Service Image -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginBottom="16dp"
@@ -33,65 +34,157 @@
                     android:src="@drawable/makeup"
                     android:contentDescription="Service Image" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Service Title and Rating -->
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bridal hair and makeup"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Rating Bar -->
-            <RatingBar
-                android:id="@+id/service_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:rating="4.5"
-                android:stepSize="0.5"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Price and Discount Section -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:padding="15dp"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:gravity="center_vertical">
 
                     <TextView
+                        android:id="@+id/offeringName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Price: 500€"
-                        android:textSize="18sp"
+                        android:textColor="#2d3748"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Discount: 10%"
-                        android:textColor="@android:color/holo_red_dark"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <ImageButton
+                        android:id="@+id/favourite_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="4dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/heart_outline" />
 
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Service Details Card -->
-            <androidx.cardview.widget.CardView
+                <!-- Prva linija: kategorija -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="start|center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <TextView
+                        android:id="@+id/category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#4a5568"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/category_label_background"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/isAvailable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Available"
+                        android:textColor="#2e7d32"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/availability_label_background"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/isNotAvailable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not Available"
+                        android:textColor="#c62828"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:background="@drawable/unavailability_label_background"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <!-- Stara cena (prekrizena i siva) -->
+                    <TextView
+                        android:id="@+id/original_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#888888"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/original_price_strikethrough" />
+
+                    <!-- Nova cena sa popustom (glavna boja) -->
+                    <TextView
+                        android:id="@+id/price_with_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#9c555d"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="8dp"
+                        android:text="$80" />
+
+                    <!-- Popust procenat -->
+                    <TextView
+                        android:id="@+id/discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#9c555d"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="16dp"
+                        android:text="(-20%)" />
+
+                </LinearLayout>
+
+                <!-- Četvrta linija: Book Now dugme ispod cena -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_marginTop="8dp">
+
+                    <Button
+                        android:id="@+id/book_now_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Buy"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#ffffff"
+                        android:backgroundTint="@color/red_dark"
+                        android:drawableLeft="@drawable/ic_calendar"
+                        android:drawablePadding="8dp"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+                <!-- Service Details Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
 
@@ -101,252 +194,217 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Service Details"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:id="@+id/durationLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Duration:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:id="@+id/reservationDeadlineLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Reservation Deadline:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/reservationDeadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3 months"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/cancellationDeadlineLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cancellation Deadline:"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/cancellationDeadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3 months"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/specificationLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Specification"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
+                        android:id="@+id/specification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Category: Beauty"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Duration: 3 hours"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Reservation Deadline: 3 months"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Cancellation Deadline: 3 months"
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Description"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
+                        android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Expert makeup and hair artists provide personalized beauty services to ensure the bride and bridal party look stunning on the big day."
                         android:textSize="16sp"
                         android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Specification"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Bridal makeup services include a personalized consultation and a trial session to determine the perfect look tailored to the bride's style and skin type. On the wedding day, professional makeup artists apply high-quality products to ensure a flawless, long-lasting finish, with options for additional elements like airbrush and false lashes. Services can also extend to the bridal party, and a touch-up kit is provided to maintain the bride's look throughout the day."
-                        android:textSize="16sp" />
-
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
-            <!-- Comments Section -->
-            <!-- Comment 1: Very positive review -->
-            <androidx.cardview.widget.CardView
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Provider Details Card -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/comment_username1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Sarah Miller"/>
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="16dp"
+                            android:background="#d0cfe1"
+                            android:clipToOutline="true"
+                            android:id="@+id/provider_profile_photo"
+                            android:contentDescription="Provider Profile Photo"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/profile_photo" />
 
-                        <RatingBar
-                            android:id="@+id/comment_rating1"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="5.0"
-                            android:stepSize="0.5"/>
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="Beauty Elegance Studio"
+                                android:id="@+id/provider_name"
+                                android:textColor="#2d3748"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="123 Beauty Street, City, Country"
+                                android:id="@+id/provider_address"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="contact@beautyelegance.com"
+                                android:id="@+id/provider_email"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="+1 (555) 123-4567"
+                                android:id="@+id/provider_phone"
+                                android:textColor="#4a5568"
+                                android:textSize="14sp" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/comment_text1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="Absolutely amazing experience! The makeup artist was incredibly skilled and listened to exactly what I wanted. My hair and makeup lasted all day and looked perfect in photos. The trial session was also very helpful in getting the perfect look. Highly recommend!"/>
-
-                    <TextView
-                        android:id="@+id/comment_date1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-15"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Comment 2: Good but with some constructive feedback -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
+                    <!-- Action Buttons -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
+                        android:layout_marginTop="12dp"
+                        android:gravity="end">
 
-                        <TextView
-                            android:id="@+id/comment_username2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Emma Thompson"/>
-
-                        <RatingBar
-                            android:id="@+id/comment_rating2"
-                            style="?android:attr/ratingBarStyleSmall"
+                        <Button
+                            android:id="@+id/btn_view_provider"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="4.0"
-                            android:stepSize="0.5"/>
-                    </LinearLayout>
+                            android:text="View Provider"
+                            android:layout_marginEnd="8dp" />
 
-                    <TextView
-                        android:id="@+id/comment_text2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="Good service overall. The makeup looked beautiful but I would have appreciated more time for the trial session to try different hairstyles. The final result was pretty, but scheduling was a bit inflexible. The touch-up kit provided was very helpful throughout the day."/>
-
-                    <TextView
-                        android:id="@+id/comment_date2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-10"/>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <!-- Comment 3: Mixed experience -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginBottom="4dp">
-
-                        <TextView
-                            android:id="@+id/comment_username3"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:text="Lisa Chen"/>
-
-                        <RatingBar
-                            android:id="@+id/comment_rating3"
-                            style="?android:attr/ratingBarStyleSmall"
+                        <Button
+                            android:id="@+id/btn_contact_provider"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:numStars="5"
-                            android:rating="3.5"
-                            android:stepSize="0.5"/>
+                            android:text="Contact Us" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/comment_text3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="The makeup application was great and lasted well, but the hair styling didn't quite match what we discussed in the trial. Had to do some adjustments last minute which was stressful. The team was professional though and worked quick to fix it. Consider bringing reference photos to avoid any misunderstandings."/>
-
-                    <TextView
-                        android:id="@+id/comment_date3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:textSize="12sp"
-                        android:textColor="@android:color/darker_gray"
-                        android:text="2024-11-01"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Add New Comment Section -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/addNewCommentSectionId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="4dp">
 
@@ -398,12 +456,21 @@
                         android:layout_height="wrap_content"
                         android:text="SUBMIT REVIEW"
                         android:padding="12dp"
-                        android:backgroundTint="@android:color/holo_blue_dark"/>
+                        android:backgroundTint="@color/brand_purple"
+                        android:textColor="@color/chocolate_brown"/>
 
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-            </androidx.cardview.widget.CardView>
+            <!-- RecyclerView for comments -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comments_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
+
+            <!-- Edit and Delete Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -415,20 +482,20 @@
                     android:layout_height="wrap_content"
                     android:text="EDIT"
                     android:padding="8dp"
-                    android:backgroundTint="@android:color/holo_blue_light"
-                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/brand_purple"
+                    android:textColor="@color/chocolate_brown"
                     android:layout_margin="5dp"
                     android:layout_weight="1" />
 
                 <Button
                     android:id="@+id/delete_offering_button"
                     android:layout_width="0dp"
-                    android:layout_margin="5dp"
                     android:layout_height="wrap_content"
                     android:text="DELETE"
                     android:padding="8dp"
-                    android:backgroundTint="@android:color/holo_red_dark"
-                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/chocolate_brown"
+                    android:textColor="@color/brand_purple"
+                    android:layout_margin="5dp"
                     android:layout_weight="1" />
             </LinearLayout>
 

@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/reportTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/report_user"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/descriptionInput"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:hint="@string/please_describe_the_reason_for_reporting_this_user"
+        android:gravity="top|start"
+        android:inputType="textMultiLine"
+        android:minLines="5"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/minimum_10_characters_required"
+        android:textSize="12sp"
+        android:paddingTop="4dp"
+        android:textColor="#888888"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textColor="@color/chocolate_brown"
+            android:backgroundTint="@color/design_default_color_surface"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/submitReportBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_report"
+            android:backgroundTint="@color/brand_purple"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/brand_purple_light">
+
+        <TextView
+            android:id="@+id/all_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/all_events"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/chocolate_brown"/>
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/event_search_text"
+        app:queryHint="Search"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/border_background"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+        <Button
+            android:id="@+id/filter_events_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginStart="10dp"
+            android:text="@string/filter" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:id="@+id/btn_sort_events_by"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:text="@string/sort"
+            android:tooltipText="@string/sort"
+            android:contentDescription="@string/sort"
+            />
+
+        <Spinner
+            android:id="@+id/btn_sort_events_direction"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:text="@string/sort"
+            android:tooltipText="@string/sort"
+            android:contentDescription="@string/sort"
+            />
+
+    </LinearLayout>
+</LinearLayout>
