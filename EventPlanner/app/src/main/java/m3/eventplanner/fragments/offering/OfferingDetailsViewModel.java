@@ -242,9 +242,14 @@ public class OfferingDetailsViewModel extends ViewModel {
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     successMessage.setValue("Product successfully purchased.");
-                    checkIfUserPurchasedOffering(userId, offeringId); // <- Poziv za prikaz forme
+                    checkIfUserPurchasedOffering(userId, offeringId);
                 } else {
-                    error.setValue("Failed to purchase product.");
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        error.setValue(errorBody);
+                    } catch (IOException e) {
+                        error.setValue("Product not purchased");
+                    }
                 }
             }
 
@@ -254,6 +259,7 @@ public class OfferingDetailsViewModel extends ViewModel {
             }
         });
     }
+
 
     public void loadComments(int offeringId) {
         clientUtils.getOfferingService().getComments(offeringId).enqueue(new Callback<Collection<GetCommentDTO>>() {
